@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071126">
+
+<title>Speedy.ng | Welcome</title>
+
+<style>
+:root {
+  --bg: #071126;
+  --panel: #0c1a35;
+  --blue: #3985ff;
+  --cyan: #55e6ff;
+  --text: #f4f7ff;
+  --muted: #9aaaca;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  filter: blur(85px);
+  opacity: .28;
+  animation: float 12s ease-in-out infinite alternate;
+}
+
+.glow.one {
+  background: #145dff;
+  top: -90px;
+  left: -100px;
+}
+
+.glow.two {
+  background: #00c8ff;
+  right: -120px;
+  bottom: -60px;
+  animation-delay: -5s;
+}
+
+.glow.three {
+  background: #693cff;
+  left: 40%;
+  top: 45%;
+  width: 180px;
+  height: 180px;
+  animation-delay: -3s;
+}
+
+@keyframes float {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(35px, 45px) scale(1.2);
+  }
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 27px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  width: 100%;
+  margin: auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -.8px;
+}
+
+.logo-icon {
+  width: 39px;
+  height: 39px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #3985ff, #55e6ff);
+  color: #061126;
+  box-shadow: 0 0 25px #3985ff55;
+}
+
+.logo span {
+  color: var(--cyan);
+}
+
+.badge {
+  color: #b8c8e8;
+  font-size: 12px;
+  padding: 9px 12px;
+  border: 1px solid #ffffff16;
+  background: #ffffff08;
+  border-radius: 20px;
+}
+
+main {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 15px 20px 45px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  align-items: center;
+  gap: 65px;
+}
+
+.intro {
+  animation: appear .8s ease both;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #55e6ff30;
+  background: #55e6ff0c;
+  color: var(--cyan);
+  border-radius: 30px;
+  padding: 9px 13px;
+  font-size: 12px;
+  margin-bottom: 25px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #55e6ff;
+  box-shadow: 0 0 12px #55e6ff;
+}
+
+h1 {
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 1.08;
+  letter-spacing: -2px;
+  margin-bottom: 22px;
+}
+
+.gradient {
+  background: linear-gradient(90deg, #55e6ff, #6194ff, #b39aff);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+  to { background-position: 200% center; }
+}
+
+.intro p {
+  max-width: 450px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 27px;
+}
+
+.feature {
+  font-size: 12px;
+  color: #dce8ff;
+  background: #ffffff08;
+  border: 1px solid #ffffff12;
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+
+.card {
+  width: 100%;
+  border: 1px solid #ffffff18;
+  background: linear-gradient(145deg, #112344eF, #0b1730f5);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-radius: 24px;
+  padding: 30px 25px;
+  box-shadow: 0 25px 90px #00000045;
+  animation: cardIn .8s ease both;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card h2 {
+  font-size: 26px;
+  margin-bottom: 9px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #050d1e;
+  margin-bottom: 24px;
+}
+
+.tab {
+  border: 0;
+  padding: 12px 8px;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: linear-gradient(100deg, #2468ee, #378bff);
+  color: white;
+  box-shadow: 0 5px 20px #2678ff30;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+
+label {
+  display: block;
+  color: #dce5fa;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 11px;
+  border: 1px solid #ffffff19;
+  background: #061127;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: border .2s, box-shadow .2s;
+}
+
+input:focus {
+  border-color: #3985ff;
+  box-shadow: 0 0 0 3px #3985ff18;
+}
+
+input::placeholder {
+  color: #61718f;
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 65px;
+}
+
+.show-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--cyan);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 2px 0 22px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.check input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--blue);
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.submit {
+  width: 100%;
+  border: 0;
+  padding: 16px;
+  border-radius: 11px;
+  background: linear-gradient(100deg, #2868f5, #398eff);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 25px #2877ff35;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.submit:hover {
+  box-shadow: 0 8px 35px #2877ff60;
+  transform: translateY(-2px);
+}
+
+.submit:active {
+  transform: scale(.98);
+}
+
+.notice {
+  display: none;
+  padding: 12px;
+  margin-top: 15px;
+  background: #55e6ff10;
+  border: 1px solid #55e6ff30;
+  color: #b9f3ff;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.switch {
+  text-align: center;
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #6f80a1;
+  font-size: 11px;
+}
+
+@media (max-width: 800px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    max-width: 480px;
+    padding-top: 15px;
+  }
+
+  .intro {
+    text-align: center;
+  }
+
+  .intro p {
+    margin: auto;
+  }
+
+  .features {
+    justify-content: center;
+  }
+
+  h1 {
+    font-size: 43px;
+  }
+
+  header {
+    padding: 20px;
+  }
+
+  .badge {
+    font-size: 10px;
+  }
+
+  .card {
+    padding: 27px 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background" aria-hidden="true">
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+  <div class="glow three"></div>
+</div>
+
+<div class="page">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">S</div>
+    Speedy<span>.ng</span>
+  </div>
+  <div class="badge">YOUR DIGITAL SERVICES HUB</div>
+</header>
+
+<main>
+
+<section class="intro">
+  <div class="eyebrow">
+    <span class="dot"></span>
+    SIMPLE. SMART. SPEEDY.
+  </div>
+
+  <h1>
+    Everything you need.<br>
+    <span class="gradient">One platform.</span>
+  </h1>
+
+  <p>
+    Welcome to Speedy.ng. Your destination for virtual numbers,
+    social services, and more — all in one convenient place.
+  </p>
+
+  <div class="features">
+    <div class="feature">✦ Virtual Numbers</div>
+    <div class="feature">✦ Social Logs</div>
+    <div class="feature">✦ Social Boosting</div>
+    <div class="feature">✦ Secure Accounts</div>
+  </div>
+</section>
+
+<section class="card">
+
+  <h2 id="formTitle">Welcome back</h2>
+  <p class="subtitle" id="formSubtitle">
+    Sign in to continue to your Speedy.ng account.
+  </p>
+
+  <div class="tabs">
+    <button class="tab active" id="loginTab" type="button"
+      onclick="setMode('login')">Sign In</button>
+
+    <button class="tab" id="registerTab" type="button"
+      onclick="setMode('register')">Create Account</button>
+  </div>
+
+  <form id="authForm">
+
+    <div class="field" id="nameField" hidden>
+      <label for="fullName">Full name</label>
+      <input id="fullName" type="text" autocomplete="name"
+        placeholder="Enter your full name">
+    </div>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="email"
+        placeholder="you@example.com" required>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="password-wrap">
+        <input id="password" type="password"
+          autocomplete="current-password"
+          placeholder="Enter your password" required>
+        <button class="show-password" type="button"
+          onclick="togglePassword()">SHOW</button>
+      </div>
+    </div>
+
+    <div class="form-options" id="formOptions">
+      <label class="check">
+        <input type="checkbox" id="remember">
+        Remember me
+      </label>
+      <a href="#" id="forgotLink">Forgot password?</a>
+    </div>
+
+    <button class="submit" type="submit" id="submitButton">
+      Sign In Securely →
+    </button>
+
+    <div class="notice" id="notice" role="status"></div>
+
+  </form>
+
+  <div class="switch" id="switchText">
+    New to Speedy.ng?
+    <a href="#" onclick="setMode('register'); return false;">
+      Create an account
+    </a>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  © <span id="year"></span> Speedy.ng. All rights reserved.
+</footer>
+
+</div>
+
+<script>
+let mode = "login";
+
+const $ = id => document.getElementById(id);
+
+function setMode(newMode) {
+  mode = newMode;
+  const registering = mode === "register";
+
+  $("loginTab").classList.toggle("active", !registering);
+  $("registerTab").classList.toggle("active", registering);
+
+  $("formTitle").textContent =
+    registering ? "Create your account" : "Welcome back";
+
+  $("formSubtitle").textContent = registering
+    ? "Join Speedy.ng in just a few steps."
+    : "Sign in to continue to your Speedy.ng account.";
+
+  $("nameField").hidden = !registering;
+  $("fullName").required = registering;
+  $("password").autocomplete =
+    registering ? "new-password" : "current-password";
+
+  $("formOptions").style.display =
+    registering ? "none" : "flex";
+
+  $("submitButton").textContent =
+    registering ? "Create Account →" : "Sign In Securely →";
+
+  $("switchText").innerHTML = registering
+    ? 'Already have an account? <a href="#" id="switchLink">Sign in</a>'
+    : 'New to Speedy.ng? <a href="#" id="switchLink">Create an account</a>';
+
+  $("switchLink").addEventListener("click", event => {
+    event.preventDefault();
+    setMode(registering ? "login" : "register");
+  });
+
+  $("notice").style.display = "none";
+}
+
+function togglePassword() {
+  const input = $("password");
+  const button = document.querySelector(".show-password");
+  const showing = input.type === "text";
+
+  input.type = showing ? "password" : "text";
+  button.textContent = showing ? "SHOW" : "HIDE";
+}
+
+$("forgotLink").addEventListener("click", event => {
+  event.preventDefault();
+  $("notice").textContent =
+    "Password recovery will be available after we connect the secure account system.";
+  $("notice").style.display = "block";
+});
+
+$("authForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  $("notice").textContent =
+    "The interface is ready! Real sign-in and account creation will work after we connect the secure backend.";
+  $("notice").style.display = "block";
+});
+
+$("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
