@@ -181,8 +181,8 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
         await startVerification(email);
       } else {
         const data = await api("/api/customer/login", {email, password});
-        saveSession(data);
-        showNotice("You are signed in. Customer dashboard navigation will be enabled in the next portal build.", "success");
+saveSession(data);
+window.location.href = "https://speedy-ng.pages.dev/dashboard";
       }
     } catch (err) {
       showNotice(err.message || "Unable to complete the request. Please try again.", "error");
