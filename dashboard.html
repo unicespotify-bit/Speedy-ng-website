@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#071126">
+<title>Speedy.ng | Customer Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071126;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px;background:#0d1d39;border-bottom:1px solid #29466e;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:bold}.logo span{color:#50dfff}
+button{background:#287cff;color:white;border:0;border-radius:9px;padding:11px 16px;font-weight:bold}
+main{max-width:900px;margin:auto;padding:25px 16px}
+h1{font-size:25px;margin-bottom:8px}
+.muted{color:#a9bbd8;font-size:14px}
+h2{font-size:18px;margin-top:30px}
+.wallets,.services,.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.card{background:#102344;border:1px solid #29466e;border-radius:15px;padding:20px}
+.label{color:#b6c9e7;font-size:13px}
+.balance{font-size:26px;font-weight:bold;margin-top:12px}
+.action,.service{background:#102344;border:1px solid #29466e;border-radius:13px;padding:18px 12px;text-align:center;color:white;text-decoration:none;display:block}
+.icon{font-size:26px;display:block;margin-bottom:10px}
+.service small{display:block;color:#a9bbd8;margin-top:7px}
+.notice{background:#102344;border:1px solid #29466e;padding:14px;border-radius:12px;margin-top:22px;font-size:13px;color:#c6d8f5}
+@media(max-width:520px){.wallets{gap:9px}.card{padding:14px 11px}.balance{font-size:20px}.services,.actions{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Speedy<span>.ng</span></div>
+<button id="logout">Log out</button>
+</header>
+
+<main>
+<h1>Welcome to Speedy.ng 👋</h1>
+<p class="muted" id="email">Loading your account...</p>
+
+<h2>My Wallets</h2>
+<section class="wallets">
+<div class="card">
+<div class="label">Naira Wallet</div>
+<div class="balance" id="ngn">₦0.00</div>
+</div>
+<div class="card">
+<div class="label">Dollar Wallet</div>
+<div class="balance" id="usd">$0.00</div>
+</div>
+</section>
+
+<h2>Quick Actions</h2>
+<section class="actions">
+<a class="action" href="#" data-feature="Deposit"><span class="icon">💳</span>Deposit</a>
+<a class="action" href="#" data-feature="Currency conversion"><span class="icon">⇄</span>Convert Currency</a>
+<a class="action" href="#" data-feature="Transactions"><span class="icon">📋</span>Transactions</a>
+</section>
+
+<h2>Our Services</h2>
+<section class="services">
+<a class="service" href="#" data-feature="Buy Numbers"><span class="icon">📱</span><strong>Buy Numbers</strong><small>Visual and Official Numbers</small></a>
+<a class="service" href="#" data-feature="Social Boosting"><span class="icon">🚀</span><strong>Social Boosting</strong><small>Grow your social accounts</small></a>
+<a class="service" href="#" data-feature="Social Logs"><span class="icon">📂</span><strong>Social Logs</strong><small>Available social logs</small></a>
+</section>
+
+<div class="notice" id="status">Connecting to your account...</div>
+</main>
+
+<script>
+const API="https://speedy-ng-api-staging.unicespotify.workers.dev";
+const token=localStorage.getItem("speedy_customer_token")||sessionStorage.getItem("speedy_customer_token");
+
+async function api(path,method="GET"){
+const response=await fetch(API+path,{
+method,
+headers:{
+"Authorization":"Bearer "+token,
+"Accept":"application/json"
+}
+});
+const data=await response.json();
+if(!response.ok||data.ok===false)throw new Error(data.message||data.error||"Request failed");
+return data;
+}
+
+function money(value,currency){
+const number=Number(value||0);
+return currency==="NGN"
+?"₦"+number.toLocaleString("en-NG",{minimumFractionDigits:2,maximumFractionDigits:2})
+:"$"+number.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+async function loadDashboard(){
+if(!token){
+location.replace("https://speedy-ng.pages.dev/");
+return;
+}
+try{
+const account=await api("/api/customer/me");
+document.getElementById("email").textContent=account.customer.email;
+
+const wallet=await api("/api/customer/wallet");
+const balances=wallet.balances||{};
+document.getElementById("ngn").textContent=money(balances.NGN,"NGN");
+document.getElementById("usd").textContent=money(balances.USD,"USD");
+document.getElementById("status").textContent="Your account and wallet balances are up to date.";
+}catch(error){
+document.getElementById("status").textContent=error.message;
+}
+}
+
+document.getElementById("logout").onclick=async()=>{
+try{await api("/api/customer/logout","POST")}catch(error){}
+localStorage.removeItem("speedy_customer_token");
+sessionStorage.removeItem("speedy_customer_token");
+location.replace("https://speedy-ng.pages.dev/");
+};
+
+document.querySelectorAll("[data-feature]").forEach(item=>{
+item.onclick=event=>{
+event.preventDefault();
+document.getElementById("status").textContent=item.dataset.feature+" will be connected to its service module. Your wallet has not been charged.";
+};
+});
+
+loadDashboard();
+</script>
+</body>
+</html>
