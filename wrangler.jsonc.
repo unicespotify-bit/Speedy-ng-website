@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schema.cloudflare.com/wrangler.json",
+  "name": "speedy-blue",
+  "compatibility_date": "2026-11-05",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "none",
+    "html_handling": "none"
+  }
+}
