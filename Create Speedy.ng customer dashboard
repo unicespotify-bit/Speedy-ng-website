@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | Speedy.ng</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:#07152e;
+  color:#fff;
+  min-height:100vh;
+}
+header{
+  padding:18px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#0b1e3d;
+  border-bottom:1px solid #19345d;
+}
+.logo{font-size:23px;font-weight:800;color:#fff}
+.logo span{color:#35a8ff}
+.logout{
+  background:#172f52;color:#fff;border:1px solid #315078;
+  padding:10px 15px;border-radius:9px;font-weight:bold;
+}
+.container{max-width:1050px;margin:auto;padding:24px 17px}
+.welcome{margin-bottom:24px}
+.welcome h1{font-size:25px;margin-bottom:8px}
+.welcome p{color:#9fb3d1;font-size:14px;overflow-wrap:anywhere}
+.section-title{font-size:17px;margin:25px 0 13px}
+.wallets{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px
+}
+.card{
+  background:linear-gradient(145deg,#102b50,#0c2140);
+  border:1px solid #24466f;
+  border-radius:16px;padding:20px;
+}
+.wallet-label{font-size:13px;color:#a9bdd9;margin-bottom:12px}
+.balance{font-size:26px;font-weight:800;overflow-wrap:anywhere}
+.wallet-note{font-size:11px;color:#8da6c8;margin-top:9px}
+.actions{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px
+}
+.action{
+  background:#102b50;border:1px solid #24466f;border-radius:13px;
+  padding:18px 10px;text-align:center;color:white;
+  min-height:85px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:bold;
+}
+.action span{display:block;font-size:23px;margin-bottom:8px}
+.services{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px
+}
+.service{
+  background:#0d2342;border:1px solid #24466f;border-radius:13px;
+  padding:18px 12px;text-align:center;
+}
+.service .icon{font-size:27px;margin-bottom:10px}
+.service h3{font-size:14px}
+.service p{font-size:11px;color:#9fb3d1;margin-top:7px}
+.status{
+  margin-top:20px;padding:13px;border-radius:10px;
+  background:#102b50;color:#a9bdd9;font-size:13px;
+}
+button{cursor:pointer}
+#refresh{background:#1687df;border:0;color:white;padding:10px 15px;border-radius:9px;font-weight:bold}
+footer{text-align:center;color:#7189aa;font-size:12px;padding:30px 15px}
+@media(max-width:520px){
+  .wallets{grid-template-columns:1fr 1fr}
+  .balance{font-size:20px}
+  .actions{grid-template-columns:1fr 1fr}
+  .services{grid-template-columns:1fr}
+  .container{padding:21px 14px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">Speedy<span>.ng</span></div>
+  <button class="logout" id="logout">Logout</button>
+</header>
+
+<div class="container">
+  <section class="welcome">
+    <h1>Welcome to Speedy.ng 👋</h1>
+    <p id="customerEmail">Loading your account...</p>
+  </section>
+
+  <h2 class="section-title">Your Wallets</h2>
+  <section class="wallets">
+    <div class="card">
+      <div class="wallet-label">Naira Wallet</div>
+      <div class="balance" id="ngnBalance">₦0.00</div>
+      <div class="wallet-note">Your NGN balance</div>
+    </div>
+    <div class="card">
+      <div class="wallet-label">Dollar Wallet</div>
+      <div class="balance" id="usdBalance">$0.00</div>
+      <div class="wallet-note">Your USD balance</div>
+    </div>
+  </section>
+
+  <h2 class="section-title">Quick Actions</h2>
+  <section class="actions">
+    <div class="action"><div><span>＋</span>Deposit</div></div>
+    <div class="action"><div><span>⇄</span>Convert Currency</div></div>
+    <div class="action"><div><span>▤</span>Transactions</div></div>
+  </section>
+
+  <h2 class="section-title">Our Services</h2>
+  <section class="services">
+    <div class="service">
+      <div class="icon">📱</div>
+      <h3>Buy Numbers</h3>
+      <p>Get virtual numbers</p>
+    </div>
+    <div class="service">
+      <div class="icon">🚀</div>
+      <h3>Social Boosting</h3>
+      <p>Grow your social accounts</p>
+    </div>
+    <div class="service">
+      <div class="icon">📋</div>
+      <h3>Social Logs</h3>
+      <p>Access your social logs</p>
+    </div>
+  </section>
+
+  <div class="status" id="status">Connecting to your Speedy.ng account...</div>
+
+  <div style="text-align:right;margin-top:15px">
+    <button id="refresh">Refresh Wallet</button>
+  </div>
+</div>
+
+<footer>© 2026 Speedy.ng. All rights reserved.</footer>
+
+<script>
+const API_BASE = "https://speedy-ng-api-staging.unicespotify.workers.dev";
+
+const token =
+  localStorage.getItem("speedy_customer_token") ||
+  sessionStorage.getItem("speedy_customer_token");
+
+const statusBox = document.getElementById("status");
+
+function showStatus(message){
+  statusBox.textContent = message;
+}
+
+function money(value,currency){
+  const amount = Number(value || 0);
+  return currency === "NGN"
+    ? "₦" + amount.toLocaleString("en-NG",{minimumFractionDigits:2,maximumFractionDigits:2})
+    : "$" + amount.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+async function getAccountData(path){
+  const response = await fetch(API_BASE + path,{
+    method:"GET",
+    headers:{
+      "Authorization":"Bearer " + token,
+      "Accept":"application/json"
+    }
+  });
+
+  const data = await response.json();
+
+  if(!response.ok){
+    throw new Error(data.message || data.error || "Unable to load account.");
+  }
+
+  return data;
+}
+
+async function loadDashboard(){
+  if(!token){
+    window.location.href = "https://speedy-ng.pages.dev/";
+    return;
+  }
+
+  try{
+    const me = await getAccountData("/api/customer/me");
+    const customer = me.customer || {};
+
+    document.getElementById("customerEmail").textContent =
+      customer.email || "Your Speedy.ng account";
+
+    const walletData = await getAccountData("/api/customer/wallet");
+    const balances = walletData.balances || {};
+
+    document.getElementById("ngnBalance").textContent =
+      money(balances.NGN,"NGN");
+
+    document.getElementById("usdBalance").textContent =
+      money(balances.USD,"USD");
+
+    showStatus("Your account and wallet balances are up to date.");
+  }catch(error){
+    showStatus(error.message || "Could not load your account. Please sign in again.");
+  }
+}
+
+document.getElementById("refresh").addEventListener("click",loadDashboard);
+
+document.getElementById("logout").addEventListener("click",async function(){
+  try{
+    if(token){
+      await fetch(API_BASE + "/api/customer/logout",{
+        method:"POST",
+        headers:{
+          "Authorization":"Bearer " + token,
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({})
+      });
+    }
+  }catch(error){}
+
+  localStorage.removeItem("speedy_customer_token");
+  sessionStorage.removeItem("speedy_customer_token");
+  localStorage.removeItem("speedy_customer");
+  sessionStorage.removeItem("speedy_customer");
+
+  window.location.href = "https://speedy-ng.pages.dev/";
+});
+
+loadDashboard();
+</script>
+</body>
+</html>
