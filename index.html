@@ -182,7 +182,7 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
       } else {
         const data = await api("/api/customer/login", {email, password});
 saveSession(data);
-window.location.href = "https://speedy-ng.pages.dev/dashboard";
+window.location.href = "https://speedy-ng.pages.dev/dashboard.html";
       }
     } catch (err) {
       showNotice(err.message || "Unable to complete the request. Please try again.", "error");
