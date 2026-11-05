@@ -173,7 +173,7 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
   $("authForm").addEventListener("submit", async e => {
     e.preventDefault(); clearNotice();
     const button = $("submitButton"), email = $("email").value.trim().toLowerCase(), password = $("password").value;
-    if (mode === "register" && password.length < 8) return showNotice("Your password must contain at least 8 characters.", "error");
+    if (mode === "register" && password.length < 12) return showNotice("Your password must contain at least 12 characters.", "error");
     setBusy(button, true, mode === "register" ? "Creating account…" : "Signing in…");
     try {
       if (mode === "register") {
