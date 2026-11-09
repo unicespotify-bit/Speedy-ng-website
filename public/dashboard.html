@@ -3,193 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#071126">
-<title>Speedy.ng | Customer Dashboard</title>
+<meta name="theme-color" content="#07152f">
+<title>Speedy.ng | Dashboard</title>
 <style>
-:root{--bg:#071126;--panel:#102344;--blue:#287cff;--cyan:#50dfff;--text:#fff;--muted:#a9bbd8}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-header{padding:18px 20px;background:#0d1d39;border-bottom:1px solid #29466e;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:23px;font-weight:bold}.logo span{color:var(--cyan)}
-button{background:var(--blue);color:white;border:0;border-radius:9px;padding:12px 17px;font-weight:bold;cursor:pointer}
-main{max-width:950px;margin:auto;padding:25px 16px 45px}
-h1{font-size:25px;margin-bottom:8px}
-h2{font-size:18px;margin:30px 0 14px}
-.muted{color:var(--muted);font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
-.card,.service,.action{background:var(--panel);border:1px solid #29466e;border-radius:14px;padding:19px}
-.label{color:var(--muted);font-size:13px}
-.balance{font-size:25px;font-weight:bold;margin-top:12px}
-.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.action,.service{display:block;text-align:center;color:white;text-decoration:none}
-.icon{font-size:25px;display:block;margin-bottom:10px}
-.service small{display:block;color:var(--muted);margin-top:8px}
-.notice{background:#102344;border:1px solid #29466e;padding:14px;border-radius:12px;margin-top:20px;font-size:13px;line-height:1.6;color:#c6d8f5;overflow-wrap:anywhere}
-.error{border-color:#ff5366;color:#ffc1c8}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:12px 8px;border-bottom:1px solid #29466e;text-align:left}
-th{color:var(--muted)}
-.table-wrap{overflow-x:auto;background:var(--panel);border:1px solid #29466e;border-radius:13px;padding:10px}
-@media(max-width:550px){
-.actions{grid-template-columns:repeat(2,1fr)}
-.balance{font-size:20px}
-.card{padding:15px 12px}
-}
+:root{--bg:#07152f;--panel:#10264b;--panel2:#142f5c;--line:#294875;--blue:#287cff;--cyan:#55d9ff;--text:#f6f9ff;--muted:#a9bddb;--green:#51dfa1;--red:#ff8291}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0%,#12366a 0,transparent 38%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;padding-bottom:92px}
+button,input,select{font:inherit}button{border:0;cursor:pointer}.top{max-width:1050px;margin:auto;padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:25px;font-weight:900;letter-spacing:-1px}.brand span{color:var(--cyan)}.profile{width:43px;height:43px;border-radius:50%;background:#1b3c70;border:1px solid #41699f;color:white;font-size:20px}
+main{max-width:1050px;margin:auto;padding:10px 16px 35px}.welcome{padding:17px 3px 22px}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}.welcome h1{font-size:26px;margin:9px 0 6px}.muted{color:var(--muted);font-size:13px;line-height:1.55}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:25px 2px 12px}.section-head h2{font-size:17px;margin:0}.text-btn{background:transparent;color:var(--cyan);font-weight:700;font-size:12px;padding:7px}
+.wallets{display:grid;grid-template-columns:1fr 1fr;gap:12px}.wallet{position:relative;overflow:hidden;background:linear-gradient(140deg,#174b91,#10294f 75%);border:1px solid #3566a2;border-radius:19px;padding:18px 15px;min-height:142px}.wallet.usd{background:linear-gradient(140deg,#164a68,#10294f 78%)}.wallet:after{content:"";position:absolute;width:120px;height:120px;border:1px solid #ffffff18;border-radius:50%;right:-38px;top:50px}.wallet-label{font-size:12px;color:#d0e2ff}.wallet-value{font-size:23px;font-weight:850;margin:14px 0 5px;letter-spacing:-.5px}.wallet-foot{font-size:11px;color:#c1d8f5}.wallet-symbol{position:absolute;right:14px;top:14px;font-size:22px;opacity:.8}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.action{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px 6px;color:white;text-align:center;min-height:90px;font-size:12px;font-weight:700}.action .ico{display:block;font-size:23px;margin-bottom:8px}
+.services{display:grid;grid-template-columns:1fr 1fr;gap:12px}.service{display:flex;align-items:center;gap:13px;text-align:left;padding:17px 13px;background:linear-gradient(130deg,#142f5c,#102344);border:1px solid var(--line);border-radius:16px;color:white;min-height:88px}.service .ico{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:#24518b;font-size:21px;flex-shrink:0}.service strong{font-size:13px}.service small{display:block;color:var(--muted);font-size:10px;margin-top:5px;line-height:1.4}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:14px}.tx{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 2px;border-bottom:1px solid #29436a}.tx:last-child{border:0}.tx-title{font-size:12px;font-weight:700}.tx-date{font-size:10px;color:var(--muted);margin-top:5px}.tx-amount{text-align:right;font-size:12px;font-weight:800}.tx-status{font-size:10px;color:var(--green);margin-top:5px}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#091a37ed;backdrop-filter:blur(14px);border-top:1px solid #294875;display:flex;justify-content:center}.nav{width:min(600px,100%);display:flex;justify-content:space-around;padding:10px 4px 13px}.nav button{background:none;color:#9fb5d5;font-size:10px;min-width:62px}.nav button span{display:block;font-size:19px;margin-bottom:4px}.nav button.active{color:var(--cyan)}
+.support{position:fixed;right:17px;bottom:82px;z-index:7;width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#46d9ff,#287cff);color:white;box-shadow:0 8px 28px #0008;font-size:25px;border:2px solid #ffffff40}
+.modal-back{position:fixed;inset:0;background:#020916c9;z-index:10;display:none;align-items:flex-end;justify-content:center;padding:14px}.modal-back.show{display:flex}.modal{width:min(520px,100%);max-height:88vh;overflow:auto;background:#10264b;border:1px solid #3a5d8c;border-radius:22px;padding:20px;margin-bottom:10px;box-shadow:0 20px 70px #0009}.modal h3{margin:0 0 7px;font-size:19px}.modal label{display:block;color:var(--muted);font-size:12px;margin:16px 0 7px}.modal input,.modal select{width:100%;padding:13px;border-radius:11px;border:1px solid #42618c;background:#091a35;color:white;outline:none}.primary{width:100%;padding:14px;border-radius:12px;background:linear-gradient(90deg,#287cff,#1c9fe9);color:white;font-weight:800;margin-top:16px}.secondary{padding:11px 14px;border-radius:10px;background:#203e69;color:white;font-weight:700;margin-top:12px}.close{float:right;background:#203e69;color:white;border-radius:50%;width:30px;height:30px}.result{margin-top:14px;padding:13px;border-radius:12px;background:#091a35;color:#dceaff;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.hidden{display:none!important}.status{margin-top:13px;color:var(--muted);font-size:12px;line-height:1.5}.danger{color:var(--red)}.good{color:var(--green)}
+@media(min-width:700px){.welcome h1{font-size:32px}.wallet{padding:22px;min-height:160px}.wallet-value{font-size:28px}.services{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:360px){.wallet-value{font-size:19px}.action{font-size:11px}.service{gap:8px;padding:12px 9px}.service .ico{width:36px;height:36px}}
 </style>
 </head>
 <body>
-<header>
-<div class="logo">Speedy<span>.ng</span></div>
-<button id="logout">Log out</button>
+<header class="top">
+  <div class="brand">Speedy<span>.ng</span></div>
+  <button class="profile" id="profileBtn" aria-label="Profile and settings">👤</button>
 </header>
-
 <main>
-<h1>Welcome to Speedy.ng 👋</h1>
-<p class="muted" id="email">Loading your account...</p>
+  <section class="welcome">
+    <div class="eyebrow">YOUR DIGITAL SERVICES HUB</div>
+    <h1>Welcome back 👋</h1>
+    <div class="muted" id="email">Loading your account…</div>
+  </section>
 
-<h2>My Wallets</h2>
-<section class="grid">
-<div class="card">
-<div class="label">Naira Wallet</div>
-<div class="balance" id="ngn">₦0.00</div>
-</div>
-<div class="card">
-<div class="label">Dollar Wallet</div>
-<div class="balance" id="usd">$0.00</div>
-</div>
-</section>
+  <div class="section-head"><h2>My Wallet</h2><button class="text-btn" id="refreshBtn">↻ Refresh</button></div>
+  <section class="wallets">
+    <div class="wallet"><span class="wallet-symbol">₦</span><div class="wallet-label">Naira balance</div><div class="wallet-value" id="ngn">₦0.00</div><div class="wallet-foot">NGN wallet</div></div>
+    <div class="wallet usd"><span class="wallet-symbol">$</span><div class="wallet-label">Dollar balance</div><div class="wallet-value" id="usd">$0.00</div><div class="wallet-foot">USD wallet</div></div>
+  </section>
 
-<h2>Quick Actions</h2>
-<section class="actions">
-<a class="action" href="#" data-feature="Deposit"><span class="icon">💳</span>Deposit</a>
-<a class="action" href="#" data-feature="Currency Conversion"><span class="icon">⇄</span>Convert Currency</a>
-<a class="action" href="#" data-feature="Transactions"><span class="icon">📋</span>Transactions</a>
-</section>
+  <div class="section-head"><h2>Quick actions</h2></div>
+  <section class="actions">
+    <button class="action" data-open="deposit"><span class="ico">＋</span>Deposit</button>
+    <button class="action" data-open="convert"><span class="ico">⇄</span>Convert</button>
+    <button class="action" data-scroll="transactions"><span class="ico">▤</span>Transactions</button>
+  </section>
 
-<h2>Our Services</h2>
-<section class="grid">
-<a class="service" href="#" data-feature="Buy Numbers">
-<span class="icon">📱</span><strong>Buy Numbers</strong>
-<small>Visual and Official Numbers</small>
-</a>
-<a class="service" href="#" data-feature="Social Boosting">
-<span class="icon">🚀</span><strong>Social Boosting</strong>
-<small>Grow your social accounts</small>
-</a>
-<a class="service" href="#" data-feature="Social Logs">
-<span class="icon">📂</span><strong>Social Logs</strong>
-<small>Available social logs</small>
-</a>
-</section>
+  <div class="section-head"><h2>Explore services</h2></div>
+  <section class="services">
+    <button class="service" data-service="Buy Numbers"><span class="ico">📱</span><span><strong>Buy Numbers</strong><small>Get a number for your service</small></span></button>
+    <button class="service" data-service="Social Boosting"><span class="ico">🚀</span><span><strong>Social Boosting</strong><small>Grow your social presence</small></span></button>
+    <button class="service" data-service="Social Logs"><span class="ico">📁</span><span><strong>Social Logs</strong><small>Browse available logs</small></span></button>
+  </section>
 
-<h2>Recent Transactions</h2>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Details</th><th>Amount</th><th>Status</th></tr></thead>
-<tbody id="transactions">
-<tr><td colspan="3">Loading transactions...</td></tr>
-</tbody>
-</table>
-</div>
-
-<div class="notice" id="status">Connecting to your customer account...</div>
+  <div class="section-head" id="transactions"><h2>Recent transactions</h2><button class="text-btn" id="txRefresh">View latest</button></div>
+  <section class="panel" id="transactionList"><div class="muted">Loading transactions…</div></section>
+  <div class="status" id="pageStatus" role="status">Connecting securely to your account…</div>
 </main>
+
+<nav class="bottom"><div class="nav">
+  <button class="active" data-scroll="top"><span>⌂</span>Home</button>
+  <button data-scroll="services"><span>▦</span>Services</button>
+  <button data-scroll="transactions"><span>▤</span>Activity</button>
+  <button id="navProfile"><span>☻</span>Profile</button>
+</div></nav>
+<button class="support" id="supportBtn" aria-label="Support" title="Support">☏</button>
+
+<div class="modal-back" id="modalBack">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="close" id="closeModal" aria-label="Close">×</button>
+    <h3 id="modalTitle">Wallet</h3><p class="muted" id="modalIntro"></p>
+    <div id="modalBody"></div><div id="modalStatus" class="status" aria-live="polite"></div>
+  </section>
+</div>
 
 <script>
 "use strict";
-
 const API="https://speedy-ng-api-staging.unicespotify.workers.dev";
-const token=localStorage.getItem("speedy_customer_token")||
-sessionStorage.getItem("speedy_customer_token");
-
+const token=localStorage.getItem("speedy_customer_token")||sessionStorage.getItem("speedy_customer_token");
 const $=id=>document.getElementById(id);
-
-async function api(path,method="GET"){
-const response=await fetch(API+path,{
-method,
-headers:{
-"Authorization":"Bearer "+token,
-"Accept":"application/json"
+let customer=null, walletData=null;
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function money(v,c){return (c==="NGN"?"₦":"$")+Number(v||0).toLocaleString(c==="NGN"?"en-NG":"en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+async function api(path,method="GET",body){
+ const res=await fetch(API+path,{method,headers:{"Authorization":"Bearer "+token,"Accept":"application/json",...(body?{"Content-Type":"application/json"}:{})},...(body?{body:JSON.stringify(body)}:{})});
+ let data={};try{data=await res.json();}catch(e){}
+ if(!res.ok||data.ok===false||data.success===false)throw new Error(data.message||data.error||"The request could not be completed.");
+ return data;
 }
-});
-let data={};
-try{data=await response.json()}catch(e){}
-if(!response.ok||data.ok===false){
-throw new Error(data.message||data.error||"Request failed.");
+function setStatus(msg,bad=false){$("pageStatus").textContent=msg;$("pageStatus").className="status"+(bad?" danger":"");}
+async function refreshAll(){
+ if(!token){location.replace("/");return;}
+ try{
+  const [me,w,tx]=await Promise.all([api("/api/customer/me"),api("/api/customer/wallet"),api("/api/customer/transactions")]);
+  customer=me.customer||{};walletData=w;
+  $("email").textContent=customer.email||"Your Speedy.ng account";
+  $("ngn").textContent=money(w.balances?.NGN,"NGN");$("usd").textContent=money(w.balances?.USD,"USD");
+  renderTransactions(tx.transactions||[]);
+  setStatus("Your wallet and account details are up to date.");
+ }catch(e){setStatus(e.message,true);if(/unauthori[sz]ed|token|session|login/i.test(e.message))setTimeout(()=>location.replace("/"),1200);}
 }
-return data;
+function renderTransactions(rows){
+ const box=$("transactionList");
+ if(!rows.length){box.innerHTML='<div class="muted">No transactions yet. Your wallet activity will appear here.</div>';return;}
+ box.innerHTML=rows.slice(0,8).map(x=>`<div class="tx"><div><div class="tx-title">${esc(x.description||x.type||"Wallet transaction")}</div><div class="tx-date">${esc(x.created_at||"")}</div></div><div><div class="tx-amount">${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}</div><div class="tx-status">${esc(x.status||"Pending")}</div></div></div>`).join("");
 }
-
-function money(value,currency){
-const number=Number(value||0);
-return currency==="NGN"
-?"₦"+number.toLocaleString("en-NG",{minimumFractionDigits:2,maximumFractionDigits:2})
-:"$"+number.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function openModal(title,intro,body){$("modalTitle").textContent=title;$("modalIntro").textContent=intro||"";$("modalBody").innerHTML=body;$("modalStatus").textContent="";$("modalBack").classList.add("show");}
+function closeModal(){$("modalBack").classList.remove("show");}
+$("closeModal").onclick=closeModal;$("modalBack").addEventListener("click",e=>{if(e.target===$("modalBack"))closeModal();});
+function showDeposit(){
+ openModal("Add money","Create a bank-transfer payment instruction. Your wallet is credited after payment is confirmed.",`
+ <label for="depositAmount">Amount in naira (₦)</label><input id="depositAmount" type="number" min="100" max="5000000" step="0.01" placeholder="e.g. 5000">
+ <button class="primary" id="createDeposit">Continue to payment details</button><div id="depositResult" class="result hidden"></div>`);
+ $("createDeposit").onclick=async()=>{
+  const amount=Number($("depositAmount").value);
+  if(!Number.isFinite(amount)||amount<100||amount>5000000||Math.round(amount*100)!==amount*100){$("modalStatus").textContent="Enter an amount from ₦100 to ₦5,000,000, with no more than 2 decimal places.";return;}
+  const btn=$("createDeposit");btn.disabled=true;btn.textContent="Please wait…";
+  try{
+   const d=await api("/api/customer/wallet/deposit","POST",{amount});
+   const p=d.paymentInstructions||{};
+   $("depositResult").classList.remove("hidden");
+   $("depositResult").innerHTML=`<strong class="good">Payment instructions created</strong><br>Bank: ${esc(p.bankName||"Not supplied")}<br>Account name: ${esc(p.accountName||"Not supplied")}<br>Account number: <strong id="accountNumber">${esc(p.accountNumber||"Not supplied")}</strong><br>Amount: ${esc(money(d.amount??amount,d.currency||"NGN"))}<br>Reference: ${esc(d.reference||"")}<br>${p.expiresAt?`Expires: ${esc(p.expiresAt)}<br>`:""}${esc(p.note||"Your wallet will be credited after payment confirmation.")}`;
+   if(p.accountNumber){const copy=document.createElement("button");copy.className="secondary";copy.textContent="Copy account number";copy.onclick=async()=>{try{await navigator.clipboard.writeText(p.accountNumber);$("modalStatus").textContent="Account number copied.";}catch(e){$("modalStatus").textContent="Please copy the account number manually.";}};$("depositResult").appendChild(copy);}
+   $("modalStatus").textContent="Do not make a transfer unless the bank and account details are displayed above.";
+  }catch(e){$("modalStatus").textContent=e.message;$("modalStatus").className="status danger";}
+  finally{btn.disabled=false;btn.textContent="Continue to payment details";}
+ };
 }
-
-async function loadDashboard(){
-if(!token){
-location.replace("/");
-return;
+function showConvert(){
+ openModal("Convert currency","Move funds between your NGN and USD wallets. Conversion uses the rate configured for your account.",`
+ <label for="convertFrom">Convert from</label><select id="convertFrom"><option value="NGN">NGN wallet (₦)</option><option value="USD">USD wallet ($)</option></select>
+ <label for="convertAmount">Amount</label><input id="convertAmount" type="number" min="0.01" step="0.01" placeholder="Enter amount">
+ <div class="muted" id="convertRate" style="margin-top:10px"></div><button class="primary" id="convertNow">Convert funds</button>`);
+ const rate=Number(walletData?.rate||1500);$("convertRate").textContent=`Current configured rate: ₦${rate.toLocaleString("en-NG")} = $1.00`;
+ $("convertNow").onclick=async()=>{
+  const from=$("convertFrom").value,to=from==="NGN"?"USD":"NGN",amount=Number($("convertAmount").value);
+  if(!Number.isFinite(amount)||amount<=0||Math.round(amount*100)!==amount*100){$("modalStatus").textContent="Enter a valid amount with up to 2 decimal places.";return;}
+  const btn=$("convertNow");btn.disabled=true;btn.textContent="Converting…";
+  try{const d=await api("/api/customer/wallet/convert","POST",{from,to,amount_minor:Math.round(amount*100)});
+   $("modalStatus").textContent=d.message||"Conversion completed."; $("modalStatus").className="status good";await refreshAll();
+  }catch(e){$("modalStatus").textContent=e.message;$("modalStatus").className="status danger";}
+  finally{btn.disabled=false;btn.textContent="Convert funds";}
+ };
 }
-
-try{
-const account=await api("/api/customer/me");
-if(!account.customer)throw new Error("Your customer account could not be loaded.");
-
-$("email").textContent=account.customer.email;
-
-const wallet=await api("/api/customer/wallet");
-const balances=wallet.balances||{};
-
-$("ngn").textContent=money(balances.NGN,"NGN");
-$("usd").textContent=money(balances.USD,"USD");
-
-const result=await api("/api/customer/transactions");
-const rows=result.transactions||[];
-
-$("transactions").innerHTML=rows.length
-?rows.slice(0,10).map(item=>`
-<tr>
-<td>${escapeHTML(item.description||item.type||"Transaction")}<br><small>${escapeHTML(item.created_at||"")}</small></td>
-<td>${escapeHTML(money(Number(item.amount_minor||0)/100,item.currency||"NGN"))}</td>
-<td>${escapeHTML(item.status||"Pending")}</td>
-</tr>`).join("")
-:'<tr><td colspan="3">No transactions yet.</td></tr>';
-
-$("status").textContent="Your customer account and wallet have loaded successfully.";
-
-}catch(error){
-$("status").textContent=error.message;
-$("status").classList.add("error");
+function showProfile(){
+ openModal("Profile & settings","Your account information and sign-out controls.",`
+ <div class="result">Email: ${esc(customer?.email||"")}<br>Account status: ${esc(customer?.status||"Active")}<br>Email verified: ${customer?.email_verified?"Yes":"Not confirmed"}</div>
+ <button class="primary" id="logoutBtn">Log out securely</button>`);
+ $("logoutBtn").onclick=logout;
 }
+async function logout(){
+ const b=$("logoutBtn");if(b){b.disabled=true;b.textContent="Signing out…";}
+ try{await api("/api/customer/logout","POST",{});}catch(e){}
+ localStorage.removeItem("speedy_customer_token");sessionStorage.removeItem("speedy_customer_token");
+ localStorage.removeItem("speedy_customer");sessionStorage.removeItem("speedy_customer");
+ location.replace("/");
 }
-
-function escapeHTML(value){
-return String(value).replace(/[&<>"']/g,char=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[char]));
-}
-
-$("logout").addEventListener("click",async()=>{
-$("logout").disabled=true;
-try{await api("/api/customer/logout","POST")}catch(error){}
-localStorage.removeItem("speedy_customer_token");
-sessionStorage.removeItem("speedy_customer_token");
-localStorage.removeItem("speedy_customer");
-sessionStorage.removeItem("speedy_customer");
-location.replace("/");
-});
-
-document.querySelectorAll("[data-feature]").forEach(item=>{
-item.addEventListener("click",event=>{
-event.preventDefault();
-$("status").textContent=item.dataset.feature+
-" is not connected to its customer service page yet. Your wallet has not been charged.";
-});
-});
-
-loadDashboard();
+function showSupport(){openModal("Support","How can we help? Support contact details will be added here.",'<div class="result">For assistance with your account or a payment, please keep your transaction reference available. Direct support contact is not configured on this page yet.</div>');}
+document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>b.dataset.open==="deposit"?showDeposit():showConvert()));
+document.querySelectorAll("[data-service]").forEach(b=>b.addEventListener("click",()=>openModal(b.dataset.service,"This service page is still being connected. Your wallet will not be charged from this screen.",'<div class="result">This section is not available yet. Please check back soon.</div>')));
+document.querySelectorAll("[data-scroll]").forEach(b=>b.addEventListener("click",()=>{const id=b.dataset.scroll;if(id==="top")window.scrollTo({top:0,behavior:"smooth"});else if(id==="services")document.querySelector(".services").scrollIntoView({behavior:"smooth"});else $(id).scrollIntoView({behavior:"smooth"});document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));if(b.closest(".nav"))b.classList.add("active");}));
+$("profileBtn").onclick=showProfile;$("navProfile").onclick=showProfile;$("supportBtn").onclick=showSupport;
+$("refreshBtn").onclick=refreshAll;$("txRefresh").onclick=refreshAll;
+refreshAll();
 </script>
 </body>
 </html>
