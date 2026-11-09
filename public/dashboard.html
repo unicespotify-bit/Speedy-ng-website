@@ -654,6 +654,7 @@ let activeDeposit=null;
 let numberCountries=[];
 let numberServices=[];
 let selectedQuote=null;
+let quoteRequestId=0;
 let logListings=[];
 let debounceTimer=null;
 
@@ -1172,6 +1173,7 @@ function filterSelect(id,rows,q){
 }
 
 async function loadQuote(){
+  const requestId=++quoteRequestId;
   const c=$("countrySelect").value;
   const s=$("serviceSelect").value;
 
@@ -1189,7 +1191,7 @@ async function loadQuote(){
     const d=await api(
       `/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`
     );
-
+if(requestId!==quoteRequestId)return;
     const q=d.quote||{};
     const priceMinor=Number(q.customer_price_minor);
     const stock=q.stock??null;
@@ -1248,6 +1250,7 @@ const available=stockKnown&&stockNumber>0;
     $("numberBuy").disabled=stockKnown&&Number(stock)<=0;
 
   }catch(e){
+    if(requestId!==quoteRequestId)return;
     $("numberQuote").textContent=e.message;
   }
 }
