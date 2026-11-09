@@ -171,9 +171,6 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
     e.preventDefault();
     showNotice("Password reset is not yet enabled on this staging API. Your password has not been changed.");
   });
-  [11/9, 8:25 AM] Jack Son: const data = await api("/api/customer/login", {email, password});
-saveSession(data);
-window.location.replace("/dashboard.html");
 [11/9, 8:33 AM] Jack Son: $("form").addEventListener("submit", async e => {
     e.preventDefault();
     clearNotice();
