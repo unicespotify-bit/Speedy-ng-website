@@ -74,6 +74,40 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
 <button class="submit" id="verifyButton" type="button">Verify email →</button>
 <p class="switch"><a href="#" id="resendButton">Resend code</a> <span id="resendTimer"></span></p>
 </section>
+  <section id="resetPanel" class="hidden">
+  <p class="subtitle" style="margin-top:18px">
+    Reset your password securely using the code sent to your email.
+  </p>
+
+  <div class="field">
+    <label for="resetEmail">Email address</label>
+    <input id="resetEmail" type="email" autocomplete="email" placeholder="you@example.com">
+  </div>
+
+  <button class="submit" id="sendResetCode" type="button">Send Reset Code →</button>
+
+  <div id="resetCodeFields" class="hidden">
+    <div class="field" style="margin-top:18px">
+      <label for="resetCode">Six-digit reset code</label>
+      <input id="resetCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000">
+    </div>
+
+    <div class="field">
+      <label for="newPassword">New password</label>
+      <input id="newPassword" type="password" minlength="12" maxlength="200" autocomplete="new-password" placeholder="At least 12 characters">
+    </div>
+
+    <div class="field">
+      <label for="confirmPassword">Confirm new password</label>
+      <input id="confirmPassword" type="password" minlength="12" maxlength="200" autocomplete="new-password" placeholder="Enter your new password again">
+    </div>
+
+    <button class="submit" id="resetPasswordButton" type="button">Reset Password →</button>
+  </div>
+
+  <div class="notice" id="resetNotice" role="status" aria-live="polite"></div>
+  <p class="switch"><a href="#" id="backToLogin">← Back to Sign In</a></p>
+  </section>
 <div class="switch" id="switchText">New to Speedy.ng? <a href="#" id="switchLink">Create an account</a></div>
 </section>
 </main>
@@ -169,7 +203,17 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
   });
   $("forgotLink").addEventListener("click", e => {
     e.preventDefault();
-    showNotice("Password reset is not yet enabled on this staging API. Your password has not been changed.");
+    $("authForm").classList.add("hidden");
+    $("verifyPanel").classList.add("hidden");
+    $("tabs").classList.add("hidden");
+    $("switchText").classList.add("hidden");
+    $("resetPanel").classList.remove("hidden");
+    $("resetEmail").value = $("email").value.trim();
+    $("resetCodeFields").classList.add("hidden");
+    $("resetCode").value = "";
+    $("newPassword").value = "";
+    $("confirmPassword").value = "";
+    $("resetNotice").style.display = "none";
   });
 $("form").addEventListener("submit", async e => {
     e.preventDefault();
