@@ -1359,6 +1359,7 @@ async function buyNumber(){
 
   const idempotencyKey=key();
   let purchaseSucceeded=false;
+  let purchaseNeedsReview=false;
 
   try{
     const d=await api(
@@ -1395,22 +1396,29 @@ async function buyNumber(){
     await refreshAll();
 
   }catch(e){
+    purchaseNeedsReview=e.payload?.status==="review";
+
     $("numberOrder").innerHTML=
       `<div class="result danger">${esc(e.message)}</div>`;
 
   }finally{
-    if(selectedQuote===quoteAtStart&&!purchaseSucceeded){
-      const stock=Number(quoteAtStart.stock);
-      const stockKnown=quoteAtStart.stock!==null&&
-        quoteAtStart.stock!==undefined&&
-        quoteAtStart.stock!==""&&Number.isFinite(stock);
-
-      b.disabled=stockKnown&&stock<=0;
-    }else{
+    if(purchaseNeedsReview){
       b.disabled=true;
-    }
+      b.textContent="Purchase under review";
+    }else{
+      if(selectedQuote===quoteAtStart&&!purchaseSucceeded){
+        const stock=Number(quoteAtStart.stock);
+        const stockKnown=quoteAtStart.stock!==null&&
+          quoteAtStart.stock!==undefined&&
+          quoteAtStart.stock!==""&&Number.isFinite(stock);
 
-    b.textContent="Buy number";
+        b.disabled=stockKnown&&stock<=0;
+      }else{
+        b.disabled=true;
+      }
+
+      b.textContent="Buy number";
+    }
   }
 }
 
