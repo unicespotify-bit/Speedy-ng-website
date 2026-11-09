@@ -1165,6 +1165,10 @@ function filterSelect(id,rows,q){
     });
 
   fillSelect(id,filtered);
+
+  if(!$(id).value){
+    loadQuote();
+  }
 }
 
 async function loadQuote(){
