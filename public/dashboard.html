@@ -1,77 +1,1486 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07152f">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07152f">
 <title>Speedy.ng | Dashboard</title>
+
 <style>
-:root{--bg:#07152f;--panel:#10264b;--panel2:#142f5c;--line:#294875;--blue:#287cff;--cyan:#55d9ff;--text:#f6f9ff;--muted:#a9bddb;--green:#51dfa1;--red:#b94b65}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0%,#12366a 0,transparent 38%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;padding-bottom:90px}button,input,select{font:inherit}button{border:0;cursor:pointer}button:disabled{opacity:.55;cursor:wait}
-.top{max-width:1050px;margin:auto;padding:18px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:25px;font-weight:900;letter-spacing:-1px}.brand span{color:var(--cyan)}.profile{width:43px;height:43px;border-radius:50%;background:#1b3c70;border:1px solid #41699f;color:white;font-size:20px}
-main{max-width:1050px;margin:auto;padding:10px 16px 35px}.welcome{padding:12px 3px 18px}.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:1.7px}.welcome h1{font-size:26px;margin:9px 0 6px}.muted{color:var(--muted);font-size:13px;line-height:1.55}.section-head{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px}.section-head h2{font-size:17px;margin:0}.text-btn{background:transparent;color:var(--cyan);font-weight:700;font-size:12px;padding:7px}
-.wallets{display:grid;grid-template-columns:1fr 1fr;gap:12px}.wallet{position:relative;overflow:hidden;background:linear-gradient(140deg,#174b91,#10294f 75%);border:1px solid #3566a2;border-radius:19px;padding:18px 15px;min-height:142px}.wallet.usd{background:linear-gradient(140deg,#164a68,#10294f 78%)}.wallet:after{content:"";position:absolute;width:120px;height:120px;border:1px solid #ffffff18;border-radius:50%;right:-38px;top:50px}.wallet-label{font-size:12px;color:#d0e2ff}.wallet-value{font-size:23px;font-weight:850;margin:14px 0 5px}.wallet-foot{font-size:11px;color:#c1d8f5}.wallet-symbol{position:absolute;right:14px;top:14px;font-size:22px}
-.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.action{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px 6px;color:white;text-align:center;min-height:90px;font-size:12px;font-weight:700}.action .ico{display:block;font-size:23px;margin-bottom:8px}
-.services{display:grid;grid-template-columns:1fr 1fr;gap:12px}.service{display:flex;align-items:center;gap:13px;text-align:left;padding:17px 13px;background:linear-gradient(130deg,#142f5c,#102344);border:1px solid var(--line);border-radius:16px;color:white;min-height:88px}.service .ico{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:#24518b;font-size:21px;flex-shrink:0}.service strong{font-size:13px}.service small{display:block;color:var(--muted);font-size:10px;margin-top:5px;line-height:1.4}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:14px}.tx{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 2px;border-bottom:1px solid #29436a}.tx:last-child{border:0}.tx-title{font-size:12px;font-weight:700}.tx-date{font-size:10px;color:var(--muted);margin-top:5px}.tx-amount{text-align:right;font-size:12px;font-weight:800}.tx-status{font-size:10px;color:var(--green);margin-top:5px}
-.bottom{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#091a37ed;backdrop-filter:blur(14px);border-top:1px solid #294875;display:flex;justify-content:center}.nav{width:min(600px,100%);display:flex;justify-content:space-around;padding:10px 4px 13px}.nav button{background:none;color:#9fb5d5;font-size:10px;min-width:62px}.nav button span{display:block;font-size:19px;margin-bottom:4px}.nav button.active{color:var(--cyan)}
-.support{position:fixed;right:17px;bottom:82px;z-index:7;width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#46d9ff,#287cff);color:white;box-shadow:0 8px 28px #0008;font-size:25px;border:2px solid #ffffff40}
-.modal-back{position:fixed;inset:0;background:#020916d9;z-index:10;display:none;align-items:flex-end;justify-content:center;padding:10px}.modal-back.show{display:flex}.modal{width:min(600px,100%);max-height:92vh;overflow:auto;background:linear-gradient(155deg,#153563,#0c2040 70%);border:1px solid #3a5d8c;border-radius:22px;padding:20px;margin-bottom:8px;box-shadow:0 20px 70px #0009}.modal h3{margin:0 0 7px;font-size:19px}.modal label{display:block;color:var(--muted);font-size:12px;margin:14px 0 7px}.modal input,.modal select{width:100%;padding:13px;border-radius:11px;border:1px solid #42618c;background:#091a35;color:white;outline:none}.primary{width:100%;padding:14px;border-radius:12px;background:linear-gradient(90deg,#287cff,#1c9fe9);color:white;font-weight:800;margin-top:15px}.secondary{padding:11px 14px;border-radius:10px;background:#203e69;color:white;font-weight:700;margin:9px 6px 0 0}.close{float:right;background:#203e69;color:white;border-radius:50%;width:30px;height:30px}.result{margin-top:13px;padding:13px;border-radius:12px;background:#091a35;color:#dceaff;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.hidden{display:none!important}.status{margin-top:13px;color:var(--muted);font-size:12px;line-height:1.5}.danger{color:#ff9aaa}.good{color:var(--green)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.listing{padding:13px;margin-top:10px;border:1px solid #34537e;border-radius:13px;background:#0b1e3b}.listing strong{font-size:13px}.listing p{font-size:11px;color:var(--muted);margin:6px 0}.listing .price{font-weight:800;color:#fff}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#173e6b;color:#bdeaff;font-size:10px;margin:4px 3px 0 0}.orderbox{padding:13px;border:1px solid #3a6598;border-radius:13px;background:#091a35;margin-top:12px;font-size:12px;line-height:1.7}
-@media(min-width:700px){.welcome h1{font-size:32px}.wallet{padding:22px;min-height:160px}.wallet-value{font-size:28px}.services{grid-template-columns:repeat(3,1fr)}.modal-back{align-items:center}}
-@media(max-width:360px){.wallet-value{font-size:19px}.action{font-size:11px}.service{gap:8px;padding:12px 9px}.service .ico{width:36px;height:36px}.grid2{grid-template-columns:1fr}}
-</style></head>
+:root{
+--bg:#07152f;
+--panel:#10264b;
+--panel2:#142f5c;
+--line:#294875;
+--blue:#287cff;
+--cyan:#55d9ff;
+--text:#f6f9ff;
+--muted:#a9bddb;
+--green:#51dfa1;
+--red:#b94b65
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+background:radial-gradient(ellipse at 85% 0%,#12366a 0,transparent 38%),var(--bg);
+color:var(--text);
+font-family:Inter,Arial,sans-serif;
+padding-bottom:90px
+}
+button,input,select{font:inherit}
+button{border:0;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+
+.top{
+max-width:1050px;
+margin:auto;
+padding:18px;
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+.brand{font-size:25px;font-weight:900;letter-spacing:-1px}
+.brand span{color:var(--cyan)}
+.profile{
+width:43px;height:43px;border-radius:50%;
+background:#1b3c70;border:1px solid #41699f;
+color:white;font-size:20px
+}
+
+main{max-width:1050px;margin:auto;padding:10px 16px 35px}
+.welcome{padding:12px 3px 18px}
+.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:1.7px}
+.welcome h1{font-size:26px;margin:9px 0 6px}
+.muted{color:var(--muted);font-size:13px;line-height:1.55}
+
+.section-head{
+display:flex;justify-content:space-between;
+align-items:center;margin:24px 2px 12px
+}
+.section-head h2{font-size:17px;margin:0}
+.text-btn{
+background:transparent;color:var(--cyan);
+font-weight:700;font-size:12px;padding:7px
+}
+
+.wallets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wallet{
+position:relative;overflow:hidden;
+background:linear-gradient(140deg,#174b91,#10294f 75%);
+border:1px solid #3566a2;border-radius:19px;
+padding:18px 15px;min-height:142px
+}
+.wallet.usd{background:linear-gradient(140deg,#164a68,#10294f 78%)}
+.wallet:after{
+content:"";position:absolute;width:120px;height:120px;
+border:1px solid #ffffff18;border-radius:50%;
+right:-38px;top:50px
+}
+.wallet-label{font-size:12px;color:#d0e2ff}
+.wallet-value{font-size:23px;font-weight:850;margin:14px 0 5px}
+.wallet-foot{font-size:11px;color:#c1d8f5}
+.wallet-symbol{position:absolute;right:14px;top:14px;font-size:22px}
+
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.action{
+background:var(--panel);border:1px solid var(--line);
+border-radius:15px;padding:15px 6px;color:white;
+text-align:center;min-height:90px;font-size:12px;font-weight:700
+}
+.action .ico{display:block;font-size:23px;margin-bottom:8px}
+
+.services{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.service{
+display:flex;align-items:center;gap:13px;text-align:left;
+padding:17px 13px;
+background:linear-gradient(130deg,#142f5c,#102344);
+border:1px solid var(--line);border-radius:16px;
+color:white;min-height:88px
+}
+.service .ico{
+width:43px;height:43px;display:grid;place-items:center;
+border-radius:13px;background:#24518b;font-size:21px;flex-shrink:0
+}
+.service strong{font-size:13px}
+.service small{
+display:block;color:var(--muted);font-size:10px;
+margin-top:5px;line-height:1.4
+}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:14px}
+.tx{
+display:flex;align-items:center;justify-content:space-between;
+gap:10px;padding:13px 2px;border-bottom:1px solid #29436a
+}
+.tx:last-child{border:0}
+.tx-title{font-size:12px;font-weight:700}
+.tx-date{font-size:10px;color:var(--muted);margin-top:5px}
+.tx-amount{text-align:right;font-size:12px;font-weight:800}
+.tx-status{font-size:10px;color:var(--green);margin-top:5px}
+
+.bottom{
+position:fixed;bottom:0;left:0;right:0;z-index:5;
+background:#091a37ed;backdrop-filter:blur(14px);
+border-top:1px solid #294875;display:flex;justify-content:center
+}
+.nav{
+width:min(600px,100%);display:flex;
+justify-content:space-around;padding:10px 4px 13px
+}
+.nav button{
+background:none;color:#9fb5d5;font-size:10px;min-width:62px
+}
+.nav button span{display:block;font-size:19px;margin-bottom:4px}
+.nav button.active{color:var(--cyan)}
+
+.support{
+position:fixed;right:17px;bottom:82px;z-index:7;
+width:58px;height:58px;border-radius:50%;
+background:linear-gradient(145deg,#46d9ff,#287cff);
+color:white;box-shadow:0 8px 28px #0008;
+font-size:25px;border:2px solid #ffffff40
+}
+
+.modal-back{
+position:fixed;inset:0;background:#020916d9;
+z-index:10;display:none;align-items:flex-end;
+justify-content:center;padding:10px
+}
+.modal-back.show{display:flex}
+.modal{
+width:min(600px,100%);max-height:92vh;overflow:auto;
+background:linear-gradient(155deg,#153563,#0c2040 70%);
+border:1px solid #3a5d8c;border-radius:22px;
+padding:20px;margin-bottom:8px;box-shadow:0 20px 70px #0009
+}
+.modal h3{margin:0 0 7px;font-size:19px}
+.modal label{
+display:block;color:var(--muted);
+font-size:12px;margin:14px 0 7px
+}
+.modal input,.modal select{
+width:100%;padding:13px;border-radius:11px;
+border:1px solid #42618c;background:#091a35;
+color:white;outline:none
+}
+.primary{
+width:100%;padding:14px;border-radius:12px;
+background:linear-gradient(90deg,#287cff,#1c9fe9);
+color:white;font-weight:800;margin-top:15px
+}
+.secondary{
+padding:11px 14px;border-radius:10px;
+background:#203e69;color:white;font-weight:700;
+margin:9px 6px 0 0
+}
+.close{
+float:right;background:#203e69;color:white;
+border-radius:50%;width:30px;height:30px
+}
+.result{
+margin-top:13px;padding:13px;border-radius:12px;
+background:#091a35;color:#dceaff;font-size:12px;
+line-height:1.7;overflow-wrap:anywhere
+}
+.hidden{display:none!important}
+.status{margin-top:13px;color:var(--muted);font-size:12px;line-height:1.5}
+.danger{color:#ff9aaa}
+.good{color:var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.listing{
+padding:13px;margin-top:10px;border:1px solid #34537e;
+border-radius:13px;background:#0b1e3b
+}
+.listing strong{font-size:13px}
+.listing p{font-size:11px;color:var(--muted);margin:6px 0}
+.listing .price{font-weight:800;color:#fff}
+.pill{
+display:inline-block;padding:4px 8px;border-radius:20px;
+background:#173e6b;color:#bdeaff;font-size:10px;
+margin:4px 3px 0 0
+}
+.orderbox{
+padding:13px;border:1px solid #3a6598;border-radius:13px;
+background:#091a35;margin-top:12px;font-size:12px;line-height:1.7
+}
+
+@media(min-width:700px){
+.welcome h1{font-size:32px}
+.wallet{padding:22px;min-height:160px}
+.wallet-value{font-size:28px}
+.services{grid-template-columns:repeat(3,1fr)}
+.modal-back{align-items:center}
+}
+@media(max-width:360px){
+.wallet-value{font-size:19px}
+.action{font-size:11px}
+.service{gap:8px;padding:12px 9px}
+.service .ico{width:36px;height:36px}
+.grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+
 <body>
-<header class="top"><div class="brand">Speedy<span>.ng</span></div><button class="profile" id="profileBtn" aria-label="Profile">👤</button></header>
+
+<header class="top">
+<div class="brand">Speedy<span>.ng</span></div>
+<button class="profile" id="profileBtn" aria-label="Profile">👤</button>
+</header>
+
 <main id="top">
-<section class="welcome"><div class="eyebrow">YOUR DIGITAL SERVICES HUB</div><h1>Welcome back 👋</h1><div class="muted" id="email">Loading your account…</div></section>
-<div class="section-head"><h2>My Wallet</h2><button class="text-btn" id="refreshBtn">↻ Refresh</button></div>
-<section class="wallets"><div class="wallet"><span class="wallet-symbol">🇳🇬</span><div class="wallet-label">Naira balance</div><div class="wallet-value" id="ngn">₦0.00</div><div class="wallet-foot">NGN wallet</div></div><div class="wallet usd"><span class="wallet-symbol">🇺🇸</span><div class="wallet-label">Dollar balance</div><div class="wallet-value" id="usd">$0.00</div><div class="wallet-foot">USD wallet</div></div></section>
-<div class="section-head"><h2>Quick actions</h2></div><section class="actions"><button class="action" id="depositOpen"><span class="ico">＋</span>Deposit</button><button class="action" id="convertOpen"><span class="ico">⇄</span>Convert</button><button class="action" data-scroll="transactions"><span class="ico">▤</span>Transactions</button></section>
-<div class="section-head" id="services"><h2>Explore services</h2></div><section class="services">
-<button class="service" id="numbersOpen"><span class="ico">📱</span><span><strong>Buy Numbers</strong><small>Live countries, services and available stock</small></span></button>
-<button class="service" id="boostOpen"><span class="ico">🚀</span><span><strong>Social Boosting</strong><small>Service connection status</small></span></button>
-<button class="service" id="logsOpen"><span class="ico">📁</span><span><strong>Social Logs</strong><small>Browse and purchase available listings</small></span></button></section>
-<div class="section-head" id="transactions"><h2>Recent transactions</h2><button class="text-btn" id="txRefresh">Refresh</button></div><section class="panel" id="transactionList"><div class="muted">Loading transactions…</div></section><div class="status" id="pageStatus">Connecting securely…</div>
+
+<section class="welcome">
+<div class="eyebrow">YOUR DIGITAL SERVICES HUB</div>
+<h1>Welcome back 👋</h1>
+<div class="muted" id="email">Loading your account…</div>
+</section>
+
+<div class="section-head">
+<h2>My Wallet</h2>
+<button class="text-btn" id="refreshBtn">↻ Refresh</button>
+</div>
+
+<section class="wallets">
+<div class="wallet">
+<span class="wallet-symbol">🇳🇬</span>
+<div class="wallet-label">Naira balance</div>
+<div class="wallet-value" id="ngn">₦0.00</div>
+<div class="wallet-foot">NGN wallet</div>
+</div>
+
+<div class="wallet usd">
+<span class="wallet-symbol">🇺🇸</span>
+<div class="wallet-label">Dollar balance</div>
+<div class="wallet-value" id="usd">$0.00</div>
+<div class="wallet-foot">USD wallet</div>
+</div>
+</section>
+
+<div class="section-head">
+<h2>Quick actions</h2>
+</div>
+
+<section class="actions">
+<button class="action" id="depositOpen">
+<span class="ico">＋</span>Deposit
+</button>
+<button class="action" id="convertOpen">
+<span class="ico">⇄</span>Convert
+</button>
+<button class="action" data-scroll="transactions">
+<span class="ico">▤</span>Transactions
+</button>
+</section>
+
+<div class="section-head" id="services">
+<h2>Explore services</h2>
+</div>
+
+<section class="services">
+<button class="service" id="numbersOpen">
+<span class="ico">📱</span>
+<span>
+<strong>Buy Numbers</strong>
+<small>Live countries, services and available stock</small>
+</span>
+</button>
+
+<button class="service" id="boostOpen">
+<span class="ico">🚀</span>
+<span>
+<strong>Social Boosting</strong>
+<small>Service connection status</small>
+</span>
+</button>
+
+<button class="service" id="logsOpen">
+<span class="ico">📁</span>
+<span>
+<strong>Social Logs</strong>
+<small>Browse and purchase available listings</small>
+</span>
+</button>
+</section>
+
+<div class="section-head" id="transactions">
+<h2>Recent transactions</h2>
+<button class="text-btn" id="txRefresh">Refresh</button>
+</div>
+
+<section class="panel" id="transactionList">
+<div class="muted">Loading transactions…</div>
+</section>
+
+<div class="status" id="pageStatus">Connecting securely…</div>
 </main>
-<nav class="bottom"><div class="nav"><button class="active" data-scroll="top"><span>⌂</span>Home</button><button data-scroll="services"><span>▦</span>Services</button><button data-scroll="transactions"><span>▤</span>Activity</button><button id="navProfile"><span>☻</span>Profile</button></div></nav>
+
+<nav class="bottom">
+<div class="nav">
+<button class="active" data-scroll="top"><span>⌂</span>Home</button>
+<button data-scroll="services"><span>▦</span>Services</button>
+<button data-scroll="transactions"><span>▤</span>Activity</button>
+<button id="navProfile"><span>☻</span>Profile</button>
+</div>
+</nav>
+
 <button class="support" id="supportBtn" aria-label="Support">☏</button>
-<div class="modal-back" id="modalBack"><section class="modal" role="dialog" aria-modal="true"><button class="close" id="closeModal">×</button><h3 id="modalTitle">Wallet</h3><p class="muted" id="modalIntro"></p><div id="modalBody"></div><div id="modalStatus" class="status" aria-live="polite"></div></section></div>
+
+<div class="modal-back" id="modalBack">
+<section class="modal" role="dialog" aria-modal="true">
+<button class="close" id="closeModal">×</button>
+<h3 id="modalTitle">Wallet</h3>
+<p class="muted" id="modalIntro"></p>
+<div id="modalBody"></div>
+<div id="modalStatus" class="status" aria-live="polite"></div>
+</section>
+</div>
+
 <script>
-"use strict";
-const API="https://speedy-ng-api-staging.unicespotify.workers.dev",token=localStorage.getItem("speedy_customer_token")||sessionStorage.getItem("speedy_customer_token"),$=id=>document.getElementById(id);
-let customer={},walletData={},depositPoll=null,activeDeposit=null;
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money=(v,c="USD")=>(c==="NGN"?"₦":"$")+Number(v||0).toLocaleString(c==="NGN"?"en-NG":"en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const key=()=>("sp"+Date.now()+Math.random().toString(36).slice(2,14)).replace(/[^a-zA-Z0-9._:-]/g,"").slice(0,60);
-async function api(path,method="GET",body,headers={}){const r=await fetch(API+path,{method,headers:{Authorization:"Bearer "+token,Accept:"application/json",...(body?{"Content-Type":"application/json"}:{}),...headers},...(body?{body:JSON.stringify(body)}:{})});let d={};try{d=await r.json()}catch{}if(!r.ok||d.ok===false||d.success===false)throw Error(d.message||d.error||`Request failed (${r.status})`);return d}
-function status(t,bad=false){$("pageStatus").textContent=t;$("pageStatus").className="status"+(bad?" danger":"")}
-function modal(title,intro,html){clearInterval(depositPoll);$("modalTitle").textContent=title;$("modalIntro").textContent=intro||"";$("modalBody").innerHTML=html;$("modalStatus").textContent="";$("modalStatus").className="status";$("modalBack").classList.add("show")}
-function closeModal(){clearInterval(depositPoll);depositPoll=null;$("modalBack").classList.remove("show")}
-$("closeModal").onclick=closeModal;$("modalBack").addEventListener("click",e=>{if(e.target===$("modalBack"))closeModal()});
-async function refreshAll(){if(!token){location.replace("/");return}try{const [m,w,t]=await Promise.all([api("/api/customer/me"),api("/api/customer/wallet"),api("/api/customer/transactions")]);customer=m.customer||{};walletData=w;$("email").textContent=customer.email||"Your Speedy.ng account";$("ngn").textContent=money(w.balances?.NGN,"NGN");$("usd").textContent=money(w.balances?.USD,"USD");renderTx(t.transactions||[]);status("Your wallet and account are up to date.")}catch(e){status(e.message,true);if(/unauthori[sz]ed|token|session|login/i.test(e.message))setTimeout(()=>location.replace("/"),1000)}}
-function renderTx(rows){$("transactionList").innerHTML=rows.length?rows.slice(0,12).map(x=>`<div class="tx"><div><div class="tx-title">${esc(x.description||x.type||"Wallet transaction")}</div><div class="tx-date">${esc(x.created_at||"")}</div></div><div><div class="tx-amount">${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}</div><div class="tx-status">${esc(x.status||"Pending")}</div></div></div>`).join(""):'<div class="muted">No transactions yet. Your activity will appear here.</div>'}
-function deposit(){modal("Add money","Create a temporary bank-transfer account. Your NGN wallet updates after payment is verified.",`<label>Amount in naira (₦)</label><input id="depAmount" type="number" min="100" max="5000000" step=".01" placeholder="Enter amount"><button class="primary" id="depCreate">Continue to payment</button>`);$("depCreate").onclick=createDeposit}
-async function createDeposit(){let amount=Number($("depAmount").value);if(!Number.isFinite(amount)||amount<100||amount>5000000||Math.round(amount*100)!==amount*100){$("modalStatus").textContent="Enter ₦100 to ₦5,000,000, up to 2 decimal places.";return}let b=$("depCreate");b.disabled=true;b.textContent="Creating secure payment…";try{let d=await api("/api/customer/wallet/deposit","POST",{amount});activeDeposit={reference:d.reference,amount:Number(d.amount??amount),before:Number(walletData.balances_minor?.NGN??Math.round(Number(walletData.balances?.NGN||0)*100))};let p=d.paymentInstructions||{};$("modalBody").innerHTML=`<div class="orderbox"><span class="pill">SECURE BANK TRANSFER</span><h3 style="margin-top:10px">Transfer ${esc(money(activeDeposit.amount,"NGN"))}</h3><p class="muted">Bank</p><strong>${esc(p.bankName||"—")}</strong><p class="muted">Account name</p><strong>${esc(p.accountName||"—")}</strong><p class="muted">Account number</p><strong style="font-size:22px;letter-spacing:1px" id="depAcct">${esc(p.accountNumber||"—")}</strong><br><button class="secondary" id="copyAcct">Copy account number</button><p class="muted">Payment reference</p><strong>${esc(d.reference||"—")}</strong>${p.expiresAt?`<p class="muted">Expires: ${esc(p.expiresAt)}</p>`:""}<hr style="border-color:#294875"><div class="good" id="depState">Waiting for payment confirmation…</div><p class="muted">Keep this screen open. We will check your wallet automatically. Do not transfer more than the amount shown.</p></div><button class="secondary" id="depDone">Close</button>`;$("copyAcct").onclick=async()=>{try{await navigator.clipboard.writeText(p.accountNumber);$("modalStatus").textContent="Account number copied."}catch{$("modalStatus").textContent="Copy the account number manually."}};$("depDone").onclick=closeModal;startDepositPoll()}catch(e){$("modalStatus").textContent=e.message;$("modalStatus").className="status danger"}finally{b.disabled=false;b.textContent="Continue to payment"}}
-function startDepositPoll(){clearInterval(depositPoll);let n=0;depositPoll=setInterval(async()=>{n++;try{const [w,t]=await Promise.all([api("/api/customer/wallet"),api("/api/customer/transactions")]);walletData=w;$("ngn").textContent=money(w.balances?.NGN,"NGN");$("usd").textContent=money(w.balances?.USD,"USD");renderTx(t.transactions||[]);const match=(t.transactions||[]).find(x=>String(x.reference||"")===`FLW-${activeDeposit.reference}`&&String(x.status).toLowerCase()==="successful");const now=Number(w.balances_minor?.NGN??0);if(match||now>=activeDeposit.before+Math.round(activeDeposit.amount*100)){$("depState").textContent="Payment confirmed. Your NGN wallet has been updated."; $("depState").className="good";clearInterval(depositPoll);depositPoll=null;setTimeout(closeModal,2200)}else if(n>=180){$("depState").textContent="Still waiting for confirmation. Your wallet has not been marked as paid.";clearInterval(depositPoll);depositPoll=null}}catch{}},5000)}
-function convert(){let rate=Number(walletData.rate||1500);modal("Convert currency","Move funds between your NGN and USD wallets.",`<label>Convert from</label><select id="convFrom"><option value="NGN">🇳🇬 NGN wallet</option><option value="USD">🇺🇸 USD wallet</option></select><label>Amount</label><input id="convAmount" type="number" min=".01" step=".01" placeholder="Enter amount"><p class="muted">Configured rate: ₦${rate.toLocaleString("en-NG")} = $1.00</p><button class="primary" id="convGo">Convert funds</button>`);$("convGo").onclick=async()=>{let from=$("convFrom").value,amount=Number($("convAmount").value);if(!(amount>0)||Math.round(amount*100)!==amount*100){$("modalStatus").textContent="Enter a valid amount with up to 2 decimal places.";return}let b=$("convGo");b.disabled=true;try{let d=await api("/api/customer/wallet/convert","POST",{from,to:from==="NGN"?"USD":"NGN",amount_minor:Math.round(amount*100)});$("modalStatus").textContent=d.message||"Conversion completed."; $("modalStatus").className="status good";await refreshAll()}catch(e){$("modalStatus").textContent=e.message;$("modalStatus").className="status danger"}finally{b.disabled=false}}}
-function profile(){modal("Profile & settings","Your account information.",`<div class="result">Email: ${esc(customer.email||"")}<br>Account status: ${esc(customer.status||"Active")}<br>Email verified: ${customer.email_verified?"Yes":"Not confirmed"}</div><button class="primary" id="logout">Log out securely</button>`);$("logout").onclick=async()=>{try{await api("/api/customer/logout","POST",{})}catch{}localStorage.removeItem("speedy_customer_token");sessionStorage.removeItem("speedy_customer_token");localStorage.removeItem("speedy_customer");sessionStorage.removeItem("speedy_customer");location.replace("/")}}
-function support(){modal("Support","For help with a payment or order, keep your transaction or order reference.",'<div class="result">Please contact Speedy.ng support through the support channel provided by the website administrator. Never share your password or verification code.</div>')}
-function unwrap(x){if(Array.isArray(x))return x;if(!x||typeof x!=="object")return[];for(const k of ["data","results","items","countries","services","listings","categories","prices"])if(Array.isArray(x[k]))return x[k];return Object.values(x).filter(v=>v&&typeof v==="object")}
-function label(x){return String(x?.name??x?.title??x?.country_name??x?.country??x?.service_name??x?.service??x?.slug??x?.code??"").trim()}
-function showNumbers(){modal("Buy Numbers","Choose a country and service. Live price and stock are checked before purchase.",`<label>Search country</label><input id="countrySearch" placeholder="Search country…"><label>Country</label><select id="countrySelect"><option>Loading countries…</option></select><label>Search service</label><input id="serviceSearch" placeholder="Search service…"><label>Service</label><select id="serviceSelect"><option>Loading services…</option></select><div id="numberQuote" class="result">Choose a country and service to check availability.</div><button class="primary" id="numberBuy" disabled>Buy number</button><div id="numberOrder"></div>`);loadNumbers()}
-let numberCountries=[],numberServices=[],selectedQuote=null;
-async function loadNumbers(){try{let [c,s]=await Promise.all([api("/api/customer/visual-numbers/countries"),api("/api/customer/visual-numbers/services")]);numberCountries=unwrap(c.countries);numberServices=unwrap(s.services);fillSelect("countrySelect",numberCountries);fillSelect("serviceSelect",numberServices);$("countrySearch").oninput=()=>filterSelect("countrySelect",numberCountries,$("countrySearch").value);$("serviceSearch").oninput=()=>filterSelect("serviceSelect",numberServices,$("serviceSearch").value);$("countrySelect").onchange=loadQuote;$("serviceSelect").onchange=loadQuote;$("numberBuy").onclick=buyNumber;if(!numberCountries.length||!numberServices.length)throw Error("The live country or service list is empty. Please refresh later.")}catch(e){$("numberQuote").textContent=e.message}}
-function fillSelect(id,rows){$(id).innerHTML=rows.map((x,i)=>`<option value="${esc(x.code??x.id??x.iso??x.slug??label(x))}">${esc(label(x)||`Option ${i+1}`)}</option>`).join("")}
-function filterSelect(id,rows,q){let filtered=rows.filter(x=>label(x).toLowerCase().includes(q.toLowerCase()));fillSelect(id,filtered)}
-async function loadQuote(){let c=$("countrySelect").value,s=$("serviceSelect").value;if(!c||!s)return;selectedQuote=null;$("numberBuy").disabled=true;$("numberQuote").textContent="Checking live price and availability…";try{let d=await api(`/api/customer/visual-numbers/catalogue?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`);let raw=d.prices;let items=unwrap(raw);let item=items.find(x=>x&&typeof x==="object")||raw;let price=Number(item?.customer_price_minor??item?.price_minor??item?.price??item?.cost);let stock=item?.stock??item?.available_count??item?.count??item?.quantity??null;if(Number.isFinite(price)&&price>1000)price=price/100;selectedQuote={country:c,service:s,priceMinor:Number.isFinite(price)?Math.round(price*100):null,stock};$("numberQuote").innerHTML=`<strong>${esc(label(numberCountries.find(x=>String(x.code??x.id??x.iso??x.slug??label(x))===c))||c)} · ${esc(label(numberServices.find(x=>String(x.code??x.id??x.slug??label(x))===s))||s)}</strong><br>Price: <strong>${price?esc(money(price,"USD")):"See price at checkout"}</strong><br>Available: ${esc(stock??"Check at purchase")}<br><span class="muted">The server verifies the final price and stock again before charging.</span>`;$("numberBuy").disabled=false}catch(e){$("numberQuote").textContent=e.message}}
-async function buyNumber(){if(!selectedQuote)return;let b=$("numberBuy");b.disabled=true;b.textContent="Requesting number…";try{let d=await api("/api/customer/visual-numbers/purchase","POST",{country:selectedQuote.country,service:selectedQuote.service,idempotency_key:key()},{"Idempotency-Key":key()});let o=d.order||{};$("numberOrder").innerHTML=`<div class="orderbox"><strong>${esc(d.message||"Number order created")}</strong><br>Phone: <strong>${esc(o.phone_number||o.provider_phone||d.delivery?.phone_number||"Waiting for number")}</strong><br>Order: ${esc(o.id||d.order_id||"")}<br>Status: ${esc(o.status||d.status||"processing")}<br><button class="secondary" id="checkNumber">Check SMS code</button></div>`;$("checkNumber").onclick=()=>checkNumber(o.id||d.order_id);await refreshAll()}catch(e){$("numberOrder").innerHTML=`<div class="result danger">${esc(e.message)}</div>`}finally{b.disabled=false;b.textContent="Buy number"}}
-async function checkNumber(id){if(!id)return;try{let d=await api(`/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`,"POST",{});let o=d.order||{};$("numberOrder").innerHTML=`<div class="orderbox">Status: ${esc(d.status||o.status||"checking")}<br>Phone: ${esc(o.phone_number||o.provider_phone||"")}<br>SMS code: <strong class="good">${esc(d.delivery?.sms_code||o.sms_code||"Not received yet")}</strong><br>${esc(d.message||"Refresh to check again.")}<br><button class="secondary" id="checkNumber">Check again</button></div>`;$("checkNumber").onclick=()=>checkNumber(id);await refreshAll()}catch(e){$("numberOrder").innerHTML=`<div class="result">${esc(e.message)}</div>`}}
+  "use strict";
+
+const API="https://speedy-ng-api-staging.unicespotify.workers.dev";
+
+const token=
+localStorage.getItem("speedy_customer_token")||
+sessionStorage.getItem("speedy_customer_token");
+
+const $=id=>document.getElementById(id);
+
+let customer={};
+let walletData={};
+let depositPoll=null;
+let activeDeposit=null;
+
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[c]));
+
+const money=(v,c="USD")=>
+(c==="NGN"?"₦":"$")+
+Number(v||0).toLocaleString(
+c==="NGN"?"en-NG":"en-US",
+{minimumFractionDigits:2,maximumFractionDigits:2}
+);
+
+const key=()=>
+("sp"+Date.now()+Math.random().toString(36).slice(2,14))
+.replace(/[^a-zA-Z0-9._:-]/g,"")
+.slice(0,60);
+
+async function api(path,method="GET",body,headers={}){
+const r=await fetch(API+path,{
+method,
+headers:{
+Authorization:"Bearer "+token,
+Accept:"application/json",
+...(body?{"Content-Type":"application/json"}:{}),
+...headers
+},
+...(body?{body:JSON.stringify(body)}:{})
+});
+
+let d={};
+try{d=await r.json()}catch{}
+
+if(!r.ok||d.ok===false||d.success===false){
+throw Error(d.message||d.error||`Request failed (${r.status})`);
+}
+return d;
+}
+
+function status(t,bad=false){
+$("pageStatus").textContent=t;
+$("pageStatus").className="status"+(bad?" danger":"");
+}
+
+function modal(title,intro,html){
+clearInterval(depositPoll);
+$("modalTitle").textContent=title;
+$("modalIntro").textContent=intro||"";
+$("modalBody").innerHTML=html;
+$("modalStatus").textContent="";
+$("modalStatus").className="status";
+$("modalBack").classList.add("show");
+}
+
+function closeModal(){
+clearInterval(depositPoll);
+depositPoll=null;
+$("modalBack").classList.remove("show");
+}
+
+$("closeModal").onclick=closeModal;
+
+$("modalBack").addEventListener("click",e=>{
+if(e.target===$("modalBack"))closeModal();
+});
+
+async function refreshAll(){
+if(!token){
+location.replace("/");
+return;
+}
+
+try{
+const [m,w,t]=await Promise.all([
+api("/api/customer/me"),
+api("/api/customer/wallet"),
+api("/api/customer/wallet/transactions")
+]);
+
+customer=m.customer||{};
+walletData=w;
+
+$("email").textContent=
+customer.email||"Your Speedy.ng account";
+
+$("ngn").textContent=money(w.balances?.NGN,"NGN");
+$("usd").textContent=money(w.balances?.USD,"USD");
+
+renderTx(t.transactions||[]);
+
+status("Your wallet and account are up to date.");
+
+}catch(e){
+status(e.message,true);
+
+if(/unauthori[sz]ed|token|session|login/i.test(e.message)){
+setTimeout(()=>location.replace("/"),1000);
+}
+}
+}
+
+function renderTx(rows){
+$("transactionList").innerHTML=rows.length
+?rows.slice(0,12).map(x=>`
+<div class="tx">
+<div>
+<div class="tx-title">
+${esc(x.description||x.type||"Wallet transaction")}
+</div>
+<div class="tx-date">${esc(x.created_at||"")}</div>
+</div>
+<div>
+<div class="tx-amount">
+${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}
+</div>
+<div class="tx-status">${esc(x.status||"Pending")}</div>
+</div>
+</div>
+`).join("")
+:'<div class="muted">No transactions yet. Your activity will appear here.</div>';
+}
+
+/* =========================
+   WALLET DEPOSIT
+========================= */
+
+function deposit(){
+modal(
+"Add money",
+"Create a temporary bank-transfer account. Your NGN wallet updates after payment is verified.",
+`
+<label>Amount in naira (₦)</label>
+<input id="depAmount" type="number" min="100" max="5000000" step=".01" placeholder="Enter amount">
+<button class="primary" id="depCreate">Continue to payment</button>
+`
+);
+
+$("depCreate").onclick=createDeposit;
+}
+
+async function createDeposit(){
+let amount=Number($("depAmount").value);
+
+if(
+!Number.isFinite(amount)||
+amount<100||
+amount>5000000||
+Math.round(amount*100)!==amount*100
+){
+$("modalStatus").textContent=
+"Enter ₦100 to ₦5,000,000, up to 2 decimal places.";
+return;
+}
+
+let b=$("depCreate");
+b.disabled=true;
+b.textContent="Creating secure payment…";
+
+try{
+let d=await api(
+"/api/customer/wallet/deposit",
+"POST",
+{amount}
+);
+
+activeDeposit={
+reference:d.reference,
+amount:Number(d.amount??amount)
+};
+
+let p=d.paymentInstructions||{};
+
+$("modalBody").innerHTML=`
+<div class="orderbox">
+<span class="pill">SECURE BANK TRANSFER</span>
+
+<h3 style="margin-top:10px">
+Transfer ${esc(money(activeDeposit.amount,"NGN"))}
+</h3>
+
+<p class="muted">Bank</p>
+<strong>${esc(p.bankName||"—")}</strong>
+
+<p class="muted">Account name</p>
+<strong>${esc(p.accountName||"—")}</strong>
+
+<p class="muted">Account number</p>
+<strong style="font-size:22px;letter-spacing:1px" id="depAcct">
+${esc(p.accountNumber||"—")}
+</strong>
+
+<br>
+<button class="secondary" id="copyAcct">
+Copy account number
+</button>
+
+<p class="muted">Payment reference</p>
+<strong>${esc(d.reference||"—")}</strong>
+
+${p.expiresAt?`
+<p class="muted">Expires: ${esc(p.expiresAt)}</p>
+`:""}
+
+<hr style="border-color:#294875">
+
+<div class="good" id="depState">
+Waiting for payment confirmation…
+</div>
+
+<p class="muted">
+Keep this screen open. We will check your payment automatically.
+</p>
+</div>
+
+<button class="secondary" id="depDone">Close</button>
+`;
+
+$("copyAcct").onclick=async()=>{
+try{
+await navigator.clipboard.writeText(p.accountNumber);
+$("modalStatus").textContent="Account number copied.";
+}catch{
+$("modalStatus").textContent="Copy the account number manually.";
+}
+};
+
+$("depDone").onclick=closeModal;
+
+startDepositPoll();
+
+}catch(e){
+$("modalStatus").textContent=e.message;
+$("modalStatus").className="status danger";
+}finally{
+b.disabled=false;
+b.textContent="Continue to payment";
+}
+}
+
+function startDepositPoll(){
+clearInterval(depositPoll);
+
+let n=0;
+
+depositPoll=setInterval(async()=>{
+n++;
+
+try{
+const [w,t]=await Promise.all([
+api("/api/customer/wallet"),
+api("/api/customer/wallet/transactions")
+]);
+
+walletData=w;
+
+$("ngn").textContent=money(w.balances?.NGN,"NGN");
+$("usd").textContent=money(w.balances?.USD,"USD");
+
+renderTx(t.transactions||[]);
+
+const match=(t.transactions||[]).find(x=>
+[String(x.reference||""),String(x.reference||"").replace(/^FLW-/,"")]
+.includes(String(activeDeposit.reference||""))&&
+Number(x.amount_minor)===Math.round(activeDeposit.amount*100)&&
+String(x.currency||"").toUpperCase()==="NGN"&&
+String(x.status||"").toLowerCase()==="successful"
+);
+
+if(match){
+$("depState").textContent=
+"Payment confirmed. Your NGN wallet has been updated.";
+
+$("depState").className="good";
+
+clearInterval(depositPoll);
+depositPoll=null;
+
+setTimeout(closeModal,2200);
+
+}else if(n>=180){
+
+$("depState").textContent=
+"Still waiting for confirmation. Your wallet has not been marked as paid.";
+
+clearInterval(depositPoll);
+depositPoll=null;
+}
+
+}catch(e){}
+
+},5000);
+}
+
+/* =========================
+   CURRENCY CONVERSION
+========================= */
+
+function convert(){
+let rate=Number(walletData.rate||1500);
+
+modal(
+"Convert currency",
+"Move funds between your NGN and USD wallets.",
+`
+<label>Convert from</label>
+
+<select id="convFrom">
+<option value="NGN">🇳🇬 NGN wallet</option>
+<option value="USD">🇺🇸 USD wallet</option>
+</select>
+
+<label>Amount</label>
+<input id="convAmount" type="number" min=".01" step=".01" placeholder="Enter amount">
+
+<p class="muted">
+Configured rate: ₦${rate.toLocaleString("en-NG")} = $1.00
+</p>
+
+<button class="primary" id="convGo">Convert funds</button>
+`
+);
+
+$("convGo").onclick=async()=>{
+let from=$("convFrom").value;
+let amount=Number($("convAmount").value);
+
+if(!(amount>0)||Math.round(amount*100)!==amount*100){
+$("modalStatus").textContent=
+"Enter a valid amount with up to 2 decimal places.";
+return;
+}
+
+let b=$("convGo");
+b.disabled=true;
+
+try{
+let d=await api(
+"/api/customer/wallet/convert",
+"POST",
+{
+from,
+to:from==="NGN"?"USD":"NGN",
+amount_minor:Math.round(amount*100)
+}
+);
+
+$("modalStatus").textContent=
+d.message||"Conversion completed.";
+
+$("modalStatus").className="status good";
+
+await refreshAll();
+
+}catch(e){
+$("modalStatus").textContent=e.message;
+$("modalStatus").className="status danger";
+}finally{
+b.disabled=false;
+}
+};
+}
+
+/* =========================
+   PROFILE AND LOGOUT
+========================= */
+
+function profile(){
+modal(
+"Profile & settings",
+"Your account information.",
+`
+<div class="result">
+Email: ${esc(customer.email||"")}<br>
+Account status: ${esc(customer.status||"Active")}<br>
+Email verified: ${customer.email_verified?"Yes":"Not confirmed"}
+</div>
+
+<button class="primary" id="logout">
+Log out securely
+</button>
+`
+);
+
+$("logout").onclick=async()=>{
+try{
+await api("/api/customer/logout","POST",{});
+}catch{}
+
+localStorage.removeItem("speedy_customer_token");
+sessionStorage.removeItem("speedy_customer_token");
+
+localStorage.removeItem("speedy_customer");
+sessionStorage.removeItem("speedy_customer");
+
+location.replace("/");
+};
+}
+
+/* =========================
+   CUSTOMER SUPPORT
+========================= */
+
+function support(){
+modal(
+"Support",
+"For help with a payment or order, keep your transaction or order reference.",
+`
+<div class="result">
+Please contact Speedy.ng support through the support channel provided by the website administrator.
+
+Never share your password or verification code.
+</div>
+`
+);
+}
+  /* =========================
+   SHARED DATA HELPERS
+========================= */
+
+function unwrap(x){
+if(Array.isArray(x))return x;
+
+if(!x||typeof x!=="object")return[];
+
+for(const k of [
+"data","results","items","countries",
+"services","listings","categories","prices"
+]){
+if(Array.isArray(x[k]))return x[k];
+}
+
+return Object.values(x).filter(v=>v&&typeof v==="object");
+}
+
+function label(x){
+return String(
+x?.name??
+x?.title??
+x?.country_name??
+x?.country??
+x?.service_name??
+x?.service??
+x?.slug??
+x?.code??
+""
+).trim();
+}
+
+/* =========================
+   VISUAL NUMBERS
+========================= */
+
+let numberCountries=[];
+let numberServices=[];
+let selectedQuote=null;
+
+function showNumbers(){
+
+modal(
+"Buy Numbers",
+"Choose a country and service. Live price and stock are checked before purchase.",
+`
+<label>Search country</label>
+<input id="countrySearch" placeholder="Search country…">
+
+<label>Country</label>
+<select id="countrySelect">
+<option>Loading countries…</option>
+</select>
+
+<label>Search service</label>
+<input id="serviceSearch" placeholder="Search service…">
+
+<label>Service</label>
+<select id="serviceSelect">
+<option>Loading services…</option>
+</select>
+
+<div id="numberQuote" class="result">
+Choose a country and service to check availability.
+</div>
+
+<button class="primary" id="numberBuy" disabled>
+Buy number
+</button>
+
+<div id="numberOrder"></div>
+`
+);
+
+loadNumbers();
+}
+
+async function loadNumbers(){
+
+try{
+
+let [c,s]=await Promise.all([
+api("/api/customer/visual-numbers/countries"),
+api("/api/customer/visual-numbers/services")
+]);
+
+numberCountries=unwrap(c.countries);
+numberServices=unwrap(s.services);
+
+fillSelect("countrySelect",numberCountries);
+fillSelect("serviceSelect",numberServices);
+
+$("countrySearch").oninput=()=>{
+filterSelect(
+"countrySelect",
+numberCountries,
+$("countrySearch").value
+);
+};
+
+$("serviceSearch").oninput=()=>{
+filterSelect(
+"serviceSelect",
+numberServices,
+$("serviceSearch").value
+);
+};
+
+$("countrySelect").onchange=loadQuote;
+$("serviceSelect").onchange=loadQuote;
+$("numberBuy").onclick=buyNumber;
+
+if(!numberCountries.length||!numberServices.length){
+throw Error("The live country or service list is empty. Please refresh later.");
+}
+
+}catch(e){
+$("numberQuote").textContent=e.message;
+}
+}
+
+function fillSelect(id,rows){
+
+$(id).innerHTML=rows.map((x,i)=>`
+<option value="${esc(x.code??x.id??x.iso??x.slug??label(x))}">
+${esc(label(x)||`Option ${i+1}`)}
+</option>
+`).join("");
+}
+
+function filterSelect(id,rows,q){
+
+let filtered=rows.filter(x=>
+label(x).toLowerCase().includes(q.toLowerCase())
+);
+
+fillSelect(id,filtered);
+}
+
+async function loadQuote(){
+
+let c=$("countrySelect").value;
+let s=$("serviceSelect").value;
+
+if(!c||!s)return;
+
+selectedQuote=null;
+$("numberBuy").disabled=true;
+
+$("numberQuote").textContent=
+"Checking live price and availability…";
+
+try{
+
+let d=await api(
+`/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`
+);
+
+let q=d.quote||{};
+
+let priceMinor=Number(q.customer_price_minor);
+let stock=q.stock??"Check at purchase";
+let currency=q.currency||"USD";
+let rate=Number(walletData.rate||1500);
+
+if(!Number.isFinite(priceMinor)||priceMinor<=0){
+throw Error("A valid price is not currently available for this service.");
+}
+
+let price=priceMinor/100;
+
+selectedQuote={
+country:c,
+service:s,
+priceMinor,
+stock,
+currency
+};
+
+let priceDisplay=money(price,currency);
+
+let ngnEquivalent=
+currency==="USD"
+?money(price*rate,"NGN")
+:"";
+
+$("numberQuote").innerHTML=`
+<strong>
+${esc(label(numberCountries.find(x=>
+String(x.code??x.id??x.iso??x.slug??label(x))===c
+))||c)}
+·
+${esc(label(numberServices.find(x=>
+String(x.code??x.id??x.slug??label(x))===s
+))||s)}
+</strong>
+
+<br>
+
+Price:
+<strong>${esc(priceDisplay)}</strong>
+
+${ngnEquivalent?`
+<br>
+<span class="muted">
+Approximate NGN equivalent: ${esc(ngnEquivalent)}
+</span>
+`:""}
+
+<br>
+
+Available:
+<strong>${esc(stock)}</strong>
+
+<br>
+
+<span class="muted">
+The server verifies the final price and stock again before charging.
+</span>
+`;
+
+$("numberBuy").disabled=false;
+
+}catch(e){
+
+$("numberQuote").textContent=e.message;
+
+}
+}
+
+async function buyNumber(){
+
+if(!selectedQuote)return;
+
+let b=$("numberBuy");
+
+b.disabled=true;
+b.textContent="Requesting number…";
+
+const idempotencyKey=key();
+
+try{
+
+let d=await api(
+"/api/customer/visual-numbers/purchase",
+"POST",
+{
+country:selectedQuote.country,
+service:selectedQuote.service,
+idempotency_key:idempotencyKey
+},
+{
+"Idempotency-Key":idempotencyKey
+}
+);
+
+let o=d.order||{};
+
+$("numberOrder").innerHTML=`
+<div class="orderbox">
+
+<strong>${esc(d.message||"Number order created")}</strong>
+
+<br>
+
+Phone:
+<strong>
+${esc(o.phone_number||o.provider_phone||d.delivery?.phone_number||"Waiting for number")}
+</strong>
+
+<br>
+
+Order:
+${esc(o.id||d.order_id||"")}
+
+<br>
+
+Status:
+${esc(o.status||d.status||"processing")}
+
+<br>
+
+<button class="secondary" id="checkNumber">
+Check SMS code
+</button>
+
+</div>
+`;
+
+$("checkNumber").onclick=()=>{
+checkNumber(o.id||d.order_id);
+};
+
+await refreshAll();
+
+}catch(e){
+
+$("numberOrder").innerHTML=`
+<div class="result danger">
+${esc(e.message)}
+</div>
+`;
+
+}finally{
+
+b.disabled=false;
+b.textContent="Buy number";
+
+}
+}
+
+async function checkNumber(id){
+
+if(!id)return;
+
+try{
+
+let d=await api(
+`/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`,
+"POST",
+{}
+);
+
+let o=d.order||{};
+
+$("numberOrder").innerHTML=`
+<div class="orderbox">
+
+Status:
+${esc(d.status||o.status||"checking")}
+
+<br>
+
+Phone:
+${esc(o.phone_number||o.provider_phone||"")}
+
+<br>
+
+SMS code:
+<strong class="good">
+${esc(d.delivery?.sms_code||o.sms_code||"Not received yet")}
+</strong>
+
+<br>
+
+${esc(d.message||"Refresh to check again.")}
+
+<br>
+
+<button class="secondary" id="checkNumber">
+Check again
+</button>
+
+</div>
+`;
+
+$("checkNumber").onclick=()=>checkNumber(id);
+
+await refreshAll();
+
+}catch(e){
+
+$("numberOrder").innerHTML=`
+<div class="result">
+${esc(e.message)}
+</div>
+`;
+
+}
+}
+
+/* =========================
+   SOCIAL LOGS
+========================= */
+
 let logListings=[];
-function showLogs(){modal("Social Logs","Search available listings, inspect their price and stock, then purchase securely with your USD wallet.",`<label>Search listings</label><input id="logSearch" placeholder="Search by service or keyword"><label>Category</label><select id="logCategory"><option value="">All categories</option></select><div id="logList"><p class="muted">Loading listings…</p></div>`);loadLogs()}
-async function loadLogs(){try{let c=await api("/api/customer/social-logs/categories");let cats=unwrap(c.categories);$("logCategory").innerHTML='<option value="">All categories</option>'+cats.map(x=>`<option value="${esc(x.id??x.category_id??x.slug??"")}">${esc(label(x))}</option>`).join("");$("logCategory").onchange=fetchLogs;$("logSearch").oninput=debounce(fetchLogs,400);await fetchLogs()}catch(e){$("logList").textContent=e.message}}
-let debounceTimer;function debounce(fn,ms){clearTimeout(debounceTimer);debounceTimer=setTimeout(fn,ms)}
-async function fetchLogs(){try{let q=new URLSearchParams({per_page:"50",page:"1"});if($("logSearch").value)q.set("search",$("logSearch").value);if($("logCategory").value)q.set("category_id",$("logCategory").value);let d=await api("/api/customer/social-logs/listings?"+q.toString());logListings=unwrap(d.listings);$("logList").innerHTML=logListings.length?logListings.map((x,i)=>{let title=x.title||x.name||x.slug||"Social Log";let slug=x.slug||x.listing_slug||x.id;return `<article class="listing"><strong>${esc(title)}</strong><p>${esc(x.category_name||x.category||"Available listing")} · Stock: ${esc(x.available_stock??x.stock??"Check")}</p><div class="price">${x.customer_price_minor?esc(money(x.customer_price_minor/100,"USD")):"Price checked at checkout"}</div><button class="secondary" data-log="${esc(slug)}">View & purchase</button></article>`}).join(""):'<div class="result">No matching listings were returned. Try another search.</div>';$("logList").querySelectorAll("[data-log]").forEach(b=>b.onclick=()=>inspectLog(b.dataset.log))}catch(e){$("logList").textContent=e.message}}
-async function inspectLog(slug){try{let d=await api("/api/customer/social-logs/listing?slug="+encodeURIComponent(slug));let x=d.listing||{};let title=x.title||x.name||slug;let price=Number(x.customer_price_minor||0);$("logList").innerHTML=`<div class="listing"><strong>${esc(title)}</strong><p>${esc(x.description||x.category_name||"Social Logs listing")}</p><p>Available stock: ${esc(x.available_stock??"Check at purchase")}</p><div class="price">${price?esc(money(price/100,"USD")):"Price verified at checkout"}</div><label>Quantity (1–10)</label><input id="logQty" type="number" min="1" max="10" value="1"><button class="primary" id="logBuy">Purchase with USD wallet</button><div id="logPurchaseResult"></div><button class="secondary" id="backLogs">Back to listings</button></div>`;$("backLogs").onclick=fetchLogs;$("logBuy").onclick=async()=>{let qty=Number($("logQty").value);if(!Number.isInteger(qty)||qty<1||qty>10){$("logPurchaseResult").textContent="Quantity must be 1–10.";return}let b=$("logBuy");b.disabled=true;b.textContent="Processing securely…";try{let d=await api("/api/customer/social-logs/purchase","POST",{slug,quantity:qty,idempotency_key:key()},{"Idempotency-Key":key()});let accounts=d.delivery?.accounts||[];$("logPurchaseResult").innerHTML=`<div class="orderbox"><strong>${esc(d.message||"Order received")}</strong><br>Order ID: ${esc(d.order?.id||d.order_id||"")}<br>Status: ${esc(d.order?.status||d.status||"processing")}<br>${accounts.map(a=>`<p>${esc(typeof a==="string"?a:JSON.stringify(a))}</p>`).join("")}</div>`;await refreshAll()}catch(e){$("logPurchaseResult").innerHTML=`<div class="result danger">${esc(e.message)}</div>`}finally{b.disabled=false;b.textContent="Purchase with USD wallet"}}}catch(e){$("logList").textContent=e.message}}
-function boosting(){modal("Social Boosting","Social Boosting is not connected to a live provider in the current API configuration.",'<div class="result"><span class="pill">NOT CONFIGURED</span><p>No Social Boosting provider is currently configured for this account. We will not display invented services or accept payment until a real provider is connected.</p>Your wallet will not be charged from this screen.</div>')}
-$("depositOpen").onclick=deposit;$("convertOpen").onclick=convert;$("numbersOpen").onclick=showNumbers;$("logsOpen").onclick=showLogs;$("boostOpen").onclick=boosting;$("profileBtn").onclick=$("navProfile").onclick=profile;$("supportBtn").onclick=support;$("refreshBtn").onclick=$("txRefresh").onclick=refreshAll;
-document.querySelectorAll("[data-scroll]").forEach(b=>b.onclick=()=>{let id=b.dataset.scroll;$(id).scrollIntoView({behavior:"smooth"});document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active")});
-refreshAll();setInterval(()=>{if(token)refreshAll()},60000);
-</script></body></html>
+
+function showLogs(){
+
+modal(
+"Social Logs",
+"Search available listings, inspect their price and stock, then purchase securely with your USD wallet.",
+`
+<label>Search listings</label>
+<input id="logSearch" placeholder="Search by service or keyword">
+
+<label>Category</label>
+<select id="logCategory">
+<option value="">All categories</option>
+</select>
+
+<div id="logList">
+<p class="muted">Loading listings…</p>
+</div>
+`
+);
+
+loadLogs();
+}
+
+async function loadLogs(){
+
+try{
+
+let c=await api("/api/customer/social-logs/categories");
+
+let cats=unwrap(c.categories);
+
+$("logCategory").innerHTML=
+'<option value="">All categories</option>'+
+cats.map(x=>`
+<option value="${esc(x.id??x.category_id??x.slug??"")}">
+${esc(label(x))}
+</option>
+`).join("");
+
+$("logCategory").onchange=fetchLogs;
+$("logSearch").oninput=()=>debounce(fetchLogs,400);
+
+await fetchLogs();
+
+}catch(e){
+
+$("logList").textContent=e.message;
+
+}
+}
+
+let debounceTimer;
+
+function debounce(fn,ms){
+
+clearTimeout(debounceTimer);
+
+debounceTimer=setTimeout(fn,ms);
+
+}
+
+async function fetchLogs(){
+
+try{
+
+let q=new URLSearchParams({
+per_page:"50",
+page:"1"
+});
+
+if($("logSearch").value){
+q.set("search",$("logSearch").value);
+}
+
+if($("logCategory").value){
+q.set("category_id",$("logCategory").value);
+}
+
+let d=await api(
+"/api/customer/social-logs/listings?"+q.toString()
+);
+
+logListings=unwrap(d.listings);
+
+$("logList").innerHTML=logListings.length
+?logListings.map(x=>{
+
+let title=x.title||x.name||x.slug||"Social Log";
+let slug=x.slug||x.listing_slug||x.id;
+
+return `
+<article class="listing">
+
+<strong>${esc(title)}</strong>
+
+<p>
+${esc(x.category_name||x.category||"Available listing")}
+· Stock: ${esc(x.available_stock??x.stock??"Check")}
+</p>
+
+<div class="price">
+${x.customer_price_minor
+?esc(money(x.customer_price_minor/100,"USD"))
+:"Price checked at checkout"}
+</div>
+
+<button class="secondary" data-log="${esc(slug)}">
+View & purchase
+</button>
+
+</article>
+`;
+
+}).join("")
+:'<div class="result">No matching listings were returned. Try another search.</div>';
+
+$("logList").querySelectorAll("[data-log]").forEach(b=>{
+b.onclick=()=>inspectLog(b.dataset.log);
+});
+
+}catch(e){
+
+$("logList").textContent=e.message;
+
+}
+}
+
+async function inspectLog(slug){
+
+try{
+
+let x=logListings.find(item=>
+String(item.slug||item.listing_slug||item.id)===String(slug)
+)||{};
+
+let title=x.title||x.name||slug;
+let price=Number(x.customer_price_minor||0);
+
+$("logList").innerHTML=`
+<div class="listing">
+
+<strong>${esc(title)}</strong>
+
+<p>
+${esc(x.description||x.category_name||"Social Logs listing")}
+</p>
+
+<p>
+Available stock:
+${esc(x.available_stock??x.stock??"Check at purchase")}
+</p>
+
+<div class="price">
+${price?esc(money(price/100,"USD")):"Price verified at checkout"}
+</div>
+
+<label>Quantity (1–10)</label>
+
+<input id="logQty" type="number" min="1" max="10" value="1">
+
+<button class="primary" id="logBuy">
+Purchase with USD wallet
+</button>
+
+<div id="logPurchaseResult"></div>
+
+<button class="secondary" id="backLogs">
+Back to listings
+</button>
+
+</div>
+`;
+
+$("backLogs").onclick=fetchLogs;
+
+$("logBuy").onclick=async()=>{
+
+let qty=Number($("logQty").value);
+
+if(!Number.isInteger(qty)||qty<1||qty>10){
+
+$("logPurchaseResult").textContent=
+"Quantity must be 1–10.";
+
+return;
+
+}
+
+let b=$("logBuy");
+
+b.disabled=true;
+b.textContent="Processing securely…";
+
+const idempotencyKey=key();
+
+try{
+
+let d=await api(
+"/api/customer/social-logs/purchase",
+"POST",
+{
+slug,
+quantity:qty,
+idempotency_key:idempotencyKey
+},
+{
+"Idempotency-Key":idempotencyKey
+}
+);
+
+let accounts=d.delivery?.accounts||[];
+
+$("logPurchaseResult").innerHTML=`
+<div class="orderbox">
+
+<strong>${esc(d.message||"Order received")}</strong>
+
+<br>
+
+Order ID:
+${esc(d.order?.id||d.order_id||"")}
+
+<br>
+
+Status:
+${esc(d.order?.status||d.status||"processing")}
+
+${accounts.map(a=>`
+<p>${esc(typeof a==="string"?a:JSON.stringify(a))}</p>
+`).join("")}
+
+</div>
+`;
+
+await refreshAll();
+
+}catch(e){
+
+$("logPurchaseResult").innerHTML=`
+<div class="result danger">
+${esc(e.message)}
+</div>
+`;
+
+}finally{
+
+b.disabled=false;
+b.textContent="Purchase with USD wallet";
+
+}
+
+};
+
+}catch(e){
+
+$("logList").textContent=e.message;
+
+}
+}
+
+/* =========================
+   SOCIAL BOOSTING
+========================= */
+
+function boosting(){
+
+modal(
+"Social Boosting",
+"Social Boosting is not connected to a live provider in the current API configuration.",
+`
+<div class="result">
+
+<span class="pill">NOT CONFIGURED</span>
+
+<p>
+No Social Boosting provider is currently configured for this account.
+We will not display invented services or accept payment until a real provider is connected.
+</p>
+
+Your wallet will not be charged from this screen.
+
+</div>
+`
+);
+
+}
+
+/* =========================
+   DASHBOARD BUTTONS
+========================= */
+
+$("depositOpen").onclick=deposit;
+$("convertOpen").onclick=convert;
+$("numbersOpen").onclick=showNumbers;
+$("logsOpen").onclick=showLogs;
+$("boostOpen").onclick=boosting;
+
+$("profileBtn").onclick=$("navProfile").onclick=profile;
+
+$("supportBtn").onclick=support;
+
+$("refreshBtn").onclick=
+$("txRefresh").onclick=refreshAll;
+
+document.querySelectorAll("[data-scroll]").forEach(b=>{
+
+b.onclick=()=>{
+
+let id=b.dataset.scroll;
+
+$(id).scrollIntoView({
+behavior:"smooth"
+});
+
+document.querySelectorAll(".nav button").forEach(x=>{
+x.classList.remove("active");
+});
+
+b.classList.add("active");
+
+};
+
+});
+
+/* =========================
+   INITIAL DASHBOARD LOAD
+========================= */
+
+refreshAll();
+
+setInterval(()=>{
+if(token)refreshAll();
+},60000);
+
+</script>
+</body>
+</html>
