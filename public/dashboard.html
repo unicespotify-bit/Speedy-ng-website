@@ -852,7 +852,9 @@ async function createDeposit(){
       <button class="secondary" id="depCheck">Check payment status</button>
       <button class="secondary" id="depDone">Close</button>
     `;
-
+$("depDone").onclick=closeModal;
+    $("depCheck").onclick=checkDeposit;
+    startDepositPoll();
   }catch(e){
     $("modalStatus").textContent=e.message;
     $("modalStatus").className="status danger";
