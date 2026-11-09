@@ -1171,10 +1171,14 @@ async function loadQuote(){
   const c=$("countrySelect").value;
   const s=$("serviceSelect").value;
 
-  if(!c||!s)return;
-
   selectedQuote=null;
   $("numberBuy").disabled=true;
+
+  if(!c||!s){
+    $("numberQuote").textContent="Choose a country and service to check availability.";
+    return;
+  }
+
   $("numberQuote").textContent="Checking live price and availability…";
 
   try{
