@@ -1159,7 +1159,10 @@ async function loadNumbers(){
 async function loadCountryServices(){
   const country=$("countrySelect").value;
 
+  quoteRequestId++;
+  selectedQuote=null;
   numberServices=[];
+
   fillSelect("serviceSelect",[]);
   $("numberBuy").disabled=true;
 
