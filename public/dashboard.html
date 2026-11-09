@@ -1346,23 +1346,28 @@ const available=stockKnown&&stockNumber>0;
 async function buyNumber(){
   if(!selectedQuote)return;
 
+  const quoteAtStart=selectedQuote;
   const b=$("numberBuy");
+
   b.disabled=true;
   b.textContent="Requesting number…";
 
   const idempotencyKey=key();
+  let purchaseSucceeded=false;
 
   try{
     const d=await api(
       "/api/customer/visual-numbers/purchase",
       "POST",
       {
-        country:selectedQuote.country,
-        service:selectedQuote.service,
+        country:quoteAtStart.country,
+        service:quoteAtStart.service,
         idempotency_key:idempotencyKey
       },
       {"Idempotency-Key":idempotencyKey}
     );
+
+    purchaseSucceeded=true;
 
     const o=d.order||{};
 
@@ -1385,9 +1390,21 @@ async function buyNumber(){
     await refreshAll();
 
   }catch(e){
-    $("numberOrder").innerHTML=`<div class="result danger">${esc(e.message)}</div>`;
+    $("numberOrder").innerHTML=
+      `<div class="result danger">${esc(e.message)}</div>`;
+
   }finally{
-    b.disabled=false;
+    if(selectedQuote===quoteAtStart&&!purchaseSucceeded){
+      const stock=Number(quoteAtStart.stock);
+      const stockKnown=quoteAtStart.stock!==null&&
+        quoteAtStart.stock!==undefined&&
+        quoteAtStart.stock!==""&&Number.isFinite(stock);
+
+      b.disabled=stockKnown&&stock<=0;
+    }else{
+      b.disabled=true;
+    }
+
     b.textContent="Buy number";
   }
 }
