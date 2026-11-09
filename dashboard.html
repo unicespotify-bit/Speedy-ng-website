@@ -2,1546 +2,991 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07152f">
-<title>Speedy.ng | Customer Dashboard</title>
+<title>Speedy.ng Dashboard</title>
 
 <style>
 :root {
   --bg:#06132c;
-  --panel:#0d2143;
-  --panel2:#112c55;
-  --line:#244875;
+  --panel:#10284b;
   --blue:#287cff;
   --cyan:#55dcff;
   --text:#f5f9ff;
   --muted:#a6bbd9;
   --green:#42dfa0;
   --red:#ff718b;
-  --shadow:0 15px 40px #0005;
 }
 
 *{box-sizing:border-box}
 
-html{scroll-behavior:smooth}
-
-body{
+body {
   margin:0;
-  color:var(--text);
-  background:
-    radial-gradient(ellipse at 90% 0%,#16477d 0,transparent 35%),
-    radial-gradient(ellipse at 0% 50%,#102d58 0,transparent 35%),
-    var(--bg);
-  font-family:Inter,Arial,sans-serif;
-  padding-bottom:100px;
+  padding-bottom:90px;
   min-height:100vh;
+  color:var(--text);
+  background:var(--bg);
+  font-family:Arial,sans-serif;
 }
 
 button,input,select{font:inherit}
 button{cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
 
-.top{
-  max-width:1100px;
-  margin:auto;
+header {
   padding:18px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
 }
 
-.brand{
-  font-size:27px;
-  font-weight:950;
-  letter-spacing:-1.3px;
+.brand {
+  font-size:26px;
+  font-weight:900;
 }
 
 .brand span{color:var(--cyan)}
 
-.profile{
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:linear-gradient(145deg,#287cff,#17477e);
-  border:1px solid #5c9bda;
+.profile {
+  background:#17477e;
   color:white;
-  font-size:20px;
-  box-shadow:0 0 20px #287cff44;
+  border:0;
+  border-radius:50%;
+  padding:12px;
 }
 
-main{
-  max-width:1100px;
+main {
+  max-width:850px;
   margin:auto;
-  padding:8px 16px 35px;
+  padding:12px 16px;
 }
 
-.welcome{
-  padding:16px 3px 20px;
-}
+.welcome{padding:15px 0}
 
-.eyebrow{
-  color:var(--cyan);
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:2px;
-}
+h1{font-size:27px;margin:10px 0}
 
-.welcome h1{
-  font-size:29px;
-  margin:10px 0 7px;
-  letter-spacing:-.7px;
-}
+h2{font-size:17px}
 
-.muted{
+.muted {
   color:var(--muted);
   font-size:12px;
   line-height:1.6;
 }
 
-.section-head{
+.section-head {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin:25px 2px 13px;
+  margin:24px 0 12px;
 }
 
-.section-head h2{
-  font-size:17px;
-  margin:0;
-}
-
-.text-btn{
-  background:transparent;
-  color:var(--cyan);
-  font-weight:800;
-  font-size:12px;
-  padding:8px;
-}
-
-.wallets{
+.wallets,.services,.actions {
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:13px;
+  gap:12px;
 }
 
-.wallet{
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(140deg,#1b59a4,#102b54 75%);
+.wallet {
+  background:linear-gradient(140deg,#1b59a4,#102b54);
   border:1px solid #3979bd;
-  border-radius:20px;
-  padding:18px 15px;
-  min-height:150px;
-  box-shadow:var(--shadow);
+  border-radius:18px;
+  padding:17px;
+  min-height:135px;
 }
 
-.wallet.usd{
-  background:linear-gradient(140deg,#17617a,#102b54 78%);
-  border-color:#318ca8;
+.wallet.usd {
+  background:linear-gradient(140deg,#17617a,#102b54);
 }
 
-.wallet:after{
-  content:"";
-  position:absolute;
-  width:145px;
-  height:145px;
-  border:1px solid #ffffff19;
-  border-radius:50%;
-  right:-55px;
-  top:48px;
-}
-
-.wallet-label{
-  font-size:12px;
-  color:#d6e8ff;
-}
-
-.wallet-value{
-  font-size:24px;
-  font-weight:950;
-  margin:16px 0 7px;
+.wallet-value {
+  font-size:23px;
+  font-weight:900;
+  margin:18px 0 8px;
   overflow-wrap:anywhere;
 }
 
-.wallet-foot{
-  font-size:11px;
-  color:#c0d9f5;
-}
-
-.wallet-symbol{
-  position:absolute;
-  right:15px;
-  top:14px;
-  font-size:23px;
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:11px;
-}
-
-.action{
-  background:linear-gradient(145deg,#122d55,#0c2040);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:15px 5px;
+.action,.service {
+  background:var(--panel);
+  border:1px solid #315783;
+  border-radius:15px;
+  padding:16px 10px;
   color:white;
   text-align:center;
-  min-height:94px;
-  font-size:12px;
-  font-weight:800;
-  transition:.2s;
+  min-height:85px;
 }
 
-.action:active,.service:active{
-  transform:scale(.97);
-}
-
-.action .ico{
-  display:block;
-  font-size:24px;
-  margin-bottom:8px;
-}
-
-.services{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.service{
+.service {
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   text-align:left;
-  padding:17px 12px;
-  background:linear-gradient(135deg,#153764,#0c2040);
-  border:1px solid #2b5689;
-  border-radius:17px;
-  color:white;
-  min-height:92px;
-  box-shadow:0 8px 25px #0002;
-}
-
-.service .ico{
-  width:44px;
-  height:44px;
-  display:grid;
-  place-items:center;
-  border-radius:14px;
-  background:linear-gradient(145deg,#286ec0,#173c70);
-  font-size:21px;
-  flex-shrink:0;
 }
 
 .service strong{font-size:13px}
 
-.service small{
+.service small {
   display:block;
   color:var(--muted);
   font-size:10px;
   margin-top:5px;
-  line-height:1.5;
 }
 
-.panel{
-  background:linear-gradient(145deg,#10284b,#0a1d39);
-  border:1px solid var(--line);
-  border-radius:18px;
+.panel {
+  background:var(--panel);
+  border:1px solid #315783;
+  border-radius:16px;
   padding:14px;
-  box-shadow:var(--shadow);
 }
 
-.tx{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:14px 2px;
-  border-bottom:1px solid #29436a;
-}
-
-.tx:last-child{border:0}
-
-.tx-title{
+.tx {
+  padding:12px 0;
+  border-bottom:1px solid #315783;
   font-size:12px;
-  font-weight:800;
 }
 
-.tx-date{
-  font-size:10px;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-.tx-amount{
-  text-align:right;
-  font-size:12px;
-  font-weight:900;
-}
-
-.tx-status{
-  font-size:10px;
-  color:var(--green);
-  margin-top:5px;
-  text-align:right;
-}
-
-.bottom{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:5;
-  background:#071832ed;
-  backdrop-filter:blur(16px);
-  border-top:1px solid #294875;
-  display:flex;
-  justify-content:center;
-}
-
-.nav{
-  width:min(650px,100%);
-  display:flex;
-  justify-content:space-around;
-  padding:10px 4px 13px;
-}
-
-.nav button{
-  background:none;
-  color:#9fb5d5;
-  font-size:10px;
-  min-width:62px;
-}
-
-.nav button span{
-  display:block;
-  font-size:20px;
-  margin-bottom:4px;
-}
-
-.nav button.active{color:var(--cyan)}
-
-.support{
-  position:fixed;
-  right:17px;
-  bottom:85px;
-  z-index:7;
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  background:linear-gradient(145deg,#55dcff,#287cff);
+.primary {
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(90deg,#287cff,#159fe4);
   color:white;
-  box-shadow:0 8px 28px #0008;
-  font-size:24px;
-  border:2px solid #ffffff50;
+  font-weight:900;
+  margin-top:12px;
 }
 
-.modal-back{
+.secondary {
+  padding:11px;
+  border:0;
+  border-radius:10px;
+  background:#214674;
+  color:white;
+  margin-top:10px;
+}
+
+.modal-back {
   position:fixed;
   inset:0;
-  background:#020916e8;
   z-index:10;
   display:none;
   align-items:flex-end;
   justify-content:center;
   padding:10px;
+  background:#020916e8;
 }
 
 .modal-back.show{display:flex}
 
-.modal{
+.modal {
   width:min(620px,100%);
-  max-height:92vh;
+  max-height:90vh;
   overflow:auto;
-  background:linear-gradient(155deg,#163967,#0a1c38 75%);
-  border:1px solid #3a6598;
-  border-radius:23px;
-  padding:20px;
-  margin-bottom:8px;
-  box-shadow:0 20px 70px #000a;
-}
-
-.modal h3{
-  margin:0 0 7px;
-  font-size:19px;
-}
-
-.modal label{
-  display:block;
-  color:var(--muted);
-  font-size:12px;
-  margin:14px 0 7px;
-}
-
-.modal input,.modal select{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
+  background:#10284b;
   border:1px solid #42618c;
-  background:#071832;
-  color:white;
-  outline:none;
+  border-radius:20px;
+  padding:18px;
 }
 
-.modal input:focus,.modal select:focus{
-  border-color:var(--cyan);
-  box-shadow:0 0 0 3px #55dcff18;
-}
-
-.primary{
+.modal input,.modal select {
   width:100%;
-  padding:15px;
-  border-radius:13px;
-  background:linear-gradient(90deg,#287cff,#159fe4);
+  padding:13px;
+  margin-top:8px;
+  background:#071832;
+  border:1px solid #42618c;
+  border-radius:10px;
   color:white;
-  font-weight:900;
-  margin-top:15px;
-  box-shadow:0 7px 20px #287cff35;
 }
 
-.secondary{
-  padding:11px 14px;
-  border-radius:11px;
+.close {
+  float:right;
   background:#214674;
   color:white;
-  font-weight:800;
-  margin:9px 6px 0 0;
-}
-
-.close{
-  float:right;
-  background:#203e69;
-  color:white;
-  border-radius:50%;
-  width:32px;
-  height:32px;
-  font-size:20px;
-}
-
-.result{
-  margin-top:13px;
-  padding:14px;
-  border-radius:13px;
-  background:#071832;
-  border:1px solid #23466f;
-  color:#dceaff;
-  font-size:12px;
-  line-height:1.8;
-  overflow-wrap:anywhere;
-}
-
-.hidden{display:none!important}
-
-.status{
-  margin-top:13px;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
-}
-
-.danger{color:var(--red)}
-.good{color:var(--green)}
-
-.grid2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.listing{
-  padding:14px;
-  margin-top:11px;
-  border:1px solid #345b88;
-  border-radius:14px;
-  background:#0a1d39;
-}
-
-.listing strong{font-size:13px}
-
-.listing p{
-  font-size:11px;
-  color:var(--muted);
-  margin:7px 0;
-}
-
-.listing .price{
-  font-weight:900;
-  color:white;
-  margin-top:9px;
-}
-
-.pill{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#173e6b;
-  color:#bdeaff;
-  font-size:10px;
-  margin:4px 3px 0 0;
-}
-
-.orderbox{
-  padding:14px;
-  border:1px solid #3a6598;
-  border-radius:14px;
-  background:#071832;
-  margin-top:12px;
-  font-size:12px;
-  line-height:1.8;
-}
-
-.price-toggle{
-  background:transparent;
-  color:var(--cyan);
   border:0;
+  border-radius:50%;
+  padding:8px 12px;
+}
+
+.status {
+  font-size:12px;
+  color:var(--muted);
+  margin-top:12px;
+}
+
+.good{color:var(--green)}
+.danger{color:var(--red)}
+
+.bottom {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#071832;
+  border-top:1px solid #315783;
+  display:flex;
+  justify-content:space-around;
+  padding:13px 5px;
+}
+
+.bottom button {
+  background:none;
+  border:0;
+  color:var(--cyan);
   font-size:11px;
-  padding:5px 0;
 }
 
-.live{color:var(--green)}
-.offline{color:var(--red)}
-
-@media(min-width:700px){
-  .welcome h1{font-size:34px}
-  .wallet{padding:23px;min-height:165px}
-  .wallet-value{font-size:29px}
-  .services{grid-template-columns:repeat(3,1fr)}
-  .modal-back{align-items:center}
-}
-
-@media(max-width:370px){
+@media(max-width:370px) {
   .wallet-value{font-size:19px}
-  .action{font-size:11px}
-  .service{gap:8px;padding:12px 9px}
-  .service .ico{width:36px;height:36px}
-  .grid2{grid-template-columns:1fr}
+  .service{padding:10px 6px}
 }
 </style>
 </head>
 
 <body>
 
-<header class="top">
+<header>
   <div class="brand">Speedy<span>.ng</span></div>
-  <button class="profile" id="profileBtn" aria-label="Profile">👤</button>
+  <button class="profile" id="profileBtn">👤</button>
 </header>
 
-<main id="top">
+<main>
 
 <section class="welcome">
-  <div class="eyebrow">YOUR DIGITAL SERVICES HUB</div>
+  <div class="muted">YOUR DIGITAL SERVICES HUB</div>
   <h1>Welcome back 👋</h1>
-  <div class="muted" id="email">Loading your account…</div>
+  <div class="muted" id="email">Loading account...</div>
 </section>
 
 <div class="section-head">
   <h2>My Wallet</h2>
-  <button class="text-btn" id="refreshBtn">↻ Refresh</button>
+  <button id="refreshBtn">↻ Refresh</button>
 </div>
 
 <section class="wallets">
   <div class="wallet">
-    <span class="wallet-symbol">🇳🇬</span>
-    <div class="wallet-label">Naira balance</div>
+    <div>🇳🇬 Naira Balance</div>
     <div class="wallet-value" id="ngn">₦0.00</div>
-    <div class="wallet-foot">NGN wallet</div>
+    <small>NGN Wallet</small>
   </div>
 
   <div class="wallet usd">
-    <span class="wallet-symbol">🇺🇸</span>
-    <div class="wallet-label">Dollar balance</div>
+    <div>🇺🇸 Dollar Balance</div>
     <div class="wallet-value" id="usd">$0.00</div>
-    <div class="wallet-foot">USD wallet</div>
+    <small>USD Wallet</small>
   </div>
 </section>
 
 <div class="section-head">
-  <h2>Quick actions</h2>
+  <h2>Quick Actions</h2>
 </div>
 
 <section class="actions">
-  <button class="action" id="depositOpen">
-    <span class="ico">＋</span>Deposit
-  </button>
-  <button class="action" id="convertOpen">
-    <span class="ico">⇄</span>Convert
-  </button>
-  <button class="action" data-scroll="transactions">
-    <span class="ico">▤</span>Transactions
-  </button>
+  <button class="action" id="depositOpen">＋ Deposit</button>
+  <button class="action" id="convertOpen">⇄ Convert</button>
 </section>
 
-<div class="section-head" id="services">
-  <h2>Explore services</h2>
+<div class="section-head">
+  <h2>Explore Services</h2>
 </div>
 
 <section class="services">
   <button class="service" id="numbersOpen">
-    <span class="ico">📱</span>
-    <span>
-      <strong>Buy Numbers</strong>
-      <small>Live countries, services and available stock</small>
-    </span>
+    📱 <span><strong>Buy Numbers</strong>
+    <small>Visual Numbers</small></span>
   </button>
 
   <button class="service" id="boostOpen">
-    <span class="ico">🚀</span>
-    <span>
-      <strong>Social Boosting</strong>
-      <small>Service connection status</small>
-    </span>
+    🚀 <span><strong>Social Boosting</strong>
+    <small>Social media services</small></span>
   </button>
 
   <button class="service" id="logsOpen">
-    <span class="ico">📁</span>
-    <span>
-      <strong>Social Logs</strong>
-      <small>Browse available listings</small>
-    </span>
+    📁 <span><strong>Social Logs</strong>
+    <small>Browse listings</small></span>
   </button>
 </section>
 
-<div class="section-head" id="transactions">
-  <h2>Recent transactions</h2>
-  <button class="text-btn" id="txRefresh">Refresh</button>
+<div class="section-head">
+  <h2>Recent Transactions</h2>
+  <button id="txRefresh">Refresh</button>
 </div>
 
 <section class="panel" id="transactionList">
-  <div class="muted">Loading transactions…</div>
+  <div class="muted">Loading transactions...</div>
 </section>
 
-<div class="status" id="pageStatus">Connecting securely…</div>
+<div class="status" id="pageStatus">
+  Connecting securely...
+</div>
 
 </main>
 
 <nav class="bottom">
-  <div class="nav">
-    <button class="active" data-scroll="top"><span>⌂</span>Home</button>
-    <button data-scroll="services"><span>▦</span>Services</button>
-    <button data-scroll="transactions"><span>▤</span>Activity</button>
-    <button id="navProfile"><span>☻</span>Profile</button>
-  </div>
+  <button onclick="window.scrollTo(0,0)">⌂ Home</button>
+  <button onclick="document.getElementById('numbersOpen').scrollIntoView()">Services</button>
+  <button onclick="document.getElementById('transactionList').scrollIntoView()">Activity</button>
+  <button id="navProfile">Profile</button>
 </nav>
 
-<button class="support" id="supportBtn" aria-label="Support">☏</button>
-
 <div class="modal-back" id="modalBack">
-  <section class="modal" role="dialog" aria-modal="true">
+  <section class="modal">
     <button class="close" id="closeModal">×</button>
-    <h3 id="modalTitle">Wallet</h3>
+    <h3 id="modalTitle">Speedy.ng</h3>
     <p class="muted" id="modalIntro"></p>
     <div id="modalBody"></div>
-    <div id="modalStatus" class="status" aria-live="polite"></div>
+    <div class="status" id="modalStatus"></div>
   </section>
 </div>
+
 <script>
-"use strict";
+const API = "https://speedy-ng-api-staging.unicespotify.workers.dev";
+const $ = id => document.getElementById(id);
 
-const API="https://speedy-ng-api-staging.unicespotify.workers.dev";
+let customer = null;
+let wallet = {ngn:0, usd:0};
+let numberCountries = [];
+let numberServices = [];
+let selectedCountry = "";
+let selectedService = "";
+let selectedQuote = null;
+let numberOrders = [];
+let socialCategories = [];
+let socialListings = [];
+let boostServices = [];
+let selectedLog = null;
+let selectedBoost = null;
 
-const token=
-  localStorage.getItem("speedy_customer_token")||
-  sessionStorage.getItem("speedy_customer_token");
+function token(){
+  return localStorage.getItem("speedy_customer_token") ||
+         sessionStorage.getItem("speedy_customer_token") || "";
+}
 
-const $=id=>document.getElementById(id);
+async function api(path, method="GET", body=null, extra={}){
+  const headers = {
+    "Authorization":"Bearer "+token(),
+    "Content-Type":"application/json",
+    ...extra
+  };
 
-let customer={};
-let walletData={};
-let depositPoll=null;
-let activeDeposit=null;
-let numberCountries=[];
-let numberServices=[];
-let selectedQuote=null;
-let logListings=[];
-let debounceTimer=null;
+  const options = {method, headers};
+  if(body) options.body = JSON.stringify(body);
 
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
-}[c]));
+  const response = await fetch(API+path, options);
+  const data = await response.json().catch(()=>({}));
 
-const money=(v,c="USD")=>
-  (c==="NGN"?"₦":"$")+
-  Number(v||0).toLocaleString(
-    c==="NGN"?"en-NG":"en-US",
-    {minimumFractionDigits:2,maximumFractionDigits:2}
-  );
-
-const key=()=>
-  ("sp"+Date.now()+Math.random().toString(36).slice(2,14))
-  .replace(/[^a-zA-Z0-9._:-]/g,"")
-  .slice(0,60);
-
-async function api(path,method="GET",body,headers={}){
-  const r=await fetch(API+path,{
-    method,
-    headers:{
-      Authorization:"Bearer "+token,
-      Accept:"application/json",
-      ...(body?{"Content-Type":"application/json"}:{}),
-      ...headers
-    },
-    ...(body?{body:JSON.stringify(body)}:{})
-  });
-
-  let d={};
-  try{d=await r.json()}catch{}
-
-  if(!r.ok||d.ok===false||d.success===false){
-    throw Error(d.message||d.error||`Request failed (${r.status})`);
+  if(!response.ok){
+    throw new Error(data.message || data.error || "Request failed.");
   }
-
-  return d;
+  return data;
 }
 
-function status(t,bad=false){
-  $("pageStatus").textContent=t;
-  $("pageStatus").className="status"+(bad?" danger":"");
+function unwrap(data, key){
+  if(key && data && data[key] !== undefined) return data[key];
+  if(data && data.data !== undefined) return data.data;
+  return data;
 }
 
-function modal(title,intro,html){
-  clearInterval(depositPoll);
-  $("modalTitle").textContent=title;
-  $("modalIntro").textContent=intro||"";
-  $("modalBody").innerHTML=html;
-  $("modalStatus").textContent="";
-  $("modalStatus").className="status";
+function money(value, currency="NGN"){
+  const amount = Number(value || 0);
+  return new Intl.NumberFormat("en-NG",{
+    style:"currency", currency, maximumFractionDigits:2
+  }).format(amount);
+}
+
+function minor(value){
+  return Number(value || 0)/100;
+}
+
+function showStatus(message, error=false){
+  const box = $("pageStatus");
+  if(!box) return;
+  box.textContent = message;
+  box.style.color = error ? "#ff7777" : "#42e6b0";
+}
+
+function modal(title, intro="", html=""){
+  $("modalTitle").textContent = title;
+  $("modalIntro").textContent = intro;
+  $("modalBody").innerHTML = html;
+  $("modalStatus").textContent = "";
   $("modalBack").classList.add("show");
 }
 
 function closeModal(){
-  clearInterval(depositPoll);
-  depositPoll=null;
   $("modalBack").classList.remove("show");
 }
 
-$("closeModal").onclick=closeModal;
-
-$("modalBack").addEventListener("click",e=>{
-  if(e.target===$("modalBack"))closeModal();
+$("closeModal").onclick = closeModal;
+$("modalBack").addEventListener("click", e=>{
+  if(e.target === $("modalBack")) closeModal();
 });
 
-/* CUSTOMER ACCOUNT AND WALLETS */
+async function loadProfile(){
+  const data = await api("/api/customer/me");
+  customer = unwrap(data,"customer") || unwrap(data);
+  const email = customer.email || "";
+  $("email").textContent = email;
+}
 
-async function refreshAll(){
-  if(!token){
-    location.replace("/");
-    return;
-  }
+async function loadWallet(){
+  const data = await api("/api/customer/wallet");
+  const w = unwrap(data,"wallet") || unwrap(data);
+  wallet.ngn = Number(w.ngn_balance ?? w.ngn ?? 0);
+  wallet.usd = Number(w.usd_balance ?? w.usd ?? 0);
+
+  $("ngn").textContent = money(wallet.ngn);
+  $("usd").textContent = money(wallet.usd,"USD");
+}
+
+async function loadTransactions(){
+  const box = $("transactionList");
+  box.innerHTML = "<p>Loading transactions...</p>";
 
   try{
-    const [m,w,t]=await Promise.all([
-      api("/api/customer/me"),
-      api("/api/customer/wallet"),
-      api("/api/customer/wallet/transactions")
-    ]);
-
-    customer=m.customer||{};
-    walletData=w;
-
-    $("email").textContent=customer.email||"Your Speedy.ng account";
-    $("ngn").textContent=money(w.balances?.NGN,"NGN");
-    $("usd").textContent=money(w.balances?.USD,"USD");
-
-    renderTx(t.transactions||[]);
-    status("Your wallet and account are up to date.");
-
-  }catch(e){
-    status(e.message,true);
-
-    if(/unauthori[sz]ed|token|session|login/i.test(e.message)){
-      setTimeout(()=>location.replace("/"),1000);
-    }
-  }
-}
-
-function renderTx(rows){
-  $("transactionList").innerHTML=rows.length
-    ?rows.slice(0,15).map(x=>`
-      <div class="tx">
-        <div>
-          <div class="tx-title">${esc(x.description||x.type||"Wallet transaction")}</div>
-          <div class="tx-date">${esc(x.created_at||"")}</div>
-        </div>
-        <div>
-          <div class="tx-amount">
-            ${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}
-          </div>
-          <div class="tx-status">${esc(x.status||"Pending")}</div>
-        </div>
-      </div>
-    `).join("")
-    :'<div class="muted">No transactions yet. Your activity will appear here.</div>';
-}
-
-/* WALLET DEPOSIT */
-
-function deposit(){
-  modal(
-    "Add money",
-    "Make a secure Flutterwave payment. Your wallet should update after the backend verifies the payment.",
-    `
-      <label>Amount in naira (₦)</label>
-      <input id="depAmount" type="number" min="100" max="5000000" step=".01" placeholder="Enter amount">
-      <button class="primary" id="depCreate">Continue to payment</button>
-    `
-  );
-
-  $("depCreate").onclick=createDeposit;
-}
-
-async function createDeposit(){
-  const amount=Number($("depAmount").value);
-
-  if(
-    !Number.isFinite(amount)||
-    amount<100||
-    amount>5000000||
-    Math.round(amount*100)!==amount*100
-  ){
-    $("modalStatus").textContent="Enter ₦100 to ₦5,000,000, up to 2 decimal places.";
-    return;
-  }
-
-  const b=$("depCreate");
-  b.disabled=true;
-  b.textContent="Creating secure payment…";
-
-  try{
-    const d=await api(
-      "/api/customer/wallet/deposit",
-      "POST",
-      {amount}
-    );
-
-    activeDeposit={
-      reference:d.reference,
-      amount:Number(d.amount??amount)
-    };
-
-    const p=d.paymentInstructions||{};
-    const paymentUrl=
-      d.payment_link||
-      d.paymentLink||
-      d.checkout_url||
-      d.checkoutUrl||
-      p.paymentLink||
-      p.payment_link||
-      p.checkout_url||
-      "";
-
-    $("modalBody").innerHTML=`
-      <div class="orderbox">
-        <span class="pill">FLUTTERWAVE PAYMENT</span>
-        <h3 style="margin-top:12px">${esc(money(activeDeposit.amount,"NGN"))}</h3>
-        <p class="muted">Payment reference</p>
-        <strong>${esc(d.reference||"—")}</strong>
-        ${
-          paymentUrl
-          ?`<a class="primary" style="display:block;text-align:center;text-decoration:none" href="${esc(paymentUrl)}">Pay securely with Flutterwave</a>`
-          :`<div class="result">Your payment session was created. Follow the payment instructions returned by the server.</div>`
-        }
-        <div class="result">
-          <span class="good" id="depState">Waiting for verified payment confirmation…</span>
-          <p class="muted">Keep this page open. Your wallet will refresh automatically when a matching successful transaction appears.</p>
-        </div>
-      </div>
-      <button class="secondary" id="depCheck">Check payment status</button>
-      <button class="secondary" id="depDone">Close</button>
-    `;
-
-    $("depDone").onclick=closeModal;
-    $("depCheck").onclick=checkDeposit;
-    startDepositPoll();
-
-    if(paymentUrl){
-      window.open(paymentUrl,"_blank","noopener");
-    }
-
-  }catch(e){
-    $("modalStatus").textContent=e.message;
-    $("modalStatus").className="status danger";
-  }finally{
-    b.disabled=false;
-    b.textContent="Continue to payment";
-  }
-}
-
-function startDepositPoll(){
-  clearInterval(depositPoll);
-  depositPoll=setInterval(checkDeposit,7000);
-}
-
-async function checkDeposit(){
-  if(!activeDeposit)return;
-
-  try{
-    const [w,t]=await Promise.all([
-      api("/api/customer/wallet"),
-      api("/api/customer/wallet/transactions")
-    ]);
-
-    walletData=w;
-
-    $("ngn").textContent=money(w.balances?.NGN,"NGN");
-    $("usd").textContent=money(w.balances?.USD,"USD");
-
-    renderTx(t.transactions||[]);
-
-    const expectedMinor=Math.round(activeDeposit.amount*100);
-    const reference=String(activeDeposit.reference||"");
-
-    const match=(t.transactions||[]).find(x=>{
-      const refs=[
-        String(x.reference||""),
-        String(x.payment_reference||""),
-        String(x.reference||"").replace(/^FLW-/,"")
-      ];
-
-      return refs.includes(reference)&&
-        Number(x.amount_minor)===expectedMinor&&
-        String(x.currency||"").toUpperCase()==="NGN"&&
-        ["successful","completed","success"].includes(
-          String(x.status||"").toLowerCase()
-        );
-    });
-
-    if(match){
-      $("depState").textContent="Payment confirmed. Your wallet transaction is recorded.";
-      $("depState").className="good";
-      clearInterval(depositPoll);
-      depositPoll=null;
-      setTimeout(closeModal,2500);
-    }else{
-      $("depState").textContent="We are still waiting for verified payment confirmation. Do not pay again until you check your payment status.";
-    }
-
-  }catch(e){
-    $("depState").textContent="Unable to check right now. Please try again shortly.";
-  }
-}
-
-/* CURRENCY CONVERSION */
-
-function convert(){
-  const rate=Number(walletData.rate||1500);
-
-  modal(
-    "Convert currency",
-    "Move money between your NGN and USD wallets.",
-    `
-      <label>Convert from</label>
-      <select id="convFrom">
-        <option value="NGN">🇳🇬 NGN wallet</option>
-        <option value="USD">🇺🇸 USD wallet</option>
-      </select>
-
-      <label>Amount</label>
-      <input id="convAmount" type="number" min=".01" step=".01" placeholder="Enter amount">
-
-      <p class="muted">Configured rate: ₦${rate.toLocaleString("en-NG")} = $1.00</p>
-
-      <button class="primary" id="convGo">Convert funds</button>
-    `
-  );
-
-  $("convGo").onclick=async()=>{
-    const from=$("convFrom").value;
-    const amount=Number($("convAmount").value);
-
-    if(!(amount>0)||Math.round(amount*100)!==amount*100){
-      $("modalStatus").textContent="Enter a valid amount with up to 2 decimal places.";
+    const data = await api("/api/customer/wallet/transactions");
+    const rows = unwrap(data,"transactions") || [];
+    if(!rows.length){
+      box.innerHTML = "<p>No transactions yet.</p>";
       return;
     }
 
-    const b=$("convGo");
-    b.disabled=true;
-
-    try{
-      const d=await api(
-        "/api/customer/wallet/convert",
-        "POST",
-        {
-          from,
-          to:from==="NGN"?"USD":"NGN",
-          amount_minor:Math.round(amount*100)
-        }
-      );
-
-      $("modalStatus").textContent=d.message||"Conversion completed.";
-      $("modalStatus").className="status good";
-      await refreshAll();
-
-    }catch(e){
-      $("modalStatus").textContent=e.message;
-      $("modalStatus").className="status danger";
-    }finally{
-      b.disabled=false;
-    }
-  };
-}
-
-/* PROFILE AND LOGOUT */
-
-function profile(){
-  modal(
-    "Profile & settings",
-    "Your Speedy.ng account information.",
-    `
-      <div class="result">
-        Email: ${esc(customer.email||"")}<br>
-        Account status: ${esc(customer.status||"Active")}<br>
-        Email verified: ${customer.email_verified?"Yes":"Not confirmed"}
+    box.innerHTML = rows.slice(0,12).map(t=>`
+      <div class="transaction-row">
+        <strong>${t.description || t.type || "Wallet transaction"}</strong>
+        <span>${money(minor(t.amount_minor),t.currency || "NGN")}</span>
+        <small>${t.status || ""}</small>
       </div>
-      <button class="primary" id="logout">Log out securely</button>
-    `
-  );
-
-  $("logout").onclick=async()=>{
-    try{
-      await api("/api/customer/logout","POST",{});
-    }catch{}
-
-    localStorage.removeItem("speedy_customer_token");
-    sessionStorage.removeItem("speedy_customer_token");
-    localStorage.removeItem("speedy_customer");
-    sessionStorage.removeItem("speedy_customer");
-
-    location.replace("/");
-  };
-}
-
-/* CUSTOMER SUPPORT */
-
-function support(){
-  modal(
-    "Support",
-    "Need help with a payment or order?",
-    `
-      <div class="result">
-        Keep your payment reference or order reference available when contacting Speedy.ng support.
-        <br><br>
-        Never share your password or email verification code.
-      </div>
-    `
-  );
-}
-
-/* SHARED DATA HELPERS */
-
-function unwrap(x){
-  if(Array.isArray(x))return x;
-  if(!x||typeof x!=="object")return [];
-
-  for(const k of [
-    "data","results","items","countries",
-    "services","listings","categories","prices"
-  ]){
-    if(Array.isArray(x[k]))return x[k];
-  }
-
-  return [];
-}
-
-function label(x){
-  return String(
-    x?.name??
-    x?.title??
-    x?.country_name??
-    x?.country??
-    x?.service_name??
-    x?.service??
-    x?.slug??
-    x?.code??
-    ""
-  ).trim();
-}
-
-function optionValue(x){
-  return String(x?.code??x?.id??x?.iso??x?.slug??label(x));
-}
-/* VISUAL NUMBERS */
-
-function showNumbers(){
-  modal(
-    "Buy Numbers",
-    "Search for a country and service. Availability and price are checked before purchase.",
-    `
-      <label>Search country</label>
-      <input id="countrySearch" placeholder="Type a country name">
-
-      <label>Country</label>
-      <select id="countrySelect">
-        <option value="">Loading countries…</option>
-      </select>
-
-      <label>Search service</label>
-      <input id="serviceSearch" placeholder="Type a service name">
-
-      <label>Service</label>
-      <select id="serviceSelect">
-        <option value="">Loading services…</option>
-      </select>
-
-      <div id="numberQuote" class="result">
-        Choose a country and service to check availability.
-      </div>
-
-      <button class="primary" id="numberBuy" disabled>Buy number</button>
-      <div id="numberOrder"></div>
-    `
-  );
-
-  loadNumbers();
-}
-
-async function loadNumbers(){
-  try{
-    const [c,s]=await Promise.all([
-      api("/api/customer/visual-numbers/countries"),
-      api("/api/customer/visual-numbers/services")
-    ]);
-
-    numberCountries=unwrap(c.countries||c);
-    numberServices=unwrap(s.services||s);
-
-    fillSelect("countrySelect",numberCountries);
-    fillSelect("serviceSelect",numberServices);
-
-    $("countrySearch").oninput=()=>{
-      filterSelect("countrySelect",numberCountries,$("countrySearch").value);
-    };
-
-    $("serviceSearch").oninput=()=>{
-      filterSelect("serviceSelect",numberServices,$("serviceSearch").value);
-    };
-
-    $("countrySelect").onchange=loadQuote;
-    $("serviceSelect").onchange=loadQuote;
-    $("numberBuy").onclick=buyNumber;
-
-    if(!numberCountries.length||!numberServices.length){
-      throw Error("The live country or service list is empty. Please refresh later.");
-    }
-
+    `).join("");
   }catch(e){
-    $("numberQuote").textContent=e.message;
+    box.innerHTML = "<p>Could not load transactions.</p>";
   }
 }
 
-function fillSelect(id,rows){
-  const select=$(id);
-  const old=select.value;
-
-  select.innerHTML=`
-    <option value="">Select an option</option>
-    ${rows.map((x,i)=>`
-      <option value="${esc(optionValue(x))}">
-        ${esc(label(x)||`Option ${i+1}`)}
-      </option>
-    `).join("")}
-  `;
-
-  if(rows.some(x=>optionValue(x)===old))select.value=old;
-}
-
-function filterSelect(id,rows,q){
-  const filtered=rows.filter(x=>
-    label(x).toLowerCase().includes(q.toLowerCase())
-  );
-  fillSelect(id,filtered);
-}
-
-async function loadQuote(){
-  const c=$("countrySelect").value;
-  const s=$("serviceSelect").value;
-
-  if(!c||!s)return;
-
-  selectedQuote=null;
-  $("numberBuy").disabled=true;
-  $("numberQuote").textContent="Checking live price and availability…";
-
+async function refreshDashboard(){
   try{
-    const d=await api(
-      `/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`
-    );
+    await Promise.all([loadProfile(),loadWallet()]);
+    await loadTransactions();
+    showStatus("Your account is up to date.");
+  }catch(e){
+    showStatus(e.message,true);
+  }
+}
 
-    const q=d.quote||{};
-    const priceMinor=Number(q.customer_price_minor);
-    const stock=q.stock??"Check at purchase";
-    const currency=q.currency||"USD";
+$("refreshBtn").onclick = refreshDashboard;
+$("txRefresh").onclick = loadTransactions;
 
-    if(!Number.isFinite(priceMinor)||priceMinor<=0){
-      throw Error("A valid price is not currently available for this service.");
+$("depositOpen").onclick = ()=>{
+  modal("Add Money","Choose the amount you want to deposit.",`
+    <label>Amount in Naira</label>
+    <input id="depositAmount" type="number" min="100" max="5000000" placeholder="Enter amount">
+    <button class="primary-btn" id="startDeposit">Continue to Payment</button>
+  `);
+
+  $("startDeposit").onclick = async ()=>{
+    const amount = Number($("depositAmount").value);
+    if(amount < 100 || amount > 5000000){
+      $("modalStatus").textContent = "Minimum ₦100. Maximum ₦5,000,000.";
+      return;
     }
 
-    const price=priceMinor/100;
-    const rate=Number(walletData.rate||1500);
-    const available=Number(stock)>0;
-    const stockKnown=stock!==null&&stock!==undefined&&stock!=="";
+    try{
+      $("startDeposit").disabled = true;
+      const result = await api("/api/customer/wallet/deposit","POST",{
+        amount_minor:Math.round(amount*100),
+        currency:"NGN"
+      });
 
-    selectedQuote={country:c,service:s,priceMinor,stock,currency};
+      const checkout = result.checkout_url ||
+        result.payment_link ||
+        result.data?.checkout_url;
 
-    const ngnEquivalent=currency==="USD"
-      ?money(price*rate,"NGN")
-      :"";
+      if(checkout){
+        window.location.href = checkout;
+      }else{
+        $("modalStatus").textContent =
+          result.message || "Payment link was not returned. Please try again.";
+      }
+    }catch(e){
+      $("modalStatus").textContent = e.message;
+    }finally{
+      $("startDeposit").disabled = false;
+    }
+  };
+};
 
-    const countryName=label(numberCountries.find(x=>optionValue(x)===c))||c;
-    const serviceName=label(numberServices.find(x=>optionValue(x)===s))||s;
+$("convertOpen").onclick = ()=>{
+  modal("Convert Wallet","Convert between your Naira and Dollar wallets.",`
+    <label>Conversion direction</label>
+    <select id="convertDirection">
+      <option value="NGN_TO_USD">Naira to Dollar</option>
+      <option value="USD_TO_NGN">Dollar to Naira</option>
+    </select>
+    <label>Amount</label>
+    <input id="convertAmount" type="number" min="1" placeholder="Enter amount">
+    <button class="primary-btn" id="convertNow">Convert Wallet</button>
+  `);
 
-    $("numberQuote").innerHTML=`
-      <strong>${esc(countryName)} · ${esc(serviceName)}</strong>
-      <br><br>
-      Price: <strong>${esc(money(price,currency))}</strong>
-      ${ngnEquivalent?`
-        <br>
-        <button class="price-toggle" id="showNgn">⌄ Show NGN price</button>
-        <div id="ngnEquivalent" class="hidden">${esc(ngnEquivalent)}</div>
-      `:""}
-      <br>
-      Availability:
-      <strong class="${stockKnown&&Number(stock)<=0?"offline":"live"}">
-        ${stockKnown&&Number(stock)<=0?"OFFLINE":"LIVE"}
-      </strong>
-      <br>
-      Available stock: <strong>${esc(stock)}</strong>
-      <br>
-      <span class="muted">The backend must verify the final price and stock again before charging your wallet.</span>
+  $("convertNow").onclick = async ()=>{
+    const amount = Number($("convertAmount").value);
+    const direction = $("convertDirection").value;
+    if(!amount || amount <= 0){
+      $("modalStatus").textContent = "Enter a valid amount.";
+      return;
+    }
+
+    try{
+      $("convertNow").disabled = true;
+      await api("/api/customer/wallet/convert","POST",{
+        direction, amount
+      });
+      $("modalStatus").textContent = "Conversion completed.";
+      await loadWallet();
+    }catch(e){
+      $("modalStatus").textContent = e.message;
+    }finally{
+      $("convertNow").disabled = false;
+    }
+  };
+};
+
+async function logout(){
+  try{ await api("/api/customer/logout","POST",{}); }catch(e){}
+  localStorage.removeItem("speedy_customer_token");
+  sessionStorage.removeItem("speedy_customer_token");
+  window.location.href = "login.html";
+}
+
+$("profileBtn").onclick = ()=>{
+  modal("My Account","Your Speedy.ng account.",`
+    <p>${customer?.email || ""}</p>
+    <button class="primary-btn" id="logoutNow">Log Out</button>
+  `);
+  $("logoutNow").onclick = logout;
+};
+
+$("navProfile").onclick = ()=> $("profileBtn").click();
+
+</script>
+<script>
+async function loadNumberCountries(){
+  const data = await api("/api/customer/visual-numbers/countries");
+  numberCountries = unwrap(data,"countries") || [];
+}
+
+async function loadNumberServices(){
+  const data = await api("/api/customer/visual-numbers/services");
+  numberServices = unwrap(data,"services") || [];
+}
+
+function openNumbers(){
+  modal("Buy Numbers","Choose a country and service.",`
+    <label>Search country</label>
+    <input id="countrySearch" placeholder="Search country">
+    <select id="countrySelect"><option value="">Choose country</option></select>
+
+    <label>Search service</label>
+    <input id="serviceSearch" placeholder="Search service">
+    <select id="serviceSelect"><option value="">Choose service</option></select>
+
+    <div id="numberQuote"></div>
+    <button class="primary-btn" id="getQuote">Check Price & Availability</button>
+    <button class="secondary-btn" id="numberHistory">Order History</button>
+  `);
+
+  loadNumberCountries().then(renderCountries).catch(showNumberError);
+  loadNumberServices().then(renderServices).catch(showNumberError);
+
+  $("countrySearch").oninput = renderCountries;
+  $("serviceSearch").oninput = renderServices;
+
+  $("countrySelect").onchange = ()=>{
+    selectedCountry = $("countrySelect").value;
+    selectedQuote = null;
+    $("numberQuote").innerHTML = "";
+  };
+
+  $("serviceSelect").onchange = ()=>{
+    selectedService = $("serviceSelect").value;
+    selectedQuote = null;
+    $("numberQuote").innerHTML = "";
+  };
+
+  $("getQuote").onclick = getNumberQuote;
+  $("numberHistory").onclick = loadNumberHistory;
+}
+
+function renderCountries(){
+  const search = $("countrySearch").value.toLowerCase();
+  const rows = numberCountries.filter(x=>{
+    const name = typeof x === "string" ? x : (x.name || x.country || "");
+    return name.toLowerCase().includes(search);
+  });
+
+  $("countrySelect").innerHTML =
+    '<option value="">Choose country</option>' +
+    rows.map(x=>{
+      const name = typeof x === "string" ? x : (x.name || x.country);
+      return `<option value="${name}">${name}</option>`;
+    }).join("");
+}
+
+function renderServices(){
+  const search = $("serviceSearch").value.toLowerCase();
+  const rows = numberServices.filter(x=>{
+    const name = typeof x === "string" ? x : (x.name || x.service || "");
+    return name.toLowerCase().includes(search);
+  });
+
+  $("serviceSelect").innerHTML =
+    '<option value="">Choose service</option>' +
+    rows.map(x=>{
+      const name = typeof x === "string" ? x : (x.name || x.service);
+      return `<option value="${name}">${name}</option>`;
+    }).join("");
+}
+
+function showNumberError(e){
+  $("numberQuote").textContent = e.message;
+}
+
+async function getNumberQuote(){
+  selectedCountry = $("countrySelect").value;
+  selectedService = $("serviceSelect").value;
+
+  if(!selectedCountry || !selectedService){
+    $("numberQuote").textContent = "Choose a country and service first.";
+    return;
+  }
+
+  try{
+    $("getQuote").disabled = true;
+    const path = "/api/customer/visual-numbers/quote?country=" +
+      encodeURIComponent(selectedCountry) +
+      "&service=" + encodeURIComponent(selectedService);
+
+    const data = await api(path);
+    selectedQuote = unwrap(data,"quote") || unwrap(data);
+
+    const stock = Number(selectedQuote.stock);
+    const status = Number.isFinite(stock)
+      ? (stock > 0 ? "ONLINE" : "OFFLINE")
+      : "STATUS UNKNOWN";
+
+    $("numberQuote").innerHTML = `
+      <div class="service-card">
+        <strong>${selectedCountry} — ${selectedService}</strong>
+        <p>${money(minor(selectedQuote.customer_price_minor),"USD")}</p>
+        <p>Availability: ${status}</p>
+        <p>Available quantity: ${
+          Number.isFinite(stock) ? stock : "Not confirmed"
+        }</p>
+        <button class="primary-btn" id="reviewNumber">Review Order</button>
+      </div>
     `;
 
-    if(ngnEquivalent){
-      $("showNgn").onclick=()=>{
-        const box=$("ngnEquivalent");
-        box.classList.toggle("hidden");
-        $("showNgn").textContent=box.classList.contains("hidden")
-          ?"⌄ Show NGN price"
-          :"⌃ Hide NGN price";
-      };
-    }
-
-    $("numberBuy").disabled=stockKnown&&Number(stock)<=0;
-
+    $("reviewNumber").onclick = reviewNumberOrder;
   }catch(e){
-    $("numberQuote").textContent=e.message;
+    $("numberQuote").textContent = e.message;
+  }finally{
+    $("getQuote").disabled = false;
   }
 }
 
-async function buyNumber(){
-  if(!selectedQuote)return;
+function reviewNumberOrder(){
+  if(!selectedQuote || Number(selectedQuote.stock) <= 0){
+    $("modalStatus").textContent = "This service is not available.";
+    return;
+  }
 
-  const b=$("numberBuy");
-  b.disabled=true;
-  b.textContent="Requesting number…";
+  const price = money(minor(selectedQuote.customer_price_minor),"USD");
 
-  const idempotencyKey=key();
+  $("numberQuote").innerHTML = `
+    <div class="service-card">
+      <h3>Confirm Your Order</h3>
+      <p>Country: ${selectedCountry}</p>
+      <p>Service: ${selectedService}</p>
+      <p>Price: ${price}</p>
+      <p>This amount will be deducted from your USD wallet.</p>
+      <button class="primary-btn" id="confirmNumber">Confirm & Place Order</button>
+    </div>
+  `;
+
+  $("confirmNumber").onclick = purchaseNumber;
+}
+
+async function purchaseNumber(){
+  const button = $("confirmNumber");
+  button.disabled = true;
+  button.textContent = "Processing...";
+
+  const key = crypto.randomUUID();
 
   try{
-    const d=await api(
+    const result = await api(
       "/api/customer/visual-numbers/purchase",
       "POST",
       {
-        country:selectedQuote.country,
-        service:selectedQuote.service,
-        idempotency_key:idempotencyKey
+        country:selectedQuote.country || selectedCountry,
+        service:selectedQuote.service || selectedService,
+        idempotency_key:key
       },
-      {"Idempotency-Key":idempotencyKey}
+      {"Idempotency-Key":key}
     );
 
-    const o=d.order||{};
-
-    $("numberOrder").innerHTML=`
-      <div class="orderbox">
-        <strong>${esc(d.message||"Number order created")}</strong>
-        <br><br>
-        Phone:
-        <strong>${esc(o.phone_number||o.provider_phone||d.delivery?.phone_number||"Waiting for number")}</strong>
-        <br>
-        Order: ${esc(o.id||d.order_id||"")}
-        <br>
-        Status: ${esc(o.status||d.status||"processing")}
-        <br>
-        <button class="secondary" id="checkNumber">Check SMS code</button>
+    const order = unwrap(result,"order") || unwrap(result);
+    $("numberQuote").innerHTML = `
+      <div class="service-card">
+        <h3>Order Submitted</h3>
+        <p>Order ID: ${order.id || "Processing"}</p>
+        <p>${order.message || "Your order has been submitted."}</p>
       </div>
     `;
-
-    $("checkNumber").onclick=()=>checkNumber(o.id||d.order_id);
-    await refreshAll();
-
+    await loadWallet();
+    await loadTransactions();
   }catch(e){
-    $("numberOrder").innerHTML=`<div class="result danger">${esc(e.message)}</div>`;
-  }finally{
-    b.disabled=false;
-    b.textContent="Buy number";
+    $("modalStatus").textContent = e.message;
+    button.disabled = false;
+    button.textContent = "Confirm & Place Order";
   }
 }
 
-async function checkNumber(id){
-  if(!id)return;
+async function loadNumberHistory(){
+  $("numberQuote").innerHTML = "<p>Loading your orders...</p>";
 
   try{
-    const d=await api(
-      `/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`,
-      "POST",
-      {}
-    );
+    const data = await api("/api/customer/orders");
+    const rows = data.orders || unwrap(data,"orders") || [];
 
-    const o=d.order||{};
+    if(!rows.length){
+      $("numberQuote").innerHTML = "<p>No orders found.</p>";
+      return;
+    }
 
-    $("numberOrder").innerHTML=`
-      <div class="orderbox">
-        Status: ${esc(d.status||o.status||"checking")}
-        <br>
-        Phone: ${esc(o.phone_number||o.provider_phone||"")}
-        <br>
-        SMS code:
-        <strong class="good">${esc(d.delivery?.sms_code||o.sms_code||"Not received yet")}</strong>
-        <br>
-        ${esc(d.message||"Refresh to check again.")}
-        <br>
-        <button class="secondary" id="checkNumber">Check again</button>
+    $("numberQuote").innerHTML = rows.map(o=>`
+      <div class="service-card">
+        <strong>${o.service || o.category || "Order"}</strong>
+        <p>${o.country || ""}</p>
+        <p>Status: ${o.status || "Pending"}</p>
+        <p>Order ID: ${o.id}</p>
+        <small>${o.created_at || ""}</small>
       </div>
-    `;
-
-    $("checkNumber").onclick=()=>checkNumber(id);
-    await refreshAll();
-
+    `).join("");
   }catch(e){
-    $("numberOrder").innerHTML=`<div class="result">${esc(e.message)}</div>`;
+    $("numberQuote").textContent = e.message;
   }
 }
 
-/* SOCIAL LOGS */
+$("numbersOpen").onclick = openNumbers;
 
-function showLogs(){
-  modal(
-    "Social Logs",
-    "Search listings by service or category.",
-    `
-      <label>Search listings</label>
-      <input id="logSearch" placeholder="Search by service or keyword">
+</script>
+<script>
+async function openSocialLogs(){
+  modal("Social Logs","Search available listings and select what you need.",`
+    <input id="logSearch" placeholder="Search listings">
+    <select id="logCategory"><option value="">All categories</option></select>
+    <div id="logResults">Loading listings...</div>
+  `);
 
-      <label>Category</label>
-      <select id="logCategory">
-        <option value="">All categories</option>
-      </select>
-
-      <div id="logList"><p class="muted">Loading listings…</p></div>
-    `
-  );
-
-  loadLogs();
-}
-
-async function loadLogs(){
   try{
-    const c=await api("/api/customer/social-logs/categories");
-    const cats=unwrap(c.categories||c);
+    const data = await api("/api/customer/social-logs/categories");
+    socialCategories = unwrap(data,"categories") || [];
 
-    $("logCategory").innerHTML=
-      '<option value="">All categories</option>'+
-      cats.map(x=>`
-        <option value="${esc(x.id??x.category_id??x.slug??"")}">
-          ${esc(label(x))}
-        </option>
+    $("logCategory").innerHTML =
+      '<option value="">All categories</option>' +
+      socialCategories.map(c=>`
+        <option value="${c.id}">${c.name || c.title}</option>
       `).join("");
 
-    $("logCategory").onchange=fetchLogs;
-    $("logSearch").oninput=()=>debounce(fetchLogs,450);
-
-    await fetchLogs();
-
+    $("logSearch").oninput = loadSocialListings;
+    $("logCategory").onchange = loadSocialListings;
+    await loadSocialListings();
   }catch(e){
-    $("logList").textContent=e.message;
+    $("logResults").textContent = e.message;
   }
 }
 
-function debounce(fn,ms){
-  clearTimeout(debounceTimer);
-  debounceTimer=setTimeout(fn,ms);
-}
+async function loadSocialListings(){
+  const search = $("logSearch").value;
+  const category = $("logCategory").value;
 
-async function fetchLogs(){
+  let path = "/api/customer/social-logs/listings?per_page=50&page=1";
+  path += "&search="+encodeURIComponent(search);
+  if(category) path += "&category_id="+encodeURIComponent(category);
+
   try{
-    const q=new URLSearchParams({per_page:"50",page:"1"});
+    const data = await api(path);
+    socialListings = unwrap(data,"listings") || [];
 
-    if($("logSearch").value)q.set("search",$("logSearch").value);
-    if($("logCategory").value)q.set("category_id",$("logCategory").value);
+    $("logResults").innerHTML = socialListings.map((item,i)=>`
+      <div class="service-card">
+        <strong>${item.name || item.title || "Listing"}</strong>
+        <p>${item.description || ""}</p>
+        <p>${money(minor(item.price_minor),"USD")}</p>
+        <button class="primary-btn" data-log="${i}">View Listing</button>
+      </div>
+    `).join("") || "<p>No listings found.</p>";
 
-    const d=await api("/api/customer/social-logs/listings?"+q.toString());
-
-    logListings=unwrap(d.listings||d);
-
-    $("logList").innerHTML=logListings.length
-      ?logListings.map(x=>{
-        const title=x.title||x.name||x.slug||"Social Log";
-        const slug=x.slug||x.listing_slug||x.id;
-
-        return `
-          <article class="listing">
-            <strong>${esc(title)}</strong>
-            <p>${esc(x.category_name||x.category||"Available listing")}</p>
-            <p>Stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
-            <div class="price">
-              ${x.customer_price_minor
-                ?esc(money(x.customer_price_minor/100,"USD"))
-                :"Price checked at checkout"}
-            </div>
-            <button class="secondary" data-log="${esc(slug)}">View & purchase</button>
-          </article>
-        `;
-      }).join("")
-      :'<div class="result">No matching listings were returned. Try another search.</div>';
-
-    $("logList").querySelectorAll("[data-log]").forEach(b=>{
-      b.onclick=()=>inspectLog(b.dataset.log);
+    document.querySelectorAll("[data-log]").forEach(button=>{
+      button.onclick = ()=>showLogDetails(Number(button.dataset.log));
     });
-
   }catch(e){
-    $("logList").textContent=e.message;
+    $("logResults").textContent = e.message;
   }
 }
 
-async function inspectLog(slug){
+async function showLogDetails(index){
+  selectedLog = socialListings[index];
+  const slug = selectedLog.slug;
+  if(!slug) return;
+
   try{
-    const x=logListings.find(item=>
-      String(item.slug||item.listing_slug||item.id)===String(slug)
-    )||{};
+    const data = await api(
+      "/api/customer/social-logs/listing?slug="+encodeURIComponent(slug)
+    );
+    selectedLog = unwrap(data,"listing") || unwrap(data);
 
-    const title=x.title||x.name||slug;
-    const price=Number(x.customer_price_minor||0);
-
-    $("logList").innerHTML=`
-      <div class="listing">
-        <strong>${esc(title)}</strong>
-        <p>${esc(x.description||x.category_name||"Social Logs listing")}</p>
-        <p>Available stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
-        <div class="price">
-          ${price?esc(money(price/100,"USD")):"Price verified at checkout"}
-        </div>
-
-        <label>Quantity (1–10)</label>
-        <input id="logQty" type="number" min="1" max="10" value="1">
-
-        <button class="primary" id="logBuy">Purchase with USD wallet</button>
-        <div id="logPurchaseResult"></div>
-        <button class="secondary" id="backLogs">Back to listings</button>
+    $("logResults").innerHTML = `
+      <div class="service-card">
+        <h3>${selectedLog.name || selectedLog.title || "Listing"}</h3>
+        <p>${selectedLog.description || ""}</p>
+        <p>Price: ${money(minor(selectedLog.price_minor),"USD")}</p>
+        <button class="primary-btn" id="buyLog">Purchase Listing</button>
       </div>
     `;
 
-    $("backLogs").onclick=fetchLogs;
-
-    $("logBuy").onclick=async()=>{
-      const qty=Number($("logQty").value);
-
-      if(!Number.isInteger(qty)||qty<1||qty>10){
-        $("logPurchaseResult").textContent="Quantity must be 1–10.";
-        return;
-      }
-
-      const b=$("logBuy");
-      b.disabled=true;
-      b.textContent="Processing securely…";
-
-      const idempotencyKey=key();
-
-      try{
-        const d=await api(
-          "/api/customer/social-logs/purchase",
-          "POST",
-          {slug,quantity:qty,idempotency_key:idempotencyKey},
-          {"Idempotency-Key":idempotencyKey}
-        );
-
-        const accounts=d.delivery?.accounts||[];
-
-        $("logPurchaseResult").innerHTML=`
-          <div class="orderbox">
-            <strong>${esc(d.message||"Order received")}</strong>
-            <br>
-            Order ID: ${esc(d.order?.id||d.order_id||"")}
-            <br>
-            Status: ${esc(d.order?.status||d.status||"processing")}
-            ${accounts.map(a=>`
-              <p>${esc(typeof a==="string"?a:JSON.stringify(a))}</p>
-            `).join("")}
-          </div>
-        `;
-
-        await refreshAll();
-
-      }catch(e){
-        $("logPurchaseResult").innerHTML=
-          `<div class="result danger">${esc(e.message)}</div>`;
-      }finally{
-        b.disabled=false;
-        b.textContent="Purchase with USD wallet";
-      }
-    };
-
+    $("buyLog").onclick = purchaseSocialLog;
   }catch(e){
-    $("logList").textContent=e.message;
+    $("logResults").textContent = e.message;
   }
 }
 
-/* SOCIAL BOOSTING */
+async function purchaseSocialLog(){
+  const button = $("buyLog");
+  button.disabled = true;
 
-function boosting(){
-  modal(
-    "Social Boosting",
-    "Social Boosting is not connected to a live provider in the current API configuration.",
-    `
-      <div class="result">
-        <span class="pill">NOT CONFIGURED</span>
-        <p>No Social Boosting provider is currently configured.</p>
-        We will not display invented services or accept payment until a real provider is connected.
-        <br><br>
-        Your wallet will not be charged from this screen.
-      </div>
-    `
-  );
-}
-
-/* DASHBOARD BUTTONS */
-
-$("depositOpen").onclick=deposit;
-$("convertOpen").onclick=convert;
-$("numbersOpen").onclick=showNumbers;
-$("logsOpen").onclick=showLogs;
-$("boostOpen").onclick=boosting;
-
-$("profileBtn").onclick=$("navProfile").onclick=profile;
-$("supportBtn").onclick=support;
-
-$("refreshBtn").onclick=$("txRefresh").onclick=refreshAll;
-
-document.querySelectorAll("[data-scroll]").forEach(b=>{
-  b.onclick=()=>{
-    const id=b.dataset.scroll;
-
-    $(id).scrollIntoView({behavior:"smooth"});
-
-    document.querySelectorAll(".nav button").forEach(x=>{
-      x.classList.remove("active");
+  try{
+    const result = await api("/api/customer/social-logs/purchase","POST",{
+      listing_id:selectedLog.id,
+      slug:selectedLog.slug
     });
 
-    b.classList.add("active");
-  };
-});
+    $("logResults").textContent =
+      result.message || "Your purchase has been submitted.";
+    await loadWallet();
+    await loadTransactions();
+  }catch(e){
+    $("logResults").textContent = e.message;
+    button.disabled = false;
+  }
+}
 
-/* INITIAL DASHBOARD LOAD */
+async function openBoost(){
+  modal("Social Boosting","Find and select a boosting service.",`
+    <select id="boostDriver">
+      <option value="global">Global Services</option>
+      <option value="nigerian">Nigerian Services</option>
+    </select>
+    <input id="boostSearch" placeholder="Search services">
+    <div id="boostResults">Loading services...</div>
+  `);
 
-refreshAll();
+  $("boostDriver").onchange = loadBoostServices;
+  $("boostSearch").oninput = renderBoostServices;
+  await loadBoostServices();
+}
 
-setInterval(()=>{
-  if(token)refreshAll();
-},60000);
+async function loadBoostServices(){
+  const driver = $("boostDriver").value;
 
+  try{
+    const data = await api(
+      "/api/customer/social-boost/services?driver="+driver
+    );
+    boostServices = unwrap(data,"services") || [];
+    renderBoostServices();
+  }catch(e){
+    $("boostResults").textContent = e.message;
+  }
+}
+
+function renderBoostServices(){
+  const search = $("boostSearch").value.toLowerCase();
+  const rows = boostServices.filter(s=>
+    (s.name || s.service || "").toLowerCase().includes(search)
+  );
+
+  $("boostResults").innerHTML = rows.map((s,i)=>`
+    <div class="service-card">
+      <strong>${s.name || s.service}</strong>
+      <p>${s.description || ""}</p>
+      <p>${money(minor(s.price_minor),"USD")}</p>
+      <button class="primary-btn" data-boost="${i}">Select Service</button>
+    </div>
+  `).join("") || "<p>No services found.</p>";
+
+  document.querySelectorAll("[data-boost]").forEach(button=>{
+    button.onclick = ()=>selectBoost(Number(button.dataset.boost));
+  });
+}
+
+function selectBoost(index){
+  selectedBoost = boostServices[index];
+
+  $("boostResults").innerHTML = `
+    <div class="service-card">
+      <h3>${selectedBoost.name || selectedBoost.service}</h3>
+      <label>Target link</label>
+      <input id="boostLink" placeholder="Paste your profile or post link">
+      <label>Quantity</label>
+      <input id="boostQuantity" type="number" min="1" placeholder="Enter quantity">
+      <button class="primary-btn" id="buyBoost">Place Boosting Order</button>
+    </div>
+  `;
+
+  $("buyBoost").onclick = purchaseBoost;
+}
+
+async function purchaseBoost(){
+  const button = $("buyBoost");
+  const link = $("boostLink").value.trim();
+  const quantity = Number($("boostQuantity").value);
+
+  if(!link || quantity < 1){
+    $("boostResults").textContent = "Enter a valid link and quantity.";
+    return;
+  }
+
+  button.disabled = true;
+
+  try{
+    const result = await api("/api/customer/social-boost/purchase","POST",{
+      service_id:selectedBoost.id,
+      service:selectedBoost.service,
+      link,
+      quantity,
+      driver:$("boostDriver").value
+    });
+
+    $("boostResults").textContent =
+      result.message || "Your boosting order has been submitted.";
+    await loadWallet();
+    await loadTransactions();
+  }catch(e){
+    $("boostResults").textContent = e.message;
+    button.disabled = false;
+  }
+}
+
+$("logsOpen").onclick = openSocialLogs;
+$("boostOpen").onclick = openBoost;
+
+async function startDashboard(){
+  if(!token()){
+    window.location.href = "login.html";
+    return;
+  }
+  await refreshDashboard();
+}
+
+startDashboard();
 </script>
 </body>
 </html>
