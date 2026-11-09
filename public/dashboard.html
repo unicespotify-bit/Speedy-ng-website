@@ -825,35 +825,37 @@ async function createDeposit(){
     };
 
     const p=d.paymentInstructions||{};
-    const paymentUrl=
-      d.payment_link||
-      d.paymentLink||
-      d.checkout_url||
-      d.checkoutUrl||
-      p.paymentLink||
-      p.payment_link||
-      p.checkout_url||
-      "";
 
     $("modalBody").innerHTML=`
       <div class="orderbox">
-        <span class="pill">FLUTTERWAVE PAYMENT</span>
-        <h3 style="margin-top:12px">${esc(money(activeDeposit.amount,"NGN"))}</h3>
+        <span class="pill">FLUTTERWAVE BANK TRANSFER</span>
+        <h3>${esc(money(activeDeposit.amount,"NGN"))}</h3>
+
+        <p class="muted">Bank name</p>
+        <strong>${esc(p.bankName||"Not provided")}</strong>
+
+        <p class="muted">Account name</p>
+        <strong>${esc(p.accountName||"Speedy.ng")}</strong>
+
+        <p class="muted">Account number</p>
+        <strong style="font-size:22px">${esc(p.accountNumber||"Not provided")}</strong>
+
         <p class="muted">Payment reference</p>
-        <strong>${esc(d.reference||"—")}</strong>
-        ${
-          paymentUrl
-          ?`<a class="primary" style="display:block;text-align:center;text-decoration:none" href="${esc(paymentUrl)}">Pay securely with Flutterwave</a>`
-          :`<div class="result">Your payment session was created. Follow the payment instructions returned by the server.</div>`
-        }
-        <div class="result">
-          <span class="good" id="depState">Waiting for verified payment confirmation…</span>
-          <p class="muted">Keep this page open. Your wallet will refresh automatically when a matching successful transaction appears.</p>
-        </div>
+        <strong>${esc(d.reference||"")}</strong>
+
+        <p class="muted">
+          Transfer the exact amount shown. Your wallet will be credited
+          after Flutterwave confirms payment.
+        </p>
       </div>
+
       <button class="secondary" id="depCheck">Check payment status</button>
       <button class="secondary" id="depDone">Close</button>
     `;
+
+    $("depDone").onclick=closeModal;
+    $("depCheck").onclick=checkDeposit;
+    startDepositPoll();
 
     $("depDone").onclick=closeModal;
     $("depCheck").onclick=checkDeposit;
