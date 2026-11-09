@@ -5,647 +5,1543 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07152f">
 <title>Speedy.ng | Customer Dashboard</title>
+
 <style>
-:root{
---bg:#06132c;--panel:#0d2143;--panel2:#112c55;
---line:#244875;--blue:#287cff;--cyan:#55dcff;
---text:#f5f9ff;--muted:#a6bbd9;--green:#42dfa0;
---red:#ff718b;--shadow:0 15px 40px #0005
+:root {
+  --bg:#06132c;
+  --panel:#0d2143;
+  --panel2:#112c55;
+  --line:#244875;
+  --blue:#287cff;
+  --cyan:#55dcff;
+  --text:#f5f9ff;
+  --muted:#a6bbd9;
+  --green:#42dfa0;
+  --red:#ff718b;
+  --shadow:0 15px 40px #0005;
 }
+
 *{box-sizing:border-box}
+
 html{scroll-behavior:smooth}
+
 body{
-margin:0;color:var(--text);
-background:radial-gradient(ellipse at 90% 0%,#16477d 0,transparent 35%),
-radial-gradient(ellipse at 0% 50%,#102d58 0,transparent 35%),var(--bg);
-font-family:Inter,Arial,sans-serif;padding-bottom:100px;min-height:100vh
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 90% 0%,#16477d 0,transparent 35%),
+    radial-gradient(ellipse at 0% 50%,#102d58 0,transparent 35%),
+    var(--bg);
+  font-family:Inter,Arial,sans-serif;
+  padding-bottom:100px;
+  min-height:100vh;
 }
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0}
+
+button,input,select{font:inherit}
+button{cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
-.top{max-width:1100px;margin:auto;padding:18px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-size:27px;font-weight:950;letter-spacing:-1.3px}
-.brand span{color:var(--cyan)}
-.profile{width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,#287cff,#17477e);border:1px solid #5c9bda;color:white;font-size:20px}
-main{max-width:1100px;margin:auto;padding:8px 16px 35px}
-.welcome{padding:16px 3px 20px}
-.eyebrow{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:2px}
-.welcome h1{font-size:29px;margin:10px 0 7px}
-.muted{color:var(--muted);font-size:12px;line-height:1.6}
-.section-head{display:flex;justify-content:space-between;align-items:center;margin:25px 2px 13px}
-.section-head h2{font-size:17px;margin:0}
-.text-btn{background:transparent;color:var(--cyan);font-weight:800;font-size:12px;padding:8px}
-.wallets{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.wallet{position:relative;overflow:hidden;background:linear-gradient(140deg,#1b59a4,#102b54 75%);border:1px solid #3979bd;border-radius:20px;padding:18px 15px;min-height:150px;box-shadow:var(--shadow)}
-.wallet.usd{background:linear-gradient(140deg,#17617a,#102b54 78%);border-color:#318ca8}
-.wallet-label{font-size:12px;color:#d6e8ff}
-.wallet-value{font-size:24px;font-weight:950;margin:16px 0 7px;overflow-wrap:anywhere}
-.wallet-foot{font-size:11px;color:#c0d9f5}
-.wallet-symbol{position:absolute;right:15px;top:14px;font-size:23px}
-.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
-.action{background:linear-gradient(145deg,#122d55,#0c2040);border:1px solid var(--line);border-radius:16px;padding:15px 5px;color:white;text-align:center;min-height:94px;font-size:12px;font-weight:800}
-.action .ico{display:block;font-size:24px;margin-bottom:8px}
-.services{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.service{display:flex;align-items:center;gap:12px;text-align:left;padding:17px 12px;background:linear-gradient(135deg,#153764,#0c2040);border:1px solid #2b5689;border-radius:17px;color:white;min-height:92px}
-.service .ico{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,#286ec0,#173c70);font-size:21px;flex-shrink:0}
-.service strong{font-size:13px}
-.service small{display:block;color:var(--muted);font-size:10px;margin-top:5px;line-height:1.5}
-.panel{background:linear-gradient(145deg,#10284b,#0a1d39);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
-.tx{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 2px;border-bottom:1px solid #29436a}
-.tx:last-child{border:0}
-.tx-title{font-size:12px;font-weight:800}
-.tx-date{font-size:10px;color:var(--muted);margin-top:5px}
-.tx-amount{text-align:right;font-size:12px;font-weight:900}
-.tx-status{font-size:10px;color:var(--green);margin-top:5px;text-align:right}
-.bottom{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#071832ed;backdrop-filter:blur(16px);border-top:1px solid #294875;display:flex;justify-content:center}
-.nav{width:min(650px,100%);display:flex;justify-content:space-around;padding:10px 4px 13px}
-.nav button{background:none;color:#9fb5d5;font-size:10px;min-width:62px}
-.nav button span{display:block;font-size:20px;margin-bottom:4px}
-.nav button.active{color:var(--cyan)}
-.support{position:fixed;right:17px;bottom:85px;z-index:7;width:55px;height:55px;border-radius:50%;background:linear-gradient(145deg,#55dcff,#287cff);color:white;font-size:24px;border:2px solid #ffffff50}
-.modal-back{position:fixed;inset:0;background:#020916e8;z-index:10;display:none;align-items:flex-end;justify-content:center;padding:10px}
-.modal-back.show{display:flex}
-.modal{width:min(620px,100%);max-height:92vh;overflow:auto;background:linear-gradient(155deg,#163967,#0a1c38 75%);border:1px solid #3a6598;border-radius:23px;padding:20px;margin-bottom:8px;box-shadow:0 20px 70px #000a}
-.modal h3{margin:0 0 7px;font-size:19px}
-.modal label{display:block;color:var(--muted);font-size:12px;margin:14px 0 7px}
-.modal input,.modal select,.modal textarea{width:100%;padding:14px;border-radius:12px;border:1px solid #42618c;background:#071832;color:white;outline:none}
-.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #55dcff18}
-.primary{width:100%;padding:15px;border-radius:13px;background:linear-gradient(90deg,#287cff,#159fe4);color:white;font-weight:900;margin-top:15px;box-shadow:0 7px 20px #287cff35}
-.secondary{padding:11px 14px;border-radius:11px;background:#214674;color:white;font-weight:800;margin:9px 6px 0 0}
-.close{float:right;background:#203e69;color:white;border-radius:50%;width:32px;height:32px;font-size:20px}
-.result{margin-top:13px;padding:14px;border-radius:13px;background:#071832;border:1px solid #23466f;color:#dceaff;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
-.hidden{display:none!important}
-.status{margin-top:13px;color:var(--muted);font-size:12px;line-height:1.6}
-.danger{color:var(--red)}.good{color:var(--green)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.listing{padding:14px;margin-top:11px;border:1px solid #345b88;border-radius:14px;background:#0a1d39}
-.listing strong{font-size:13px}
-.listing p{font-size:11px;color:var(--muted);margin:7px 0}
-.listing .price{font-weight:900;color:white;margin-top:9px}
-.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#173e6b;color:#bdeaff;font-size:10px;margin:4px 3px 0 0}
-.orderbox{padding:14px;border:1px solid #3a6598;border-radius:14px;background:#071832;margin-top:12px;font-size:12px;line-height:1.8}
-.price-toggle{background:transparent;color:var(--cyan);border:0;font-size:11px;padding:5px 0}
-.live{color:var(--green)}.offline{color:var(--red)}
-.account-number{font-size:24px;font-weight:950;letter-spacing:1px;color:#fff;overflow-wrap:anywhere}
-.copy-btn{background:#214674;color:#fff;padding:8px 12px;border-radius:9px;margin-top:8px}
-@media(min-width:700px){
-.welcome h1{font-size:34px}.wallet{padding:23px;min-height:165px}
-.wallet-value{font-size:29px}.services{grid-template-columns:repeat(3,1fr)}
-.modal-back{align-items:center}
+
+.top{
+  max-width:1100px;
+  margin:auto;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
+
+.brand{
+  font-size:27px;
+  font-weight:950;
+  letter-spacing:-1.3px;
+}
+
+.brand span{color:var(--cyan)}
+
+.profile{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#287cff,#17477e);
+  border:1px solid #5c9bda;
+  color:white;
+  font-size:20px;
+  box-shadow:0 0 20px #287cff44;
+}
+
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:8px 16px 35px;
+}
+
+.welcome{
+  padding:16px 3px 20px;
+}
+
+.eyebrow{
+  color:var(--cyan);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.welcome h1{
+  font-size:29px;
+  margin:10px 0 7px;
+  letter-spacing:-.7px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:25px 2px 13px;
+}
+
+.section-head h2{
+  font-size:17px;
+  margin:0;
+}
+
+.text-btn{
+  background:transparent;
+  color:var(--cyan);
+  font-weight:800;
+  font-size:12px;
+  padding:8px;
+}
+
+.wallets{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+.wallet{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(140deg,#1b59a4,#102b54 75%);
+  border:1px solid #3979bd;
+  border-radius:20px;
+  padding:18px 15px;
+  min-height:150px;
+  box-shadow:var(--shadow);
+}
+
+.wallet.usd{
+  background:linear-gradient(140deg,#17617a,#102b54 78%);
+  border-color:#318ca8;
+}
+
+.wallet:after{
+  content:"";
+  position:absolute;
+  width:145px;
+  height:145px;
+  border:1px solid #ffffff19;
+  border-radius:50%;
+  right:-55px;
+  top:48px;
+}
+
+.wallet-label{
+  font-size:12px;
+  color:#d6e8ff;
+}
+
+.wallet-value{
+  font-size:24px;
+  font-weight:950;
+  margin:16px 0 7px;
+  overflow-wrap:anywhere;
+}
+
+.wallet-foot{
+  font-size:11px;
+  color:#c0d9f5;
+}
+
+.wallet-symbol{
+  position:absolute;
+  right:15px;
+  top:14px;
+  font-size:23px;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:11px;
+}
+
+.action{
+  background:linear-gradient(145deg,#122d55,#0c2040);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:15px 5px;
+  color:white;
+  text-align:center;
+  min-height:94px;
+  font-size:12px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.action:active,.service:active{
+  transform:scale(.97);
+}
+
+.action .ico{
+  display:block;
+  font-size:24px;
+  margin-bottom:8px;
+}
+
+.services{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.service{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  padding:17px 12px;
+  background:linear-gradient(135deg,#153764,#0c2040);
+  border:1px solid #2b5689;
+  border-radius:17px;
+  color:white;
+  min-height:92px;
+  box-shadow:0 8px 25px #0002;
+}
+
+.service .ico{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:linear-gradient(145deg,#286ec0,#173c70);
+  font-size:21px;
+  flex-shrink:0;
+}
+
+.service strong{font-size:13px}
+
+.service small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:5px;
+  line-height:1.5;
+}
+
+.panel{
+  background:linear-gradient(145deg,#10284b,#0a1d39);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:var(--shadow);
+}
+
+.tx{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:14px 2px;
+  border-bottom:1px solid #29436a;
+}
+
+.tx:last-child{border:0}
+
+.tx-title{
+  font-size:12px;
+  font-weight:800;
+}
+
+.tx-date{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.tx-amount{
+  text-align:right;
+  font-size:12px;
+  font-weight:900;
+}
+
+.tx-status{
+  font-size:10px;
+  color:var(--green);
+  margin-top:5px;
+  text-align:right;
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:5;
+  background:#071832ed;
+  backdrop-filter:blur(16px);
+  border-top:1px solid #294875;
+  display:flex;
+  justify-content:center;
+}
+
+.nav{
+  width:min(650px,100%);
+  display:flex;
+  justify-content:space-around;
+  padding:10px 4px 13px;
+}
+
+.nav button{
+  background:none;
+  color:#9fb5d5;
+  font-size:10px;
+  min-width:62px;
+}
+
+.nav button span{
+  display:block;
+  font-size:20px;
+  margin-bottom:4px;
+}
+
+.nav button.active{color:var(--cyan)}
+
+.support{
+  position:fixed;
+  right:17px;
+  bottom:85px;
+  z-index:7;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#55dcff,#287cff);
+  color:white;
+  box-shadow:0 8px 28px #0008;
+  font-size:24px;
+  border:2px solid #ffffff50;
+}
+
+.modal-back{
+  position:fixed;
+  inset:0;
+  background:#020916e8;
+  z-index:10;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:10px;
+}
+
+.modal-back.show{display:flex}
+
+.modal{
+  width:min(620px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:linear-gradient(155deg,#163967,#0a1c38 75%);
+  border:1px solid #3a6598;
+  border-radius:23px;
+  padding:20px;
+  margin-bottom:8px;
+  box-shadow:0 20px 70px #000a;
+}
+
+.modal h3{
+  margin:0 0 7px;
+  font-size:19px;
+}
+
+.modal label{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin:14px 0 7px;
+}
+
+.modal input,.modal select{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #42618c;
+  background:#071832;
+  color:white;
+  outline:none;
+}
+
+.modal input:focus,.modal select:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px #55dcff18;
+}
+
+.primary{
+  width:100%;
+  padding:15px;
+  border-radius:13px;
+  background:linear-gradient(90deg,#287cff,#159fe4);
+  color:white;
+  font-weight:900;
+  margin-top:15px;
+  box-shadow:0 7px 20px #287cff35;
+}
+
+.secondary{
+  padding:11px 14px;
+  border-radius:11px;
+  background:#214674;
+  color:white;
+  font-weight:800;
+  margin:9px 6px 0 0;
+}
+
+.close{
+  float:right;
+  background:#203e69;
+  color:white;
+  border-radius:50%;
+  width:32px;
+  height:32px;
+  font-size:20px;
+}
+
+.result{
+  margin-top:13px;
+  padding:14px;
+  border-radius:13px;
+  background:#071832;
+  border:1px solid #23466f;
+  color:#dceaff;
+  font-size:12px;
+  line-height:1.8;
+  overflow-wrap:anywhere;
+}
+
+.hidden{display:none!important}
+
+.status{
+  margin-top:13px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.danger{color:var(--red)}
+.good{color:var(--green)}
+
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.listing{
+  padding:14px;
+  margin-top:11px;
+  border:1px solid #345b88;
+  border-radius:14px;
+  background:#0a1d39;
+}
+
+.listing strong{font-size:13px}
+
+.listing p{
+  font-size:11px;
+  color:var(--muted);
+  margin:7px 0;
+}
+
+.listing .price{
+  font-weight:900;
+  color:white;
+  margin-top:9px;
+}
+
+.pill{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#173e6b;
+  color:#bdeaff;
+  font-size:10px;
+  margin:4px 3px 0 0;
+}
+
+.orderbox{
+  padding:14px;
+  border:1px solid #3a6598;
+  border-radius:14px;
+  background:#071832;
+  margin-top:12px;
+  font-size:12px;
+  line-height:1.8;
+}
+
+.price-toggle{
+  background:transparent;
+  color:var(--cyan);
+  border:0;
+  font-size:11px;
+  padding:5px 0;
+}
+
+.live{color:var(--green)}
+.offline{color:var(--red)}
+
+@media(min-width:700px){
+  .welcome h1{font-size:34px}
+  .wallet{padding:23px;min-height:165px}
+  .wallet-value{font-size:29px}
+  .services{grid-template-columns:repeat(3,1fr)}
+  .modal-back{align-items:center}
+}
+
 @media(max-width:370px){
-.wallet-value{font-size:19px}.action{font-size:11px}
-.service{gap:8px;padding:12px 9px}.service .ico{width:36px;height:36px}
-.grid2{grid-template-columns:1fr}
+  .wallet-value{font-size:19px}
+  .action{font-size:11px}
+  .service{gap:8px;padding:12px 9px}
+  .service .ico{width:36px;height:36px}
+  .grid2{grid-template-columns:1fr}
 }
 </style>
 </head>
+
 <body>
+
 <header class="top">
-<div class="brand">Speedy<span>.ng</span></div>
-<button class="profile" id="profileBtn" aria-label="Profile">👤</button>
+  <div class="brand">Speedy<span>.ng</span></div>
+  <button class="profile" id="profileBtn" aria-label="Profile">👤</button>
 </header>
+
 <main id="top">
+
 <section class="welcome">
-<div class="eyebrow">YOUR DIGITAL SERVICES HUB</div>
-<h1>Welcome back 👋</h1>
-<div class="muted" id="email">Loading your account…</div>
+  <div class="eyebrow">YOUR DIGITAL SERVICES HUB</div>
+  <h1>Welcome back 👋</h1>
+  <div class="muted" id="email">Loading your account…</div>
 </section>
-<div class="section-head"><h2>My Wallet</h2><button class="text-btn" id="refreshBtn">↻ Refresh</button></div>
+
+<div class="section-head">
+  <h2>My Wallet</h2>
+  <button class="text-btn" id="refreshBtn">↻ Refresh</button>
+</div>
+
 <section class="wallets">
-<div class="wallet"><span class="wallet-symbol">🇳🇬</span><div class="wallet-label">Naira balance</div><div class="wallet-value" id="ngn">₦0.00</div><div class="wallet-foot">NGN wallet</div></div>
-<div class="wallet usd"><span class="wallet-symbol">🇺🇸</span><div class="wallet-label">Dollar balance</div><div class="wallet-value" id="usd">$0.00</div><div class="wallet-foot">USD wallet</div></div>
+  <div class="wallet">
+    <span class="wallet-symbol">🇳🇬</span>
+    <div class="wallet-label">Naira balance</div>
+    <div class="wallet-value" id="ngn">₦0.00</div>
+    <div class="wallet-foot">NGN wallet</div>
+  </div>
+
+  <div class="wallet usd">
+    <span class="wallet-symbol">🇺🇸</span>
+    <div class="wallet-label">Dollar balance</div>
+    <div class="wallet-value" id="usd">$0.00</div>
+    <div class="wallet-foot">USD wallet</div>
+  </div>
 </section>
-<div class="section-head"><h2>Quick actions</h2></div>
+
+<div class="section-head">
+  <h2>Quick actions</h2>
+</div>
+
 <section class="actions">
-<button class="action" id="depositOpen"><span class="ico">＋</span>Deposit</button>
-<button class="action" id="convertOpen"><span class="ico">⇄</span>Convert</button>
-<button class="action" data-scroll="transactions"><span class="ico">▤</span>Transactions</button>
+  <button class="action" id="depositOpen">
+    <span class="ico">＋</span>Deposit
+  </button>
+  <button class="action" id="convertOpen">
+    <span class="ico">⇄</span>Convert
+  </button>
+  <button class="action" data-scroll="transactions">
+    <span class="ico">▤</span>Transactions
+  </button>
 </section>
-<div class="section-head" id="services"><h2>Explore services</h2></div>
+
+<div class="section-head" id="services">
+  <h2>Explore services</h2>
+</div>
+
 <section class="services">
-<button class="service" id="numbersOpen"><span class="ico">📱</span><span><strong>Buy Numbers</strong><small>Live countries, services and available stock</small></span></button>
-<button class="service" id="boostOpen"><span class="ico">🚀</span><span><strong>Social Boosting</strong><small>Browse and order social services</small></span></button>
-<button class="service" id="logsOpen"><span class="ico">📁</span><span><strong>Social Logs</strong><small>Browse available listings</small></span></button>
+  <button class="service" id="numbersOpen">
+    <span class="ico">📱</span>
+    <span>
+      <strong>Buy Numbers</strong>
+      <small>Live countries, services and available stock</small>
+    </span>
+  </button>
+
+  <button class="service" id="boostOpen">
+    <span class="ico">🚀</span>
+    <span>
+      <strong>Social Boosting</strong>
+      <small>Service connection status</small>
+    </span>
+  </button>
+
+  <button class="service" id="logsOpen">
+    <span class="ico">📁</span>
+    <span>
+      <strong>Social Logs</strong>
+      <small>Browse available listings</small>
+    </span>
+  </button>
 </section>
-<div class="section-head" id="transactions"><h2>Recent transactions</h2><button class="text-btn" id="txRefresh">Refresh</button></div>
-<section class="panel" id="transactionList"><div class="muted">Loading transactions…</div></section>
-<div class="section-head" id="ordersSection"><h2>My orders</h2><button class="text-btn" id="ordersRefresh">Refresh</button></div>
-<section class="panel" id="orderList"><div class="muted">Loading orders…</div></section>
+
+<div class="section-head" id="transactions">
+  <h2>Recent transactions</h2>
+  <button class="text-btn" id="txRefresh">Refresh</button>
+</div>
+
+<section class="panel" id="transactionList">
+  <div class="muted">Loading transactions…</div>
+</section>
+
 <div class="status" id="pageStatus">Connecting securely…</div>
+
 </main>
-<nav class="bottom"><div class="nav">
-<button class="active" data-scroll="top"><span>⌂</span>Home</button>
-<button data-scroll="services"><span>▦</span>Services</button>
-<button data-scroll="transactions"><span>▤</span>Activity</button>
-<button id="navProfile"><span>☻</span>Profile</button>
-</div></nav>
+
+<nav class="bottom">
+  <div class="nav">
+    <button class="active" data-scroll="top"><span>⌂</span>Home</button>
+    <button data-scroll="services"><span>▦</span>Services</button>
+    <button data-scroll="transactions"><span>▤</span>Activity</button>
+    <button id="navProfile"><span>☻</span>Profile</button>
+  </div>
+</nav>
+
 <button class="support" id="supportBtn" aria-label="Support">☏</button>
+
 <div class="modal-back" id="modalBack">
-<section class="modal" role="dialog" aria-modal="true">
-<button class="close" id="closeModal">×</button>
-<h3 id="modalTitle">Wallet</h3>
-<p class="muted" id="modalIntro"></p>
-<div id="modalBody"></div>
-<div id="modalStatus" class="status" aria-live="polite"></div>
-</section>
+  <section class="modal" role="dialog" aria-modal="true">
+    <button class="close" id="closeModal">×</button>
+    <h3 id="modalTitle">Wallet</h3>
+    <p class="muted" id="modalIntro"></p>
+    <div id="modalBody"></div>
+    <div id="modalStatus" class="status" aria-live="polite"></div>
+  </section>
 </div>
 <script>
 "use strict";
-const API="https://speedy-ng-api-staging.unicespotify.workers.dev";
-const token=localStorage.getItem("speedy_customer_token")||sessionStorage.getItem("speedy_customer_token");
-const $=id=>document.getElementById(id);
-let customer={},walletData={},depositPoll=null,activeDeposit=null;
-let numberCountries=[],numberServices=[],selectedQuote=null;
-let logListings=[],boostServices=[],debounceTimer=null,numberPoll=null;
 
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money=(v,c="USD")=>(c==="NGN"?"₦":"$")+Number(v||0).toLocaleString(c==="NGN"?"en-NG":"en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const key=()=>("sp"+Date.now()+Math.random().toString(36).slice(2,14)).replace(/[^a-zA-Z0-9._:-]/g,"").slice(0,60);
+const API="https://speedy-ng-api-staging.unicespotify.workers.dev";
+
+const token=
+  localStorage.getItem("speedy_customer_token")||
+  sessionStorage.getItem("speedy_customer_token");
+
+const $=id=>document.getElementById(id);
+
+let customer={};
+let walletData={};
+let depositPoll=null;
+let activeDeposit=null;
+let numberCountries=[];
+let numberServices=[];
+let selectedQuote=null;
+let logListings=[];
+let debounceTimer=null;
+
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+}[c]));
+
+const money=(v,c="USD")=>
+  (c==="NGN"?"₦":"$")+
+  Number(v||0).toLocaleString(
+    c==="NGN"?"en-NG":"en-US",
+    {minimumFractionDigits:2,maximumFractionDigits:2}
+  );
+
+const key=()=>
+  ("sp"+Date.now()+Math.random().toString(36).slice(2,14))
+  .replace(/[^a-zA-Z0-9._:-]/g,"")
+  .slice(0,60);
 
 async function api(path,method="GET",body,headers={}){
-const r=await fetch(API+path,{method,headers:{Authorization:"Bearer "+token,Accept:"application/json",...(body?{"Content-Type":"application/json"}:{}),...headers},...(body?{body:JSON.stringify(body)}:{})});
-let d={};try{d=await r.json()}catch{}
-if(!r.ok||d.ok===false||d.success===false)throw Error(d.message||d.error||`Request failed (${r.status})`);
-return d;
+  const r=await fetch(API+path,{
+    method,
+    headers:{
+      Authorization:"Bearer "+token,
+      Accept:"application/json",
+      ...(body?{"Content-Type":"application/json"}:{}),
+      ...headers
+    },
+    ...(body?{body:JSON.stringify(body)}:{})
+  });
+
+  let d={};
+  try{d=await r.json()}catch{}
+
+  if(!r.ok||d.ok===false||d.success===false){
+    throw Error(d.message||d.error||`Request failed (${r.status})`);
+  }
+
+  return d;
 }
-function status(t,bad=false){$("pageStatus").textContent=t;$("pageStatus").className="status"+(bad?" danger":"")}
+
+function status(t,bad=false){
+  $("pageStatus").textContent=t;
+  $("pageStatus").className="status"+(bad?" danger":"");
+}
+
 function modal(title,intro,html){
-clearInterval(depositPoll);clearInterval(numberPoll);
-$("modalTitle").textContent=title;$("modalIntro").textContent=intro||"";
-$("modalBody").innerHTML=html;$("modalStatus").textContent="";
-$("modalStatus").className="status";$("modalBack").classList.add("show");
+  clearInterval(depositPoll);
+  $("modalTitle").textContent=title;
+  $("modalIntro").textContent=intro||"";
+  $("modalBody").innerHTML=html;
+  $("modalStatus").textContent="";
+  $("modalStatus").className="status";
+  $("modalBack").classList.add("show");
 }
+
 function closeModal(){
-clearInterval(depositPoll);clearInterval(numberPoll);
-depositPoll=null;numberPoll=null;$("modalBack").classList.remove("show");
+  clearInterval(depositPoll);
+  depositPoll=null;
+  $("modalBack").classList.remove("show");
 }
+
 $("closeModal").onclick=closeModal;
-$("modalBack").addEventListener("click",e=>{if(e.target===$("modalBack"))closeModal()});
+
+$("modalBack").addEventListener("click",e=>{
+  if(e.target===$("modalBack"))closeModal();
+});
+
+/* CUSTOMER ACCOUNT AND WALLETS */
 
 async function refreshAll(){
-if(!token){location.replace("/");return}
-try{
-const [m,w,t]=await Promise.all([api("/api/customer/me"),api("/api/customer/wallet"),api("/api/customer/wallet/transactions")]);
-customer=m.customer||{};walletData=w;
-$("email").textContent=customer.email||"Your Speedy.ng account";
-$("ngn").textContent=money(w.balances?.NGN,"NGN");
-$("usd").textContent=money(w.balances?.USD,"USD");
-renderTx(t.transactions||[]);status("Your wallet and account are up to date.");
-}catch(e){status(e.message,true);if(/unauthori[sz]ed|token|session|login/i.test(e.message))setTimeout(()=>location.replace("/"),1000)}
-}
-function renderTx(rows){
-$("transactionList").innerHTML=rows.length?rows.slice(0,20).map(x=>`
-<div class="tx"><div><div class="tx-title">${esc(x.description||x.type||"Wallet transaction")}</div><div class="tx-date">${esc(x.created_at||"")}</div></div>
-<div><div class="tx-amount">${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}</div><div class="tx-status">${esc(x.status||"Pending")}</div></div></div>`).join(""):'<div class="muted">No transactions yet.</div>';
+  if(!token){
+    location.replace("/");
+    return;
+  }
+
+  try{
+    const [m,w,t]=await Promise.all([
+      api("/api/customer/me"),
+      api("/api/customer/wallet"),
+      api("/api/customer/wallet/transactions")
+    ]);
+
+    customer=m.customer||{};
+    walletData=w;
+
+    $("email").textContent=customer.email||"Your Speedy.ng account";
+    $("ngn").textContent=money(w.balances?.NGN,"NGN");
+    $("usd").textContent=money(w.balances?.USD,"USD");
+
+    renderTx(t.transactions||[]);
+    status("Your wallet and account are up to date.");
+
+  }catch(e){
+    status(e.message,true);
+
+    if(/unauthori[sz]ed|token|session|login/i.test(e.message)){
+      setTimeout(()=>location.replace("/"),1000);
+    }
+  }
 }
 
-/* FLUTTERWAVE DEPOSITS */
+function renderTx(rows){
+  $("transactionList").innerHTML=rows.length
+    ?rows.slice(0,15).map(x=>`
+      <div class="tx">
+        <div>
+          <div class="tx-title">${esc(x.description||x.type||"Wallet transaction")}</div>
+          <div class="tx-date">${esc(x.created_at||"")}</div>
+        </div>
+        <div>
+          <div class="tx-amount">
+            ${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}
+          </div>
+          <div class="tx-status">${esc(x.status||"Pending")}</div>
+        </div>
+      </div>
+    `).join("")
+    :'<div class="muted">No transactions yet. Your activity will appear here.</div>';
+}
+
+/* WALLET DEPOSIT */
+
 function deposit(){
-activeDeposit=null;
-modal("Add money","Fund your NGN wallet securely through a fresh Flutterwave temporary bank account.",`
-<label>Amount in naira (₦)</label>
-<input id="depAmount" type="number" min="100" max="5000000" step=".01" placeholder="Enter amount">
-<p class="muted">Minimum ₦100 · Maximum ₦5,000,000</p>
-<button class="primary" id="depCreate">Generate transfer account</button>
-<div class="muted">A new temporary account is requested from Flutterwave for each deposit session.</div>`);
-$("depCreate").onclick=createDeposit;
+  modal(
+    "Add money",
+    "Make a secure Flutterwave payment. Your wallet should update after the backend verifies the payment.",
+    `
+      <label>Amount in naira (₦)</label>
+      <input id="depAmount" type="number" min="100" max="5000000" step=".01" placeholder="Enter amount">
+      <button class="primary" id="depCreate">Continue to payment</button>
+    `
+  );
+
+  $("depCreate").onclick=createDeposit;
 }
+
 async function createDeposit(){
-const amount=Number($("depAmount").value);
-if(!Number.isFinite(amount)||amount<100||amount>5000000||Math.round(amount*100)!==amount*100){
-$("modalStatus").textContent="Enter an amount from ₦100 to ₦5,000,000 with up to 2 decimal places.";return;
+  const amount=Number($("depAmount").value);
+
+  if(
+    !Number.isFinite(amount)||
+    amount<100||
+    amount>5000000||
+    Math.round(amount*100)!==amount*100
+  ){
+    $("modalStatus").textContent="Enter ₦100 to ₦5,000,000, up to 2 decimal places.";
+    return;
+  }
+
+  const b=$("depCreate");
+  b.disabled=true;
+  b.textContent="Creating secure payment…";
+
+  try{
+    const d=await api(
+      "/api/customer/wallet/deposit",
+      "POST",
+      {amount}
+    );
+
+    activeDeposit={
+      reference:d.reference,
+      amount:Number(d.amount??amount)
+    };
+
+    const p=d.paymentInstructions||{};
+    const paymentUrl=
+      d.payment_link||
+      d.paymentLink||
+      d.checkout_url||
+      d.checkoutUrl||
+      p.paymentLink||
+      p.payment_link||
+      p.checkout_url||
+      "";
+
+    $("modalBody").innerHTML=`
+      <div class="orderbox">
+        <span class="pill">FLUTTERWAVE PAYMENT</span>
+        <h3 style="margin-top:12px">${esc(money(activeDeposit.amount,"NGN"))}</h3>
+        <p class="muted">Payment reference</p>
+        <strong>${esc(d.reference||"—")}</strong>
+        ${
+          paymentUrl
+          ?`<a class="primary" style="display:block;text-align:center;text-decoration:none" href="${esc(paymentUrl)}">Pay securely with Flutterwave</a>`
+          :`<div class="result">Your payment session was created. Follow the payment instructions returned by the server.</div>`
+        }
+        <div class="result">
+          <span class="good" id="depState">Waiting for verified payment confirmation…</span>
+          <p class="muted">Keep this page open. Your wallet will refresh automatically when a matching successful transaction appears.</p>
+        </div>
+      </div>
+      <button class="secondary" id="depCheck">Check payment status</button>
+      <button class="secondary" id="depDone">Close</button>
+    `;
+
+    $("depDone").onclick=closeModal;
+    $("depCheck").onclick=checkDeposit;
+    startDepositPoll();
+
+    if(paymentUrl){
+      window.open(paymentUrl,"_blank","noopener");
+    }
+
+  }catch(e){
+    $("modalStatus").textContent=e.message;
+    $("modalStatus").className="status danger";
+  }finally{
+    b.disabled=false;
+    b.textContent="Continue to payment";
+  }
 }
-const b=$("depCreate");b.disabled=true;b.textContent="Generating account…";
-try{
-const d=await api("/api/customer/wallet/deposit","POST",{amount});
-const p=d.paymentInstructions||{};
-if(!p.accountNumber||!p.bankName)throw Error("Flutterwave did not return complete temporary account details. Please try again later.");
-activeDeposit={reference:String(d.reference),amount:Number(d.amount??amount),accountNumber:String(p.accountNumber)};
-$("modalBody").innerHTML=`
-<div class="orderbox">
-<span class="pill">FLUTTERWAVE · BANK TRANSFER</span>
-<h3 style="margin-top:12px">${esc(money(activeDeposit.amount,"NGN"))}</h3>
-<p class="muted">Temporary account number</p>
-<div class="account-number" id="depAccount">${esc(p.accountNumber)}</div>
-<button class="copy-btn" id="copyAccount">Copy account number</button>
-<p><strong>Bank:</strong> ${esc(p.bankName)}</p>
-<p><strong>Account name:</strong> ${esc(p.accountName||"Speedy.ng")}</p>
-<p><strong>Reference:</strong> ${esc(d.reference)}</p>
-${p.expiresAt?`<p><strong>Expires:</strong> ${esc(p.expiresAt)}</p>`:""}
-<p class="muted">${esc(p.note||"Transfer the exact amount shown. Your wallet will be credited after Flutterwave confirms the payment.")}</p>
-</div>
-<div class="result"><strong class="good" id="depState">Waiting for Flutterwave to confirm your transfer…</strong>
-<p class="muted">Keep this screen open. Speedy.ng checks for verified payment and updates your wallet automatically.</p></div>
-<button class="secondary" id="depCheck">Check payment now</button>
-<button class="secondary" id="depDone">Close payment screen</button>
-<button class="secondary" id="newDeposit">Start another deposit</button>`;
-$("copyAccount").onclick=async()=>{try{await navigator.clipboard.writeText(activeDeposit.accountNumber);$("copyAccount").textContent="Copied"}catch{$("modalStatus").textContent="Please select and copy the account number manually."}};
-$("depDone").onclick=closeModal;
-$("depCheck").onclick=checkDeposit;
-$("newDeposit").onclick=deposit;
-startDepositPoll();
-checkDeposit();
-}catch(e){$("modalStatus").textContent=e.message;$("modalStatus").className="status danger"}
-finally{if($("depCreate")){$("depCreate").disabled=false;$("depCreate").textContent="Generate transfer account"}}
+
+function startDepositPoll(){
+  clearInterval(depositPoll);
+  depositPoll=setInterval(checkDeposit,7000);
 }
-function startDepositPoll(){clearInterval(depositPoll);depositPoll=setInterval(checkDeposit,4000)}
+
 async function checkDeposit(){
-if(!activeDeposit)return;
-try{
-const [w,t]=await Promise.all([api("/api/customer/wallet"),api("/api/customer/wallet/transactions")]);
-walletData=w;$("ngn").textContent=money(w.balances?.NGN,"NGN");$("usd").textContent=money(w.balances?.USD,"USD");
-renderTx(t.transactions||[]);
-const expected=Math.round(activeDeposit.amount*100),ref=activeDeposit.reference;
-const match=(t.transactions||[]).find(x=>{
-const transactionRef=String(x.reference||"");
-return [transactionRef,transactionRef.replace(/^FLW-/,"")].includes(ref)&&
-Number(x.amount_minor)===expected&&String(x.currency||"").toUpperCase()==="NGN"&&
-["successful","completed","success"].includes(String(x.status||"").toLowerCase());
-});
-if(match){
-clearInterval(depositPoll);depositPoll=null;
-$("depState").textContent="Payment confirmed! Your NGN wallet has been credited.";
-$("depState").className="good";
-status("Flutterwave payment received. Your wallet has been updated.");
-await refreshAll();
-setTimeout(()=>{closeModal();$("top").scrollIntoView({behavior:"smooth"})},1800);
-}else if($("depState")){$("depState").textContent="Waiting for verified payment confirmation… Do not transfer again unless you have checked your payment status."}
-}catch(e){if($("depState"))$("depState").textContent="Payment check temporarily unavailable. We will keep checking."}
+  if(!activeDeposit)return;
+
+  try{
+    const [w,t]=await Promise.all([
+      api("/api/customer/wallet"),
+      api("/api/customer/wallet/transactions")
+    ]);
+
+    walletData=w;
+
+    $("ngn").textContent=money(w.balances?.NGN,"NGN");
+    $("usd").textContent=money(w.balances?.USD,"USD");
+
+    renderTx(t.transactions||[]);
+
+    const expectedMinor=Math.round(activeDeposit.amount*100);
+    const reference=String(activeDeposit.reference||"");
+
+    const match=(t.transactions||[]).find(x=>{
+      const refs=[
+        String(x.reference||""),
+        String(x.payment_reference||""),
+        String(x.reference||"").replace(/^FLW-/,"")
+      ];
+
+      return refs.includes(reference)&&
+        Number(x.amount_minor)===expectedMinor&&
+        String(x.currency||"").toUpperCase()==="NGN"&&
+        ["successful","completed","success"].includes(
+          String(x.status||"").toLowerCase()
+        );
+    });
+
+    if(match){
+      $("depState").textContent="Payment confirmed. Your wallet transaction is recorded.";
+      $("depState").className="good";
+      clearInterval(depositPoll);
+      depositPoll=null;
+      setTimeout(closeModal,2500);
+    }else{
+      $("depState").textContent="We are still waiting for verified payment confirmation. Do not pay again until you check your payment status.";
+    }
+
+  }catch(e){
+    $("depState").textContent="Unable to check right now. Please try again shortly.";
+  }
 }
 
 /* CURRENCY CONVERSION */
+
 function convert(){
-const rate=Number(walletData.rate||1500);
-modal("Convert currency","Move funds between your NGN and USD wallets.",`
-<label>Convert from</label><select id="convFrom"><option value="NGN">🇳🇬 NGN wallet</option><option value="USD">🇺🇸 USD wallet</option></select>
-<label>Amount</label><input id="convAmount" type="number" min=".01" step=".01" placeholder="Enter amount">
-<p class="muted">Configured rate: ₦${rate.toLocaleString("en-NG")} = $1.00</p>
-<button class="primary" id="convGo">Convert funds</button>`);
-$("convGo").onclick=async()=>{
-const from=$("convFrom").value,amount=Number($("convAmount").value);
-if(!(amount>0)||Math.round(amount*100)!==amount*100){$("modalStatus").textContent="Enter a valid amount with up to 2 decimal places.";return}
-const b=$("convGo");b.disabled=true;
-try{
-const d=await api("/api/customer/wallet/convert","POST",{from,to:from==="NGN"?"USD":"NGN",amount_minor:Math.round(amount*100)});
-$("modalStatus").textContent=d.message||"Conversion completed.";$("modalStatus").className="status good";await refreshAll();
-}catch(e){$("modalStatus").textContent=e.message;$("modalStatus").className="status danger"}
-finally{b.disabled=false}
-};
-}
-/* SHARED HELPERS */
-function unwrap(x){
-if(Array.isArray(x))return x;
-if(!x||typeof x!=="object")return [];
-for(const k of ["data","results","items","countries","services","listings","categories","prices"])if(Array.isArray(x[k]))return x[k];
-if(x.data&&typeof x.data==="object")return unwrap(x.data);
-return [];
-}
-function label(x){
-if(typeof x==="string")return x;
-return String(x?.name??x?.title??x?.country_name??x?.country??x?.service_name??x?.service??x?.slug??x?.label??"").trim();
-}
-function optionValue(x){
-if(typeof x==="string")return x;
-return String(x?.code??x?.id??x?.iso??x?.slug??x?.country_id??x?.service_id??label(x));
-}
-function flagFor(x){
-const code=String(x?.iso2||x?.iso||x?.country_code||"").toUpperCase();
-if(/^[A-Z]{2}$/.test(code))return String.fromCodePoint(...[...code].map(c=>127397+c.charCodeAt(0)));
-return "🌍";
-}
-function fillSelect(id,rows,kind=""){
-const select=$(id),old=select.value;
-select.innerHTML='<option value="">Select an option</option>'+rows.map((x,i)=>{
-let name=label(x);
-if(!name||/^\d+$/.test(name))name=kind==="country"?"Country "+(name||optionValue(x)):"Service "+(i+1);
-const flag=kind==="country"?flagFor(x)+" ":"";
-return `<option value="${esc(optionValue(x))}">${esc(flag+name)}</option>`;
-}).join("");
-if(rows.some(x=>optionValue(x)===old))select.value=old;
-}
-function filterSelect(id,rows,q,kind=""){
-const filtered=rows.filter(x=>(label(x)+" "+optionValue(x)).toLowerCase().includes(q.toLowerCase()));
-fillSelect(id,filtered,kind);
-}
-function debounce(fn,ms){clearTimeout(debounceTimer);debounceTimer=setTimeout(fn,ms)}
+  const rate=Number(walletData.rate||1500);
 
-/* VISUAL NUMBERS */
-function showNumbers(){
-selectedQuote=null;
-modal("Buy Numbers","Choose a country and service. Live price and availability are checked before purchase.",`
-<label>Search country</label><input id="countrySearch" placeholder="Search country">
-<label>Country</label><select id="countrySelect"><option value="">Loading countries…</option></select>
-<label>Search service</label><input id="serviceSearch" placeholder="Search service">
-<label>Service</label><select id="serviceSelect"><option value="">Loading services…</option></select>
-<div id="numberQuote" class="result">Loading live catalogue…</div>
-<button class="primary" id="numberBuy" disabled>Buy number</button>
-<div id="numberOrder"></div>
-<div id="numberHistory"></div>`);
-loadNumbers();
-}
-async function loadNumbers(){
-try{
-const [c,s]=await Promise.all([api("/api/customer/visual-numbers/countries"),api("/api/customer/visual-numbers/services")]);
-numberCountries=unwrap(c.countries||c);numberServices=unwrap(s.services||s);
-fillSelect("countrySelect",numberCountries,"country");fillSelect("serviceSelect",numberServices,"service");
-$("countrySearch").oninput=()=>filterSelect("countrySelect",numberCountries,$("countrySearch").value,"country");
-$("serviceSearch").oninput=()=>filterSelect("serviceSelect",numberServices,$("serviceSearch").value,"service");
-$("countrySelect").onchange=loadQuote;$("serviceSelect").onchange=loadQuote;
-$("numberBuy").onclick=buyNumber;
-if(!numberCountries.length||!numberServices.length)throw Error("The live country or service catalogue is currently empty.");
-loadNumberHistory();
-}catch(e){$("numberQuote").textContent=e.message}
-}
-async function loadQuote(){
-const c=$("countrySelect").value,s=$("serviceSelect").value;
-if(!c||!s)return;
-selectedQuote=null;$("numberBuy").disabled=true;$("numberQuote").textContent="Checking live price and stock…";
-try{
-const d=await api(`/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`);
-const q=d.quote||{},minor=Number(q.customer_price_minor),stock=q.stock;
-if(!Number.isFinite(minor)||minor<=0)throw Error("A valid selling price is not available.");
-const price=minor/100,rate=Number(q.exchange_rate_ngn_per_usd||walletData.rate||1500);
-const stockKnown=stock!==null&&stock!==undefined&&stock!=="";
-const out=stockKnown?Number(stock):null;
-const countryName=label(numberCountries.find(x=>optionValue(x)===c))||"Selected country";
-const serviceName=label(numberServices.find(x=>optionValue(x)===s))||"Selected service";
-selectedQuote={country:c,service:s,priceMinor:minor,stock};
-$("numberQuote").innerHTML=`
-<strong>${esc(countryName)} · ${esc(serviceName)}</strong><br><br>
-Price: <strong>${esc(money(price,"USD"))}</strong><br>
-<button class="price-toggle" id="showNgn">⌄ Show NGN equivalent</button>
-<div id="ngnEquivalent" class="hidden">${esc(money(price*rate,"NGN"))}</div>
-Availability: <strong class="${stockKnown&&out<=0?"offline":"live"}">${stockKnown&&out<=0?"OFFLINE":"LIVE"}</strong><br>
-Available stock: <strong>${stockKnown?esc(stock):"Check at purchase"}</strong><br>
-<span class="muted">The final price and available stock are verified again by Speedy.ng before charging your wallet.</span>`;
-$("showNgn").onclick=()=>{$("ngnEquivalent").classList.toggle("hidden");$("showNgn").textContent=$("ngnEquivalent").classList.contains("hidden")?"⌄ Show NGN equivalent":"⌃ Hide NGN equivalent"};
-$("numberBuy").disabled=stockKnown&&out<=0;
-}catch(e){$("numberQuote").textContent=e.message}
-}
-async function buyNumber(){
-if(!selectedQuote)return;
-const b=$("numberBuy");b.disabled=true;b.textContent="Requesting number…";
-const idem=key();
-try{
-const d=await api("/api/customer/visual-numbers/purchase","POST",{
-country:selectedQuote.country,service:selectedQuote.service,idempotency_key:idem
-},{"Idempotency-Key":idem});
-const o=d.order||{};
-$("numberOrder").innerHTML=`<div class="orderbox">
-<strong>${esc(d.message||"Number order created")}</strong><br><br>
-Phone: <strong>${esc(o.phone_number||o.provider_phone||d.delivery?.phone_number||"Waiting for number")}</strong><br>
-Order ID: ${esc(o.id||d.order_id||"")}<br>
-Status: ${esc(o.status||d.status||"processing")}<br>
-<button class="secondary" id="checkNumber">Check SMS code</button>
-</div>`;
-$("checkNumber").onclick=()=>checkNumber(o.id||d.order_id);
-await refreshAll();loadNumberHistory();
-}catch(e){$("numberOrder").innerHTML=`<div class="result danger">${esc(e.message)}</div>`}
-finally{b.disabled=false;b.textContent="Buy number"}
-}
-async function checkNumber(id){
-if(!id)return;
-try{
-const d=await api(`/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`,"POST",{});
-const o=d.order||{};
-$("numberOrder").innerHTML=`<div class="orderbox">
-Status: ${esc(d.status||o.status||"checking")}<br>
-Phone: ${esc(o.phone_number||o.provider_phone||"")}<br>
-SMS code: <strong class="good">${esc(d.delivery?.sms_code||o.sms_code||"Not received yet")}</strong><br>
-${esc(d.message||"Check again shortly.")}
-<button class="secondary" id="checkNumber">Check again</button>
-</div>`;
-$("checkNumber").onclick=()=>checkNumber(id);
-await refreshAll();loadNumberHistory();
-}catch(e){$("numberOrder").innerHTML=`<div class="result">${esc(e.message)}</div>`}
-}
-async function loadNumberHistory(){
-try{
-const d=await api("/api/customer/orders");
-const rows=(d.orders||[]).filter(x=>String(x.category||"").toLowerCase()==="visual_numbers");
-$("numberHistory").innerHTML="<h3>Number order history</h3>"+(rows.length?rows.slice(0,10).map(o=>`
-<div class="listing"><strong>${esc(o.service||"Number order")}</strong>
-<p>Country: ${esc(o.country||"—")} · Status: ${esc(o.status||"—")}</p>
-<p>Price: ${esc(money(Number(o.amount_minor||0)/100,o.currency||"USD"))}</p>
-<button class="secondary" data-number-check="${esc(o.id)}">Refresh SMS status</button></div>`).join(""):'<p class="muted">No number orders yet.</p>');
-$("numberHistory").querySelectorAll("[data-number-check]").forEach(b=>b.onclick=()=>checkNumber(b.dataset.numberCheck));
-}catch(e){$("numberHistory").textContent="Order history is temporarily unavailable."}
-}
+  modal(
+    "Convert currency",
+    "Move money between your NGN and USD wallets.",
+    `
+      <label>Convert from</label>
+      <select id="convFrom">
+        <option value="NGN">🇳🇬 NGN wallet</option>
+        <option value="USD">🇺🇸 USD wallet</option>
+      </select>
 
-/* SOCIAL LOGS */
-function showLogs(){
-modal("Social Logs","Search and browse available listings. Purchases are charged to your USD wallet.",`
-<label>Search listings</label><input id="logSearch" placeholder="Search service or keyword">
-<label>Category</label><select id="logCategory"><option value="">All categories</option></select>
-<div id="logList"><p class="muted">Loading listings…</p></div>`);
-loadLogs();
-}
-async function loadLogs(){
-try{
-const c=await api("/api/customer/social-logs/categories"),cats=unwrap(c.categories||c);
-$("logCategory").innerHTML='<option value="">All categories</option>'+cats.map(x=>`<option value="${esc(x.id??x.category_id??x.slug??"")}">${esc(label(x)||"Category")}</option>`).join("");
-$("logCategory").onchange=fetchLogs;
-$("logSearch").oninput=()=>debounce(fetchLogs,450);
-await fetchLogs();
-}catch(e){$("logList").textContent=e.message}
-}
-async function fetchLogs(){
-try{
-const q=new URLSearchParams({per_page:"50",page:"1"});
-if($("logSearch").value)q.set("search",$("logSearch").value);
-if($("logCategory").value)q.set("category_id",$("logCategory").value);
-const d=await api("/api/customer/social-logs/listings?"+q.toString());
-logListings=unwrap(d.listings||d);
-$("logList").innerHTML=logListings.length?logListings.map(x=>{
-const title=x.title||x.name||x.slug||"Social Log";
-const slug=x.slug||x.listing_slug||x.id;
-return `<article class="listing"><strong>${esc(title)}</strong>
-<p>${esc(x.category_name||x.category||"Available listing")}</p>
-<p>Stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
-<div class="price">${x.customer_price_minor?esc(money(x.customer_price_minor/100,"USD")):"Price verified at checkout"}</div>
-<button class="secondary" data-log="${esc(slug)}">View & purchase</button></article>`;
-}).join():'<div class="result">No matching listings. Try another search.</div>';
-$("logList").querySelectorAll("[data-log]").forEach(b=>b.onclick=()=>inspectLog(b.dataset.log));
-}catch(e){$("logList").textContent=e.message}
-}
-async function inspectLog(slug){
-const x=logListings.find(item=>String(item.slug||item.listing_slug||item.id)===String(slug))||{};
-const title=x.title||x.name||slug,price=Number(x.customer_price_minor||0);
-$("logList").innerHTML=`<div class="listing"><strong>${esc(title)}</strong>
-<p>${esc(x.description||x.category_name||"Social Logs listing")}</p>
-<p>Available stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
-<div class="price">${price?esc(money(price/100,"USD")):"Price verified at checkout"}</div>
-<label>Quantity (1–10)</label><input id="logQty" type="number" min="1" max="10" value="1">
-<button class="primary" id="logBuy">Purchase with USD wallet</button>
-<div id="logPurchaseResult"></div><button class="secondary" id="backLogs">Back to listings</button></div>`;
-$("backLogs").onclick=fetchLogs;
-$("logBuy").onclick=async()=>{
-const qty=Number($("logQty").value);
-if(!Number.isInteger(qty)||qty<1||qty>10){$("logPurchaseResult").textContent="Quantity must be 1–10.";return}
-const b=$("logBuy");b.disabled=true;b.textContent="Processing securely…";
-const idem=key();
-try{
-const d=await api("/api/customer/social-logs/purchase","POST",{slug,quantity:qty,idempotency_key:idem},{"Idempotency-Key":idem});
-const accounts=d.delivery?.accounts||[];
-$("logPurchaseResult").innerHTML=`<div class="orderbox"><strong>${esc(d.message||"Order received")}</strong><br>
-Order ID: ${esc(d.order?.id||d.order_id||"")}<br>Status: ${esc(d.order?.status||d.status||"processing")}
-${accounts.map(a=>`<p>${esc(typeof a==="string"?a:JSON.stringify(a))}</p>`).join("")}</div>`;
-await refreshAll();loadOrders();
-}catch(e){$("logPurchaseResult").innerHTML=`<div class="result danger">${esc(e.message)}</div>`}
-finally{b.disabled=false;b.textContent="Purchase with USD wallet"}
-};
-}
-/* SOCIAL BOOSTING */
-function boosting(){
-modal("Social Boosting","Browse live services, choose a quantity and submit your order. Orders are charged to your USD wallet.",`
-<label>Catalogue</label><select id="boostDriver"><option value="global">Global services</option><option value="nigerian">Nigerian services</option></select>
-<label>Search service</label><input id="boostSearch" placeholder="Search services">
-<label>Service</label><select id="boostService"><option value="">Loading services…</option></select>
-<div id="boostInfo" class="result">Choose a service to see its details.</div>
-<label>Quantity</label><input id="boostQty" type="number" min="1" value="100">
-<label>Profile or post link (HTTPS)</label><input id="boostLink" type="url" placeholder="https://">
-<label>Comments (if required)</label><textarea id="boostComments" rows="3" placeholder="Optional comments"></textarea>
-<button class="primary" id="boostBuy" disabled>Place Social Boosting order</button>
-<div id="boostResult"></div>`);
-$("boostDriver").onchange=loadBoostServices;
-$("boostSearch").oninput=()=>filterBoostServices();
-$("boostService").onchange=showBoostInfo;
-$("boostBuy").onclick=buyBoost;
-loadBoostServices();
-}
-async function loadBoostServices(){
-try{
-const driver=$("boostDriver").value;
-const d=await api("/api/customer/social-boost/services?driver="+encodeURIComponent(driver));
-boostServices=unwrap(d.services||d);
-filterBoostServices();
-}catch(e){$("boostInfo").textContent=e.message}
-}
-function filterBoostServices(){
-if(!$("boostService"))return;
-const q=$("boostSearch").value.toLowerCase();
-const rows=boostServices.filter(x=>String(x.name||x.title||x.service_name||"").toLowerCase().includes(q));
-$("boostService").innerHTML='<option value="">Select a service</option>'+rows.map(x=>{
-const id=x.id??x.service_id;
-return `<option value="${esc(id)}">${esc(x.name||x.title||x.service_name||"Service "+id)}</option>`;
-}).join("");
-$("boostService").onchange=showBoostInfo;
-showBoostInfo();
-}
-function selectedBoost(){
-const id=Number($("boostService")?.value);
-return boostServices.find(x=>Number(x.id??x.service_id)===id);
-}
-function showBoostInfo(){
-const s=selectedBoost();
-if(!s){$("boostInfo").textContent="Choose a service to see its price and quantity limits.";$("boostBuy").disabled=true;return}
-const min=Number(s.min_quantity??s.min??1),max=Number(s.max_quantity??s.max??"");
-const rate=Number(walletData.rate||1500);
-let price=Number(s.rate??s.price??s.amount??s.price_per_1000??0);
-let currency=String(s.currency||"USD").toUpperCase();
-const markup=Number(s.markup_value||0);
-let unit=price;
-if(currency==="NGN")unit=price/rate;
-unit=unit*(1+markup/100);
-$("boostInfo").innerHTML=`<strong>${esc(s.name||s.title||s.service_name||"Selected service")}</strong><br>
-Minimum quantity: ${esc(min)}<br>Maximum quantity: ${esc(max||"Provider limit")}<br>
-${price>0?`Provider catalogue price: ${esc(money(price,currency))} · pricing confirmed again at checkout`:"Live final price is verified securely at checkout."}`;
-$("boostQty").min=min;$("boostQty").max=max||100000000;
-$("boostBuy").disabled=false;
-}
-async function buyBoost(){
-const s=selectedBoost();if(!s)return;
-const driver=$("boostDriver").value,service=Number(s.id??s.service_id);
-const quantity=Number($("boostQty").value),link=$("boostLink").value.trim(),comments=$("boostComments").value.trim();
-const min=Number(s.min_quantity??s.min??1),max=Number(s.max_quantity??s.max??100000000);
-if(!Number.isSafeInteger(quantity)||quantity<min||quantity>max){$("boostResult").textContent=`Quantity must be between ${min} and ${max}.`;return}
-if(!/^https:\/\//i.test(link)){ $("boostResult").textContent="Enter a valid HTTPS profile or post link.";return}
-const b=$("boostBuy");b.disabled=true;b.textContent="Submitting order…";
-const idem=key();
-try{
-const d=await api("/api/customer/social-boost/purchase","POST",{driver,service,quantity,link,comments,idempotency_key:idem},{"Idempotency-Key":idem});
-const o=d.order||{};
-$("boostResult").innerHTML=`<div class="orderbox"><strong>${esc(d.message||"Order submitted")}</strong><br>
-Order ID: ${esc(o.id||d.order_id||"")}<br>Status: ${esc(o.status||d.status||"processing")}
-<button class="secondary" id="boostRefresh">Refresh order status</button></div>`;
-$("boostRefresh").onclick=()=>refreshBoostOrder(o.id||d.order_id);
-await refreshAll();loadOrders();
-}catch(e){$("boostResult").innerHTML=`<div class="result danger">${esc(e.message)}</div>`}
-finally{b.disabled=false;b.textContent="Place Social Boosting order"}
-}
-async function refreshBoostOrder(id){
-if(!id)return;
-try{
-const d=await api(`/api/customer/social-boost/orders/${encodeURIComponent(id)}/refresh`,"POST",{});
-const o=d.order||{};
-$("boostResult").innerHTML=`<div class="orderbox"><strong>${esc(d.message||"Order status refreshed")}</strong><br>
-Status: ${esc(o.status||"processing")}<br>Provider status: ${esc(o.provider_status||"Pending")}</div>`;
-await refreshAll();loadOrders();
-}catch(e){$("boostResult").textContent=e.message}
-}
+      <label>Amount</label>
+      <input id="convAmount" type="number" min=".01" step=".01" placeholder="Enter amount">
 
-/* ORDER HISTORY */
-async function loadOrders(){
-try{
-const d=await api("/api/customer/orders");
-const rows=d.orders||[];
-$("orderList").innerHTML=rows.length?rows.slice(0,30).map(o=>`
-<div class="tx"><div><div class="tx-title">${esc(o.service||o.category||"Order")}</div>
-<div class="tx-date">${esc(o.category||"")} · ${esc(o.created_at||"")}</div></div>
-<div><div class="tx-amount">${esc(money(Number(o.amount_minor||0)/100,o.currency||"USD"))}</div>
-<div class="tx-status">${esc(o.status||"Pending")}</div></div></div>`).join(""):'<div class="muted">You have not placed any orders yet.</div>';
-}catch(e){$("orderList").textContent="Order history is temporarily unavailable."}
+      <p class="muted">Configured rate: ₦${rate.toLocaleString("en-NG")} = $1.00</p>
+
+      <button class="primary" id="convGo">Convert funds</button>
+    `
+  );
+
+  $("convGo").onclick=async()=>{
+    const from=$("convFrom").value;
+    const amount=Number($("convAmount").value);
+
+    if(!(amount>0)||Math.round(amount*100)!==amount*100){
+      $("modalStatus").textContent="Enter a valid amount with up to 2 decimal places.";
+      return;
+    }
+
+    const b=$("convGo");
+    b.disabled=true;
+
+    try{
+      const d=await api(
+        "/api/customer/wallet/convert",
+        "POST",
+        {
+          from,
+          to:from==="NGN"?"USD":"NGN",
+          amount_minor:Math.round(amount*100)
+        }
+      );
+
+      $("modalStatus").textContent=d.message||"Conversion completed.";
+      $("modalStatus").className="status good";
+      await refreshAll();
+
+    }catch(e){
+      $("modalStatus").textContent=e.message;
+      $("modalStatus").className="status danger";
+    }finally{
+      b.disabled=false;
+    }
+  };
 }
 
 /* PROFILE AND LOGOUT */
+
 function profile(){
-modal("Profile & settings","Your Speedy.ng account information.",`
-<div class="result">Email: ${esc(customer.email||"")}<br>
-Account status: ${esc(customer.status||"Active")}<br>
-Email verified: ${customer.email_verified?"Yes":"Not confirmed"}</div>
-<button class="primary" id="logout">Log out securely</button>`);
-$("logout").onclick=async()=>{
-try{await api("/api/customer/logout","POST",{})}catch{}
-localStorage.removeItem("speedy_customer_token");sessionStorage.removeItem("speedy_customer_token");
-localStorage.removeItem("speedy_customer");sessionStorage.removeItem("speedy_customer");
-location.replace("/");
-};
+  modal(
+    "Profile & settings",
+    "Your Speedy.ng account information.",
+    `
+      <div class="result">
+        Email: ${esc(customer.email||"")}<br>
+        Account status: ${esc(customer.status||"Active")}<br>
+        Email verified: ${customer.email_verified?"Yes":"Not confirmed"}
+      </div>
+      <button class="primary" id="logout">Log out securely</button>
+    `
+  );
+
+  $("logout").onclick=async()=>{
+    try{
+      await api("/api/customer/logout","POST",{});
+    }catch{}
+
+    localStorage.removeItem("speedy_customer_token");
+    sessionStorage.removeItem("speedy_customer_token");
+    localStorage.removeItem("speedy_customer");
+    sessionStorage.removeItem("speedy_customer");
+
+    location.replace("/");
+  };
 }
+
+/* CUSTOMER SUPPORT */
+
 function support(){
-modal("Support","Need help with a payment or order?",`
-<div class="result">Keep your payment reference or order reference available when contacting Speedy.ng support.<br><br>
-Never share your password or email verification code.</div>`);
+  modal(
+    "Support",
+    "Need help with a payment or order?",
+    `
+      <div class="result">
+        Keep your payment reference or order reference available when contacting Speedy.ng support.
+        <br><br>
+        Never share your password or email verification code.
+      </div>
+    `
+  );
+}
+
+/* SHARED DATA HELPERS */
+
+function unwrap(x){
+  if(Array.isArray(x))return x;
+  if(!x||typeof x!=="object")return [];
+
+  for(const k of [
+    "data","results","items","countries",
+    "services","listings","categories","prices"
+  ]){
+    if(Array.isArray(x[k]))return x[k];
+  }
+
+  return [];
+}
+
+function label(x){
+  return String(
+    x?.name??
+    x?.title??
+    x?.country_name??
+    x?.country??
+    x?.service_name??
+    x?.service??
+    x?.slug??
+    x?.code??
+    ""
+  ).trim();
+}
+
+function optionValue(x){
+  return String(x?.code??x?.id??x?.iso??x?.slug??label(x));
+}
+/* VISUAL NUMBERS */
+
+function showNumbers(){
+  modal(
+    "Buy Numbers",
+    "Search for a country and service. Availability and price are checked before purchase.",
+    `
+      <label>Search country</label>
+      <input id="countrySearch" placeholder="Type a country name">
+
+      <label>Country</label>
+      <select id="countrySelect">
+        <option value="">Loading countries…</option>
+      </select>
+
+      <label>Search service</label>
+      <input id="serviceSearch" placeholder="Type a service name">
+
+      <label>Service</label>
+      <select id="serviceSelect">
+        <option value="">Loading services…</option>
+      </select>
+
+      <div id="numberQuote" class="result">
+        Choose a country and service to check availability.
+      </div>
+
+      <button class="primary" id="numberBuy" disabled>Buy number</button>
+      <div id="numberOrder"></div>
+    `
+  );
+
+  loadNumbers();
+}
+
+async function loadNumbers(){
+  try{
+    const [c,s]=await Promise.all([
+      api("/api/customer/visual-numbers/countries"),
+      api("/api/customer/visual-numbers/services")
+    ]);
+
+    numberCountries=unwrap(c.countries||c);
+    numberServices=unwrap(s.services||s);
+
+    fillSelect("countrySelect",numberCountries);
+    fillSelect("serviceSelect",numberServices);
+
+    $("countrySearch").oninput=()=>{
+      filterSelect("countrySelect",numberCountries,$("countrySearch").value);
+    };
+
+    $("serviceSearch").oninput=()=>{
+      filterSelect("serviceSelect",numberServices,$("serviceSearch").value);
+    };
+
+    $("countrySelect").onchange=loadQuote;
+    $("serviceSelect").onchange=loadQuote;
+    $("numberBuy").onclick=buyNumber;
+
+    if(!numberCountries.length||!numberServices.length){
+      throw Error("The live country or service list is empty. Please refresh later.");
+    }
+
+  }catch(e){
+    $("numberQuote").textContent=e.message;
+  }
+}
+
+function fillSelect(id,rows){
+  const select=$(id);
+  const old=select.value;
+
+  select.innerHTML=`
+    <option value="">Select an option</option>
+    ${rows.map((x,i)=>`
+      <option value="${esc(optionValue(x))}">
+        ${esc(label(x)||`Option ${i+1}`)}
+      </option>
+    `).join("")}
+  `;
+
+  if(rows.some(x=>optionValue(x)===old))select.value=old;
+}
+
+function filterSelect(id,rows,q){
+  const filtered=rows.filter(x=>
+    label(x).toLowerCase().includes(q.toLowerCase())
+  );
+  fillSelect(id,filtered);
+}
+
+async function loadQuote(){
+  const c=$("countrySelect").value;
+  const s=$("serviceSelect").value;
+
+  if(!c||!s)return;
+
+  selectedQuote=null;
+  $("numberBuy").disabled=true;
+  $("numberQuote").textContent="Checking live price and availability…";
+
+  try{
+    const d=await api(
+      `/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`
+    );
+
+    const q=d.quote||{};
+    const priceMinor=Number(q.customer_price_minor);
+    const stock=q.stock??"Check at purchase";
+    const currency=q.currency||"USD";
+
+    if(!Number.isFinite(priceMinor)||priceMinor<=0){
+      throw Error("A valid price is not currently available for this service.");
+    }
+
+    const price=priceMinor/100;
+    const rate=Number(walletData.rate||1500);
+    const available=Number(stock)>0;
+    const stockKnown=stock!==null&&stock!==undefined&&stock!=="";
+
+    selectedQuote={country:c,service:s,priceMinor,stock,currency};
+
+    const ngnEquivalent=currency==="USD"
+      ?money(price*rate,"NGN")
+      :"";
+
+    const countryName=label(numberCountries.find(x=>optionValue(x)===c))||c;
+    const serviceName=label(numberServices.find(x=>optionValue(x)===s))||s;
+
+    $("numberQuote").innerHTML=`
+      <strong>${esc(countryName)} · ${esc(serviceName)}</strong>
+      <br><br>
+      Price: <strong>${esc(money(price,currency))}</strong>
+      ${ngnEquivalent?`
+        <br>
+        <button class="price-toggle" id="showNgn">⌄ Show NGN price</button>
+        <div id="ngnEquivalent" class="hidden">${esc(ngnEquivalent)}</div>
+      `:""}
+      <br>
+      Availability:
+      <strong class="${stockKnown&&Number(stock)<=0?"offline":"live"}">
+        ${stockKnown&&Number(stock)<=0?"OFFLINE":"LIVE"}
+      </strong>
+      <br>
+      Available stock: <strong>${esc(stock)}</strong>
+      <br>
+      <span class="muted">The backend must verify the final price and stock again before charging your wallet.</span>
+    `;
+
+    if(ngnEquivalent){
+      $("showNgn").onclick=()=>{
+        const box=$("ngnEquivalent");
+        box.classList.toggle("hidden");
+        $("showNgn").textContent=box.classList.contains("hidden")
+          ?"⌄ Show NGN price"
+          :"⌃ Hide NGN price";
+      };
+    }
+
+    $("numberBuy").disabled=stockKnown&&Number(stock)<=0;
+
+  }catch(e){
+    $("numberQuote").textContent=e.message;
+  }
+}
+
+async function buyNumber(){
+  if(!selectedQuote)return;
+
+  const b=$("numberBuy");
+  b.disabled=true;
+  b.textContent="Requesting number…";
+
+  const idempotencyKey=key();
+
+  try{
+    const d=await api(
+      "/api/customer/visual-numbers/purchase",
+      "POST",
+      {
+        country:selectedQuote.country,
+        service:selectedQuote.service,
+        idempotency_key:idempotencyKey
+      },
+      {"Idempotency-Key":idempotencyKey}
+    );
+
+    const o=d.order||{};
+
+    $("numberOrder").innerHTML=`
+      <div class="orderbox">
+        <strong>${esc(d.message||"Number order created")}</strong>
+        <br><br>
+        Phone:
+        <strong>${esc(o.phone_number||o.provider_phone||d.delivery?.phone_number||"Waiting for number")}</strong>
+        <br>
+        Order: ${esc(o.id||d.order_id||"")}
+        <br>
+        Status: ${esc(o.status||d.status||"processing")}
+        <br>
+        <button class="secondary" id="checkNumber">Check SMS code</button>
+      </div>
+    `;
+
+    $("checkNumber").onclick=()=>checkNumber(o.id||d.order_id);
+    await refreshAll();
+
+  }catch(e){
+    $("numberOrder").innerHTML=`<div class="result danger">${esc(e.message)}</div>`;
+  }finally{
+    b.disabled=false;
+    b.textContent="Buy number";
+  }
+}
+
+async function checkNumber(id){
+  if(!id)return;
+
+  try{
+    const d=await api(
+      `/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`,
+      "POST",
+      {}
+    );
+
+    const o=d.order||{};
+
+    $("numberOrder").innerHTML=`
+      <div class="orderbox">
+        Status: ${esc(d.status||o.status||"checking")}
+        <br>
+        Phone: ${esc(o.phone_number||o.provider_phone||"")}
+        <br>
+        SMS code:
+        <strong class="good">${esc(d.delivery?.sms_code||o.sms_code||"Not received yet")}</strong>
+        <br>
+        ${esc(d.message||"Refresh to check again.")}
+        <br>
+        <button class="secondary" id="checkNumber">Check again</button>
+      </div>
+    `;
+
+    $("checkNumber").onclick=()=>checkNumber(id);
+    await refreshAll();
+
+  }catch(e){
+    $("numberOrder").innerHTML=`<div class="result">${esc(e.message)}</div>`;
+  }
+}
+
+/* SOCIAL LOGS */
+
+function showLogs(){
+  modal(
+    "Social Logs",
+    "Search listings by service or category.",
+    `
+      <label>Search listings</label>
+      <input id="logSearch" placeholder="Search by service or keyword">
+
+      <label>Category</label>
+      <select id="logCategory">
+        <option value="">All categories</option>
+      </select>
+
+      <div id="logList"><p class="muted">Loading listings…</p></div>
+    `
+  );
+
+  loadLogs();
+}
+
+async function loadLogs(){
+  try{
+    const c=await api("/api/customer/social-logs/categories");
+    const cats=unwrap(c.categories||c);
+
+    $("logCategory").innerHTML=
+      '<option value="">All categories</option>'+
+      cats.map(x=>`
+        <option value="${esc(x.id??x.category_id??x.slug??"")}">
+          ${esc(label(x))}
+        </option>
+      `).join("");
+
+    $("logCategory").onchange=fetchLogs;
+    $("logSearch").oninput=()=>debounce(fetchLogs,450);
+
+    await fetchLogs();
+
+  }catch(e){
+    $("logList").textContent=e.message;
+  }
+}
+
+function debounce(fn,ms){
+  clearTimeout(debounceTimer);
+  debounceTimer=setTimeout(fn,ms);
+}
+
+async function fetchLogs(){
+  try{
+    const q=new URLSearchParams({per_page:"50",page:"1"});
+
+    if($("logSearch").value)q.set("search",$("logSearch").value);
+    if($("logCategory").value)q.set("category_id",$("logCategory").value);
+
+    const d=await api("/api/customer/social-logs/listings?"+q.toString());
+
+    logListings=unwrap(d.listings||d);
+
+    $("logList").innerHTML=logListings.length
+      ?logListings.map(x=>{
+        const title=x.title||x.name||x.slug||"Social Log";
+        const slug=x.slug||x.listing_slug||x.id;
+
+        return `
+          <article class="listing">
+            <strong>${esc(title)}</strong>
+            <p>${esc(x.category_name||x.category||"Available listing")}</p>
+            <p>Stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
+            <div class="price">
+              ${x.customer_price_minor
+                ?esc(money(x.customer_price_minor/100,"USD"))
+                :"Price checked at checkout"}
+            </div>
+            <button class="secondary" data-log="${esc(slug)}">View & purchase</button>
+          </article>
+        `;
+      }).join("")
+      :'<div class="result">No matching listings were returned. Try another search.</div>';
+
+    $("logList").querySelectorAll("[data-log]").forEach(b=>{
+      b.onclick=()=>inspectLog(b.dataset.log);
+    });
+
+  }catch(e){
+    $("logList").textContent=e.message;
+  }
+}
+
+async function inspectLog(slug){
+  try{
+    const x=logListings.find(item=>
+      String(item.slug||item.listing_slug||item.id)===String(slug)
+    )||{};
+
+    const title=x.title||x.name||slug;
+    const price=Number(x.customer_price_minor||0);
+
+    $("logList").innerHTML=`
+      <div class="listing">
+        <strong>${esc(title)}</strong>
+        <p>${esc(x.description||x.category_name||"Social Logs listing")}</p>
+        <p>Available stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
+        <div class="price">
+          ${price?esc(money(price/100,"USD")):"Price verified at checkout"}
+        </div>
+
+        <label>Quantity (1–10)</label>
+        <input id="logQty" type="number" min="1" max="10" value="1">
+
+        <button class="primary" id="logBuy">Purchase with USD wallet</button>
+        <div id="logPurchaseResult"></div>
+        <button class="secondary" id="backLogs">Back to listings</button>
+      </div>
+    `;
+
+    $("backLogs").onclick=fetchLogs;
+
+    $("logBuy").onclick=async()=>{
+      const qty=Number($("logQty").value);
+
+      if(!Number.isInteger(qty)||qty<1||qty>10){
+        $("logPurchaseResult").textContent="Quantity must be 1–10.";
+        return;
+      }
+
+      const b=$("logBuy");
+      b.disabled=true;
+      b.textContent="Processing securely…";
+
+      const idempotencyKey=key();
+
+      try{
+        const d=await api(
+          "/api/customer/social-logs/purchase",
+          "POST",
+          {slug,quantity:qty,idempotency_key:idempotencyKey},
+          {"Idempotency-Key":idempotencyKey}
+        );
+
+        const accounts=d.delivery?.accounts||[];
+
+        $("logPurchaseResult").innerHTML=`
+          <div class="orderbox">
+            <strong>${esc(d.message||"Order received")}</strong>
+            <br>
+            Order ID: ${esc(d.order?.id||d.order_id||"")}
+            <br>
+            Status: ${esc(d.order?.status||d.status||"processing")}
+            ${accounts.map(a=>`
+              <p>${esc(typeof a==="string"?a:JSON.stringify(a))}</p>
+            `).join("")}
+          </div>
+        `;
+
+        await refreshAll();
+
+      }catch(e){
+        $("logPurchaseResult").innerHTML=
+          `<div class="result danger">${esc(e.message)}</div>`;
+      }finally{
+        b.disabled=false;
+        b.textContent="Purchase with USD wallet";
+      }
+    };
+
+  }catch(e){
+    $("logList").textContent=e.message;
+  }
+}
+
+/* SOCIAL BOOSTING */
+
+function boosting(){
+  modal(
+    "Social Boosting",
+    "Social Boosting is not connected to a live provider in the current API configuration.",
+    `
+      <div class="result">
+        <span class="pill">NOT CONFIGURED</span>
+        <p>No Social Boosting provider is currently configured.</p>
+        We will not display invented services or accept payment until a real provider is connected.
+        <br><br>
+        Your wallet will not be charged from this screen.
+      </div>
+    `
+  );
 }
 
 /* DASHBOARD BUTTONS */
+
 $("depositOpen").onclick=deposit;
 $("convertOpen").onclick=convert;
 $("numbersOpen").onclick=showNumbers;
 $("logsOpen").onclick=showLogs;
 $("boostOpen").onclick=boosting;
+
 $("profileBtn").onclick=$("navProfile").onclick=profile;
 $("supportBtn").onclick=support;
-$("refreshBtn").onclick=refreshAll;
-$("txRefresh").onclick=refreshAll;
-$("ordersRefresh").onclick=loadOrders;
+
+$("refreshBtn").onclick=$("txRefresh").onclick=refreshAll;
 
 document.querySelectorAll("[data-scroll]").forEach(b=>{
-b.onclick=()=>{
-const id=b.dataset.scroll;
-$(id).scrollIntoView({behavior:"smooth"});
-document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-};
+  b.onclick=()=>{
+    const id=b.dataset.scroll;
+
+    $(id).scrollIntoView({behavior:"smooth"});
+
+    document.querySelectorAll(".nav button").forEach(x=>{
+      x.classList.remove("active");
+    });
+
+    b.classList.add("active");
+  };
 });
 
-/* INITIAL LOAD */
-if(!token)location.replace("/");
-else{
+/* INITIAL DASHBOARD LOAD */
+
 refreshAll();
-loadOrders();
-setInterval(()=>{if(token){refreshAll();loadOrders()}},60000);
-}
+
+setInterval(()=>{
+  if(token)refreshAll();
+},60000);
+
 </script>
 </body>
 </html>
