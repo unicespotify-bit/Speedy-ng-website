@@ -1026,7 +1026,30 @@ function support(){
 }
 
 /* SHARED DATA HELPERS */
+function unwrap(value){
+  if(Array.isArray(value))return value;
 
+  if(!value||typeof value!=="object")return [];
+
+  const nested=
+    value.data??
+    value.items??
+    value.results??
+    value.countries??
+    value.services;
+
+  if(nested!==undefined&&nested!==value){
+    return unwrap(nested);
+  }
+
+  return Object.entries(value).map(([key,row])=>{
+    if(row&&typeof row==="object"){
+      return {...row,id:row.id??row.code??key};
+    }
+
+    return {id:key,name:String(row??key)};
+  });
+  }
 function normalizeCountries(value){
   const rows=unwrap(value);
   if(rows.length)return rows;
