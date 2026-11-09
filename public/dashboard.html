@@ -1047,24 +1047,21 @@ function normalizeCountries(value){
   });
 }
 
-function normalizeCountries(value){
-  const rows=unwrap(value);
-  if(rows.length)return rows;
-
-  if(!value||typeof value!=="object")return [];
-
-  const source=value.data??value.countries??value;
-
-  if(Array.isArray(source))return source;
-  if(!source||typeof source!=="object")return [];
-
-  return Object.entries(source).map(([key,row])=>{
-    if(row&&typeof row==="object"){
-      return {...row,id:row.id??key};
-    }
-
-    return {id:key,eng:String(row??key)};
-  });
+function label(x){
+  return String(
+    x?.name??
+    x?.title??
+    x?.country_name??
+    x?.country??
+    x?.eng??
+    x?.en??
+    x?.english_name??
+    x?.service_name??
+    x?.service??
+    x?.slug??
+    x?.code??
+    ""
+  ).trim();
 }
 
 function optionValue(x){
