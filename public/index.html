@@ -171,23 +171,45 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
     e.preventDefault();
     showNotice("Password reset is not yet enabled on this staging API. Your password has not been changed.");
   });
-  $("authForm").addEventListener("submit", async e => {
-    e.preventDefault(); clearNotice();
-    const button = $("submitButton"), email = $("email").value.trim().toLowerCase(), password = $("password").value;
-    if (mode === "register" && password.length < 8) return showNotice("Your password must contain at least 8 characters.", "error");
+  [11/9, 8:25 AM] Jack Son: const data = await api("/api/customer/login", {email, password});
+saveSession(data);
+window.location.replace("/dashboard.html");
+[11/9, 8:33 AM] Jack Son: $("form").addEventListener("submit", async e => {
+    e.preventDefault();
+    clearNotice();
+
+    const button = $("submitButton");
+    const email = $("email").value.trim().toLowerCase();
+    const password = $("password").value;
+
+    if (mode === "register" && password.length < 8) {
+      return showNotice("Your password must contain at least 8 characters.", "error");
+    }
+
     setBusy(button, true, mode === "register" ? "Creating account…" : "Signing in…");
+
     try {
       if (mode === "register") {
-        await api("/api/customer/register", {email, password, full_name:$("fullName").value.trim(), name:$("fullName").value.trim()});
+        await api("/api/customer/register", {
+          email,
+          password,
+          full_name: $("fullName").value.trim(),
+          name: $("fullName").value.trim()
+        });
+
         await startVerification(email);
       } else {
-        const data = await api("/api/customer/login", {email, password});
+        const data = await api("/api/customer/login", { email, password });
+
         saveSession(data);
-        showNotice("You are signed in. Customer dashboard navigation will be enabled in the next portal build.", "success");
+
+        window.location.replace("/dashboard.html");
       }
     } catch (err) {
       showNotice(err.message || "Unable to complete the request. Please try again.", "error");
-    } finally { setBusy(button, false); }
+    } finally {
+      setBusy(button, false);
+    }
   });
   $("verifyButton").addEventListener("click", async () => {
     const code = $("verificationCode").value.trim();
