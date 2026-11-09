@@ -1158,6 +1158,8 @@ async function loadNumbers(){
 
 async function loadCountryServices(){
   const country=$("countrySelect").value;
+  const requestId=loadCountryServices.requestId=
+    (loadCountryServices.requestId||0)+1;
 
   quoteRequestId++;
   selectedQuote=null;
@@ -1178,7 +1180,10 @@ async function loadCountryServices(){
       "/api/customer/visual-numbers/services?country="+encodeURIComponent(country)
     );
 
-    if($("countrySelect").value!==country)return;
+    if(
+      requestId!==loadCountryServices.requestId||
+      $("countrySelect").value!==country
+    )return;
 
     numberServices=unwrap(result.services||result);
     fillSelect("serviceSelect",numberServices);
@@ -1191,7 +1196,10 @@ async function loadCountryServices(){
     $("numberQuote").textContent="Choose a service to check availability.";
 
   }catch(e){
-    if($("countrySelect").value===country){
+    if(
+      requestId===loadCountryServices.requestId&&
+      $("countrySelect").value===country
+    ){
       $("numberQuote").textContent=e.message;
     }
   }
