@@ -1136,8 +1136,18 @@ async function loadNumbers(){
     fillSelect("serviceSelect",[]);
 
     $("countrySearch").oninput=()=>{
-      filterSelect("countrySelect",numberCountries,$("countrySearch").value);
-    };
+  const previous=$("countrySelect").value;
+
+  filterSelect(
+    "countrySelect",
+    numberCountries,
+    $("countrySearch").value
+  );
+
+  if($("countrySelect").value!==previous){
+    loadCountryServices();
+  }
+};
 
     $("serviceSearch").oninput=()=>{
       filterSelect("serviceSelect",numberServices,$("serviceSearch").value);
