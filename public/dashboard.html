@@ -1143,9 +1143,27 @@ function fillSelect(id,rows){
 }
 
 function filterSelect(id,rows,q){
-  const filtered=rows.filter(x=>
-    label(x).toLowerCase().includes(q.toLowerCase())
-  );
+  const search=String(q||"").trim().toLowerCase();
+
+  const filtered=!search
+    ?rows
+    :rows.filter(x=>{
+      const searchable=[
+        label(x),
+        x?.name,
+        x?.title,
+        x?.country,
+        x?.country_name,
+        x?.service,
+        x?.service_name,
+        x?.code,
+        x?.id,
+        x?.slug
+      ].filter(Boolean).join(" ").toLowerCase();
+
+      return searchable.includes(search);
+    });
+
   fillSelect(id,filtered);
 }
 
