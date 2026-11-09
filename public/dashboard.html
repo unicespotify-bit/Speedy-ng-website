@@ -853,18 +853,6 @@ async function createDeposit(){
       <button class="secondary" id="depDone">Close</button>
     `;
 
-    $("depDone").onclick=closeModal;
-    $("depCheck").onclick=checkDeposit;
-    startDepositPoll();
-
-    $("depDone").onclick=closeModal;
-    $("depCheck").onclick=checkDeposit;
-    startDepositPoll();
-
-    if(paymentUrl){
-      window.open(paymentUrl,"_blank","noopener");
-    }
-
   }catch(e){
     $("modalStatus").textContent=e.message;
     $("modalStatus").className="status danger";
