@@ -215,7 +215,86 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
     $("confirmPassword").value = "";
     $("resetNotice").style.display = "none";
   });
-$("form").addEventListener("submit", async e => {
+  function showResetNotice(message, type="info") {
+    const box = $("resetNotice");
+    box.textContent = message;
+    box.className = "notice" + (type === "error" ? " error" : type === "success" ? " success" : "");
+    box.style.display = "block";
+  }
+
+  $("sendResetCode").addEventListener("click", async () => {
+    const email = $("resetEmail").value.trim().toLowerCase();
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return showResetNotice("Enter a valid email address.", "error");
+    }
+
+    const button = $("sendResetCode");
+    setBusy(button, true, "Sending code…");
+
+    try {
+      const data = await api("/api/customer/forgot-password", {email});
+      $("resetCodeFields").classList.remove("hidden");
+      showResetNotice(data.message || "If an account exists for this email, a reset code has been sent. Check your inbox and spam folder.", "success");
+    } catch (err) {
+      showResetNotice(err.message || "Unable to send the reset code. Please try again.", "error");
+    } finally {
+      setBusy(button, false);
+    }
+  });
+
+  $("resetPasswordButton").addEventListener("click", async () => {
+    const email = $("resetEmail").value.trim().toLowerCase();
+    const code = $("resetCode").value.trim();
+    const password = $("newPassword").value;
+    const confirm = $("confirmPassword").value;
+
+    if (!/^\d{6}$/.test(code)) {
+      return showResetNotice("Enter the six-digit reset code.", "error");
+    }
+    if (password.length < 12 || password.length > 200) {
+      return showResetNotice("Your password must contain 12 to 200 characters.", "error");
+    }
+    if (password !== confirm) {
+      return showResetNotice("Your passwords do not match.", "error");
+    }
+
+    const button = $("resetPasswordButton");
+    setBusy(button, true, "Resetting password…");
+
+    try {
+      await api("/api/customer/reset-password", {
+        email,
+        code,
+        newPassword: password
+      });
+
+      $("resetPanel").classList.add("hidden");
+      $("tabs").classList.remove("hidden");
+      $("authForm").classList.remove("hidden");
+      $("switchText").classList.remove("hidden");
+      $("email").value = email;
+      $("password").value = "";
+      $("resetCodeFields").classList.add("hidden");
+      setMode("login");
+      showNotice("Your password has been reset successfully. You can now sign in.", "success");
+    } catch (err) {
+      showResetNotice(err.message || "Password reset failed. Check your code and try again.", "error");
+    } finally {
+      setBusy(button, false);
+    }
+  });
+
+  $("backToLogin").addEventListener("click", e => {
+    e.preventDefault();
+    $("resetPanel").classList.add("hidden");
+    $("tabs").classList.remove("hidden");
+    $("authForm").classList.remove("hidden");
+    $("switchText").classList.remove("hidden");
+    $("email").value = $("resetEmail").value.trim();
+    setMode("login");
+  });
+$("authForm").addEventListener("submit", async e => {
     e.preventDefault();
     clearNotice();
 
