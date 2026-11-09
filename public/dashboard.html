@@ -694,7 +694,12 @@ async function api(path,method="GET",body,headers={}){
   try{d=await r.json()}catch{}
 
   if(!r.ok||d.ok===false||d.success===false){
-    throw Error(d.message||d.error||`Request failed (${r.status})`);
+    const error=new Error(
+      d.message||d.error||`Request failed (${r.status})`
+    );
+    error.statusCode=r.status;
+    error.payload=d;
+    throw error;
   }
 
   return d;
