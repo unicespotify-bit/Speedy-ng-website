@@ -1166,7 +1166,7 @@ async function loadQuote(){
 
     const q=d.quote||{};
     const priceMinor=Number(q.customer_price_minor);
-    const stock=q.stock??"Check at purchase";
+    const stock=q.stock??null;
     const currency=q.currency||"USD";
 
     if(!Number.isFinite(priceMinor)||priceMinor<=0){
@@ -1175,8 +1175,10 @@ async function loadQuote(){
 
     const price=priceMinor/100;
     const rate=Number(walletData.rate||1500);
-    const available=Number(stock)>0;
-    const stockKnown=stock!==null&&stock!==undefined&&stock!=="";
+    const stockNumber=Number(stock);
+const stockKnown=stock!==null&&stock!==undefined&&
+  stock!==""&&Number.isFinite(stockNumber);
+const available=stockKnown&&stockNumber>0;
 
     selectedQuote={country:c,service:s,priceMinor,stock,currency};
 
@@ -1198,11 +1200,11 @@ async function loadQuote(){
       `:""}
       <br>
       Availability:
-      <strong class="${stockKnown&&Number(stock)<=0?"offline":"live"}">
-        ${stockKnown&&Number(stock)<=0?"OFFLINE":"LIVE"}
+      <strong class="${!stockKnown?"":available?"live":"offline"}">
+        ${!stockKnown?"UNKNOWN":available?"ONLINE":"OFFLINE"}
       </strong>
       <br>
-      Available stock: <strong>${esc(stock)}</strong>
+      Available stock: <strong>${stockKnown?stockNumber:"Not confirmed"}</strong>
       <br>
       <span class="muted">The backend must verify the final price and stock again before charging your wallet.</span>
     `;
