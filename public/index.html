@@ -154,7 +154,7 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
     $("fullName").required = registering;
     $("password").autocomplete = registering ? "new-password" : "current-password";
     $("formOptions").classList.toggle("hidden", registering);
-    $("passwordHint").textContent = registering ? "Use at least 8 characters." : "";
+    $("passwordHint").textContent = registering ? "Use at least 12 characters." : "";
     $("submitButton").textContent = registering ? "Create Account →" : "Sign In Securely →";
     $("switchText").innerHTML = registering ? 'Already have an account? <a href="#" id="switchLink">Sign in</a>' : 'New to Speedy.ng? <a href="#" id="switchLink">Create an account</a>';
     $("switchLink").addEventListener("click", e => { e.preventDefault(); setMode(registering ? "login" : "register"); });
@@ -302,8 +302,8 @@ $("authForm").addEventListener("submit", async e => {
     const email = $("email").value.trim().toLowerCase();
     const password = $("password").value;
 
-    if (mode === "register" && password.length < 8) {
-      return showNotice("Your password must contain at least 8 characters.", "error");
+    if (mode === "register" && (password.length < 12 || password.length > 200)) {
+   return showNotice("Your password must contain 12 to 200 characters.", "error");
     }
 
     setBusy(button, true, mode === "register" ? "Creating account…" : "Signing in…");
