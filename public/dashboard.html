@@ -1127,16 +1127,13 @@ function showNumbers(){
 
 async function loadNumbers(){
   try{
-    const [c,s]=await Promise.all([
-      api("/api/customer/visual-numbers/countries"),
-      api("/api/customer/visual-numbers/services")
-    ]);
+    const c=await api("/api/customer/visual-numbers/countries");
 
     numberCountries=normalizeCountries(c.countries||c);
-    numberServices=unwrap(s.services||s);
+    numberServices=[];
 
     fillSelect("countrySelect",numberCountries);
-    fillSelect("serviceSelect",numberServices);
+    fillSelect("serviceSelect",[]);
 
     $("countrySearch").oninput=()=>{
       filterSelect("countrySelect",numberCountries,$("countrySearch").value);
@@ -1146,16 +1143,54 @@ async function loadNumbers(){
       filterSelect("serviceSelect",numberServices,$("serviceSearch").value);
     };
 
-    $("countrySelect").onchange=loadQuote;
+    $("countrySelect").onchange=loadCountryServices;
     $("serviceSelect").onchange=loadQuote;
     $("numberBuy").onclick=buyNumber;
 
-    if(!numberCountries.length||!numberServices.length){
-      throw Error("The live country or service list is empty. Please refresh later.");
+    if(!numberCountries.length){
+      throw Error("The live country list is empty. Please refresh later.");
     }
 
   }catch(e){
     $("numberQuote").textContent=e.message;
+  }
+}
+
+async function loadCountryServices(){
+  const country=$("countrySelect").value;
+
+  numberServices=[];
+  fillSelect("serviceSelect",[]);
+  $("numberBuy").disabled=true;
+
+  if(!country){
+    loadQuote();
+    return;
+  }
+
+  $("numberQuote").textContent="Loading services for this country…";
+
+  try{
+    const result=await api(
+      "/api/customer/visual-numbers/services?country="+encodeURIComponent(country)
+    );
+
+    if($("countrySelect").value!==country)return;
+
+    numberServices=unwrap(result.services||result);
+    fillSelect("serviceSelect",numberServices);
+
+    if(!numberServices.length){
+      $("numberQuote").textContent="No services available for this country.";
+      return;
+    }
+
+    $("numberQuote").textContent="Choose a service to check availability.";
+
+  }catch(e){
+    if($("countrySelect").value===country){
+      $("numberQuote").textContent=e.message;
+    }
   }
 }
 
