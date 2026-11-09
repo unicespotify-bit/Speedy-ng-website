@@ -1027,32 +1027,44 @@ function support(){
 
 /* SHARED DATA HELPERS */
 
-function unwrap(x){
-  if(Array.isArray(x))return x;
-  if(!x||typeof x!=="object")return [];
+function normalizeCountries(value){
+  const rows=unwrap(value);
+  if(rows.length)return rows;
 
-  for(const k of [
-    "data","results","items","countries",
-    "services","listings","categories","prices"
-  ]){
-    if(Array.isArray(x[k]))return x[k];
-  }
+  if(!value||typeof value!=="object")return [];
 
-  return [];
+  const source=value.data??value.countries??value;
+
+  if(Array.isArray(source))return source;
+  if(!source||typeof source!=="object")return [];
+
+  return Object.entries(source).map(([key,row])=>{
+    if(row&&typeof row==="object"){
+      return {...row,id:row.id??key};
+    }
+
+    return {id:key,eng:String(row??key)};
+  });
 }
 
-function label(x){
-  return String(
-    x?.name??
-    x?.title??
-    x?.country_name??
-    x?.country??
-    x?.service_name??
-    x?.service??
-    x?.slug??
-    x?.code??
-    ""
-  ).trim();
+function normalizeCountries(value){
+  const rows=unwrap(value);
+  if(rows.length)return rows;
+
+  if(!value||typeof value!=="object")return [];
+
+  const source=value.data??value.countries??value;
+
+  if(Array.isArray(source))return source;
+  if(!source||typeof source!=="object")return [];
+
+  return Object.entries(source).map(([key,row])=>{
+    if(row&&typeof row==="object"){
+      return {...row,id:row.id??key};
+    }
+
+    return {id:key,eng:String(row??key)};
+  });
 }
 
 function optionValue(x){
@@ -1100,7 +1112,7 @@ async function loadNumbers(){
       api("/api/customer/visual-numbers/services")
     ]);
 
-    numberCountries=unwrap(c.countries||c);
+    numberCountries=normalizeCountries(c.countries||c);
     numberServices=unwrap(s.services||s);
 
     fillSelect("countrySelect",numberCountries);
