@@ -1322,48 +1322,91 @@ async function activities(){
 }
 
 async function viewActivityOrder(id){
-  try{
-    const result=await api(
-      "/api/customer/orders/"+encodeURIComponent(id)
-    );
+try{
+const result=await api(
+"/api/customer/orders/"+encodeURIComponent(id)
+);
 
-    const order=result.order||{};
-    const delivery=result.delivery||{};
+const order=result.order||{};
+const delivery=result.delivery||{};
 
-    const phone=delivery.phone_number||
-      order.phone_number||order.provider_phone||"";
+if(order.category==="visual_numbers"){
+  stopVisualOrderTimers();
 
-    const code=delivery.sms_code||order.sms_code||"";
+  modal(
+    "Visual Number Order",
+    "Your saved order has been restored.",
+    `
+      <div id="numberOrder"></div>
 
-    modal(
-      "Order Details",
-      "Your saved order information.",
-      `
-        <div class="result">
-          Order ID: ${esc(order.id||id)}<br>
-          Service: ${esc(order.service||order.category||"")}<br>
-          Country: ${esc(order.country||"")}<br>
-          Status: ${esc(order.status||"")}<br>
-          Amount:
-          ${esc(money(Number(order.amount_minor||0)/100,order.currency||"USD"))}
-          ${phone?`<br>Phone Number: ${esc(phone)}`:""}
-          ${code?`<br>SMS Code: ${esc(code)}`:""}
-          ${order.expires_at?`<br>Expiry: ${esc(order.expires_at)}`:""}
-        </div>
+      <button class="secondary" id="refreshRestoredOrder">
+        Check SMS Status
+      </button>
 
-        <button class="primary" id="backActivities">
-          Back to Activities
-        </button>
-      `
-    );
+      <button class="primary" id="backActivities">
+        Back to Activities
+      </button>
+    `
+  );
 
-    $("backActivities").onclick=activities;
+  window.visualCurrentOrder=order;
 
-  }catch(e){
-    $("modalStatus").textContent=e.message;
-    $("modalStatus").className="status danger";
+  renderVisualOrder(
+    order,
+    delivery,
+    "You can return to this order anytime from Order History."
+  );
+
+  if(!delivery.sms_code&&
+     !order.sms_code&&
+     !["completed","failed"].includes(
+       String(order.status||"").toLowerCase()
+     )){
+    window.visualNumberPollTimer=setInterval(()=>{
+      if(!window.visualNumberCheckBusy){
+        checkNumber(order.id,true);
+      }
+    },15000);
   }
-          }
+
+  $("refreshRestoredOrder").onclick=()=>{
+    checkNumber(order.id);
+  };
+
+  $("backActivities").onclick=()=>{
+    stopVisualOrderTimers();
+    activities();
+  };
+
+  return;
+}
+
+modal(
+  "Order Details",
+  "Your saved order information.",
+  `
+    <div class="result">
+      Order ID: ${esc(order.id||id)}<br>
+      Service: ${esc(order.service||order.category||"")}<br>
+      Country: ${esc(order.country||"")}<br>
+      Status: ${esc(order.status||"")}<br>
+      Amount:
+      ${esc(money(Number(order.amount_minor||0)/100,order.currency||"USD"))}
+    </div>
+
+    <button class="primary" id="backActivities">
+      Back to Activities
+    </button>
+  `
+);
+
+$("backActivities").onclick=activities;
+
+}catch(e){
+$("modalStatus").textContent=e.message;
+$("modalStatus").className="status danger";
+}
+}
 
 /* CUSTOMER SUPPORT */
 
