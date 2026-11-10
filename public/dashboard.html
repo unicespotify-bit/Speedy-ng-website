@@ -1316,13 +1316,81 @@ function optionValue(x){
 
 function visualCountryFlag(x){
   const code=String(
-    x?.iso2??x?.iso_code??x?.country_code??x?.iso??""
+    x?.iso2||
+    x?.iso_code||
+    x?.country_code||
+    x?.iso||
+    ""
   ).trim().toUpperCase();
 
-  if(!/^[A-Z]{2}$/.test(code))return "🌍";
+  const name=String(
+    x?.eng||
+    x?.name||
+    x?.country_name||
+    x?.country||
+    ""
+  ).trim().toLowerCase();
+
+  const countryCodes={
+    "nigeria":"NG",
+    "united states":"US",
+    "usa":"US",
+    "united states of america":"US",
+    "united kingdom":"GB",
+    "uk":"GB",
+    "canada":"CA",
+    "ghana":"GH",
+    "south africa":"ZA",
+    "kenya":"KE",
+    "india":"IN",
+    "china":"CN",
+    "japan":"JP",
+    "germany":"DE",
+    "france":"FR",
+    "italy":"IT",
+    "spain":"ES",
+    "netherlands":"NL",
+    "brazil":"BR",
+    "mexico":"MX",
+    "turkey":"TR",
+    "turkiye":"TR",
+    "egypt":"EG",
+    "russia":"RU",
+    "ukraine":"UA",
+    "australia":"AU",
+    "new zealand":"NZ",
+    "philippines":"PH",
+    "indonesia":"ID",
+    "malaysia":"MY",
+    "singapore":"SG",
+    "pakistan":"PK",
+    "bangladesh":"BD",
+    "saudi arabia":"SA",
+    "united arab emirates":"AE",
+    "uae":"AE",
+    "qatar":"QA",
+    "kuwait":"KW",
+    "ireland":"IE",
+    "sweden":"SE",
+    "norway":"NO",
+    "switzerland":"CH",
+    "poland":"PL",
+    "portugal":"PT",
+    "argentina":"AR",
+    "colombia":"CO",
+    "peru":"PE",
+    "thailand":"TH",
+    "vietnam":"VN"
+  };
+
+  const iso=/^[A-Z]{2}$/.test(code)
+    ?code
+    :countryCodes[name];
+
+  if(!iso)return "🌍";
 
   return String.fromCodePoint(
-    ...[...code].map(c=>127397+c.charCodeAt(0))
+    ...[...iso].map(c=>127397+c.charCodeAt(0))
   );
 }
 
