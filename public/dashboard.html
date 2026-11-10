@@ -1308,11 +1308,11 @@ const available=stockKnown&&stockNumber>0;
       ?money(price*rate,"NGN")
       :"";
 
-    const countryName=label(numberCountries.find(x=>optionValue(x)===c))||c;
+    const displayCountryName=label(numberCountries.find(x=>optionValue(x)===c))||c;
     const serviceName=label(numberServices.find(x=>optionValue(x)===s))||s;
 
     $("numberQuote").innerHTML=`
-      <strong>${esc(countryName)} · ${esc(serviceName)}</strong>
+      <strong>${esc(displayCountryName)} · ${esc(serviceName)}</strong>
       <br><br>
       Price: <strong>${esc(money(price,currency))}</strong>
       ${ngnEquivalent?`
