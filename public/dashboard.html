@@ -784,9 +784,7 @@ main{
   <button class="action" id="convertOpen">
     <span class="ico">⇄</span>Convert
   </button>
-  <button class="action" data-scroll="transactions">
-    <span class="ico">▤</span>Transactions
-  </button>
+  
 </section>
 
 <div class="section-head" id="services">
@@ -829,7 +827,7 @@ main{
   <div class="nav">
     <button class="active" data-scroll="top"><span>⌂</span>Home</button>
     <button data-scroll="services"><span>▦</span>Services</button>
-    <button data-scroll="transactions"><span>▤</span>Activity</button>
+    
     <button id="navProfile"><span>☻</span>Profile</button>
   </div>
 </nav>
@@ -2631,7 +2629,7 @@ $("boostOpen").onclick=boosting;
 $("profileBtn").onclick=$("navProfile").onclick=profile;
 $("supportBtn").onclick=support;
 
-$("refreshBtn").onclick=$("txRefresh").onclick=refreshAll;
+$("refreshBtn").onclick=refreshAll;
 
 document.querySelectorAll("[data-scroll]").forEach(b=>{
   b.onclick=()=>{
