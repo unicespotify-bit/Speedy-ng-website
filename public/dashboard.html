@@ -1474,6 +1474,155 @@ const available=stockKnown&&stockNumber>0;
   }
 }
 
+function stopVisualOrderTimers(){
+  clearInterval(window.visualNumberPollTimer);
+  clearInterval(window.visualNumberCountdownTimer);
+  window.visualNumberPollTimer=null;
+  window.visualNumberCountdownTimer=null;
+}
+
+async function copyVisualText(value){
+  if(!value)return;
+
+  try{
+    await navigator.clipboard.writeText(String(value));
+  }catch(error){
+    const input=document.createElement("textarea");
+    input.value=String(value);
+    input.style.position="fixed";
+    input.style.opacity="0";
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    input.remove();
+  }
+
+  const message=$("visualCopyMessage");
+
+  if(message){
+    message.textContent="Copied successfully!";
+    setTimeout(()=>{
+      if(message.isConnected)message.textContent="";
+    },1800);
+  }
+}
+
+function renderVisualOrder(order,delivery={},message=""){
+  const phone=delivery.phone_number||
+    order.phone_number||order.provider_phone||"";
+
+  const code=delivery.sms_code||order.sms_code||"";
+  const status=String(order.status||"processing").toLowerCase();
+  const received=Boolean(code)||status==="completed";
+
+  const expires=order.expires_at
+    ?new Date(order.expires_at).getTime()
+    :null;
+
+  $("numberOrder").innerHTML=`
+    <div class="visual-order-card">
+
+      <div class="visual-order-heading">
+        <span class="visual-wait-dot ${received?"success":""}"></span>
+        ${received?"Verification code received!":"Waiting for verification"}
+      </div>
+
+      <div class="visual-order-status">
+        ${received
+          ?"Your SMS verification code has arrived."
+          :"Your number is ready. Waiting for the SMS message…"}
+      </div>
+
+      <div class="visual-data-row">
+        <div>
+          <div class="visual-data-label">Your phone number</div>
+          <div class="visual-data-value">
+            ${esc(phone||"Waiting for number")}
+          </div>
+        </div>
+
+        ${phone?`
+          <button class="visual-copy-btn" id="copyVisualPhone">
+            Copy
+          </button>
+        `:""}
+      </div>
+
+      ${received?`
+        <div class="visual-code-box">
+          <div class="visual-data-label">SMS VERIFICATION CODE</div>
+          <div class="visual-code-value">${esc(code||"Code received")}</div>
+
+          ${code?`
+            <button class="visual-copy-btn" id="copyVisualCode">
+              Copy Code
+            </button>
+          `:""}
+        </div>
+      `:`
+        <div class="visual-countdown" id="visualNumberCountdown">
+          Checking order countdown…
+        </div>
+      `}
+
+      <div class="visual-copy-message" id="visualCopyMessage"></div>
+
+      <div class="visual-order-status">
+        Order: ${esc(order.id||"")}
+        <br>
+        Status: ${esc(status)}
+        ${message?`<br>${esc(message)}`:""}
+      </div>
+
+      ${!received&&status!=="failed"?`
+        <button class="secondary" id="checkNumber">
+          Check SMS
+        </button>
+      `:""}
+
+    </div>
+  `;
+
+  if(phone){
+    $("copyVisualPhone").onclick=()=>copyVisualText(phone);
+  }
+
+  if(code){
+    $("copyVisualCode").onclick=()=>copyVisualText(code);
+  }
+
+  if(!received&&status!=="failed"&&expires){
+    updateVisualCountdown(expires);
+
+    clearInterval(window.visualNumberCountdownTimer);
+
+    window.visualNumberCountdownTimer=setInterval(()=>{
+      updateVisualCountdown(expires);
+    },1000);
+  }
+
+  if(!received&&status!=="failed"){
+    $("checkNumber").onclick=()=>checkNumber(order.id);
+  }
+}
+
+function updateVisualCountdown(expires){
+  const box=$("visualNumberCountdown");
+  if(!box)return;
+
+  const remaining=Math.max(
+    0,
+    Math.floor((expires-Date.now())/1000)
+  );
+
+  const minutes=Math.floor(remaining/60);
+  const seconds=remaining%60;
+
+  box.textContent=remaining>0
+    ?`Number expires in ${minutes}:${String(seconds).padStart(2,"0")}`
+    :"Number countdown finished. Checking final order status…";
+}
+
 async function buyNumber(){
   if(!selectedQuote)return;
 
@@ -1486,6 +1635,8 @@ async function buyNumber(){
   const idempotencyKey=key();
   let purchaseSucceeded=false;
   let purchaseNeedsReview=false;
+
+  stopVisualOrderTimers();
 
   try{
     const d=await api(
@@ -1502,23 +1653,28 @@ async function buyNumber(){
     purchaseSucceeded=true;
 
     const o=d.order||{};
+    const orderId=o.id||d.order_id;
 
-    $("numberOrder").innerHTML=`
-      <div class="orderbox">
-        <strong>${esc(d.message||"Number order created")}</strong>
-        <br><br>
-        Phone:
-        <strong>${esc(o.phone_number||o.provider_phone||d.delivery?.phone_number||"Waiting for number")}</strong>
-        <br>
-        Order: ${esc(o.id||d.order_id||"")}
-        <br>
-        Status: ${esc(o.status||d.status||"processing")}
-        <br>
-        <button class="secondary" id="checkNumber">Check SMS code</button>
-      </div>
-    `;
+    window.visualCurrentOrder={
+      ...o,
+      id:orderId,
+      ...(!o.expires_at?{}:{expires_at:o.expires_at})
+    };
 
-    $("checkNumber").onclick=()=>checkNumber(o.id||d.order_id);
+    renderVisualOrder(
+      window.visualCurrentOrder,
+      d.delivery||{},
+      d.message||"Your number order was created."
+    );
+
+    if(orderId){
+      window.visualNumberPollTimer=setInterval(()=>{
+        if(!window.visualNumberCheckBusy){
+          checkNumber(orderId,true);
+        }
+      },15000);
+    }
+
     await refreshAll();
 
   }catch(e){
@@ -1548,8 +1704,10 @@ async function buyNumber(){
   }
 }
 
-async function checkNumber(id){
-  if(!id)return;
+async function checkNumber(id,automatic=false){
+  if(!id||window.visualNumberCheckBusy)return;
+
+  window.visualNumberCheckBusy=true;
 
   try{
     const d=await api(
@@ -1558,30 +1716,39 @@ async function checkNumber(id){
       {}
     );
 
-    const o=d.order||{};
+    const previous=window.visualCurrentOrder||{};
 
-    $("numberOrder").innerHTML=`
-      <div class="orderbox">
-        Status: ${esc(d.status||o.status||"checking")}
-        <br>
-        Phone: ${esc(o.phone_number||o.provider_phone||"")}
-        <br>
-        SMS code:
-        <strong class="good">${esc(d.delivery?.sms_code||o.sms_code||"Not received yet")}</strong>
-        <br>
-        ${esc(d.message||"Refresh to check again.")}
-        <br>
-        <button class="secondary" id="checkNumber">Check again</button>
-      </div>
-    `;
+    const o={
+      ...previous,
+      ...(d.order||{}),
+      id:(d.order||{}).id||id,
+      status:(d.order||{}).status||d.status||previous.status||"processing"
+    };
 
-    $("checkNumber").onclick=()=>checkNumber(id);
+    window.visualCurrentOrder=o;
+
+    const delivery=d.delivery||{};
+
+    renderVisualOrder(o,delivery,d.message||"");
+
+    const code=delivery.sms_code||o.sms_code;
+    const status=String(o.status||"").toLowerCase();
+
+    if(code||status==="completed"||status==="failed"){
+      stopVisualOrderTimers();
+    }
+
     await refreshAll();
 
   }catch(e){
-    $("numberOrder").innerHTML=`<div class="result">${esc(e.message)}</div>`;
+    if(!automatic){
+      $("numberOrder").innerHTML=
+        `<div class="result danger">${esc(e.message)}</div>`;
+    }
+  }finally{
+    window.visualNumberCheckBusy=false;
   }
-}
+  }
 
 /* SOCIAL LOGS */
 
