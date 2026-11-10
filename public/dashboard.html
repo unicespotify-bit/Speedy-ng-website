@@ -1649,16 +1649,17 @@ modal(
   ${esc(money(Number(order.amount_minor||0)/100,order.currency||"USD"))}<br>
   Date:
   ${esc(order.created_at?new Date(order.created_at).toLocaleString():"Not available")}
-</div>
-Order ID: ${esc(order.id||id)}<br>
-Service: ${esc(order.service||order.category||"")}<br>
-Country: ${esc(order.country||"Not specified")}<br>
-Quantity: ${esc(order.quantity??"Not specified")}<br>
-Status: ${esc(orderStatusLabel(order.status))}<br>
-Amount:
-${esc(money(Number(order.amount_minor||0)/100,order.currency||"USD"))}<br>
-Date:
-${esc(order.created_at?new Date(order.created_at).toLocaleString():"Not available")}
+
+  ${Array.isArray(delivery?.accounts)?`
+    <br><br>
+    <strong>Delivered Accounts:</strong>
+    ${delivery.accounts.map((account,index)=>`
+      <div class="result" style="margin-top:8px">
+        Account ${index+1}:<br>
+        ${esc(typeof account==="string"?account:JSON.stringify(account))}
+      </div>
+    `).join("")}
+  `:""}
 </div>
 
     <button class="primary" id="backActivities">
