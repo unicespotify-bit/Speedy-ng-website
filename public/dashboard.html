@@ -1093,7 +1093,7 @@ function label(x){
 }
 
 function optionValue(x){
-  return String(x?.code??x?.id??x?.iso??x?.slug??label(x));
+  return String(x?.id??x?.code??x?.iso??x?.slug??label(x));
 }
 /* VISUAL NUMBERS */
 
@@ -1269,6 +1269,7 @@ async function loadQuote(){
   const requestId=++quoteRequestId;
   const c=$("countrySelect").value;
   const s=$("serviceSelect").value;
+  const countryName=$("countrySelect").selectedOptions[0]?.textContent?.trim()||c;
 
   selectedQuote=null;
   $("numberBuy").disabled=true;
@@ -1282,8 +1283,8 @@ async function loadQuote(){
 
   try{
     const d=await api(
-      `/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&service=${encodeURIComponent(s)}`
-    );
+  `/api/customer/visual-numbers/quote?country=${encodeURIComponent(c)}&country_name=${encodeURIComponent(countryName)}&service=${encodeURIComponent(s)}`
+);
 if(requestId!==quoteRequestId)return;
     const q=d.quote||{};
     const priceMinor=Number(q.customer_price_minor);
