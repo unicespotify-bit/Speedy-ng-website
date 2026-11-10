@@ -2714,8 +2714,11 @@ if(
     const code=delivery.sms_code||o.sms_code;
     const status=String(o.status||"").toLowerCase();
 
-    if(code||status==="completed"||status==="failed"){
-      stopVisualOrderTimers();
+    if(
+  code||
+  !["pending","processing","review"].includes(status)
+){
+  stopVisualOrderTimers();
     }
 
     await refreshAll();
