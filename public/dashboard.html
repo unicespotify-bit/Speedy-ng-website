@@ -1327,29 +1327,52 @@ function visualCountryFlag(x){
 }
 
 function visualServiceIcon(x){
-  const name=label(x).toLowerCase();
+const name=String(
+label(x)||
+x?.name||
+x?.title||
+x?.service_name||
+x?.service||
+""
+).trim().toLowerCase();
 
-  const icons={
-    whatsapp:"🟢",
-    facebook:"🔵",
-    telegram:"✈️",
-    instagram:"📸",
-    tiktok:"🎵",
-    signal:"💬",
-    google:"🔍",
-    twitter:"𝕏",
-    x:"𝕏",
-    youtube:"▶️",
-    discord:"🎮",
-    microsoft:"🪟",
-    apple:"🍎"
-  };
+const code=String(
+x?.code??
+x?.id??
+x?.slug??
+""
+).trim().toLowerCase();
 
-  const match=Object.keys(icons).find(k=>
-    name.includes(k)
-  );
+const text="${name} ${code}";
 
-  return match?icons[match]:"📱";
+const icons=[
+[/whatsapp|^wa$|wa_?/,"🟢"],
+[/facebook|^fb$|fb_?/,"🔵"],
+[/telegram|^tg$|tg_?/,"✈️"],
+[/instagram|^ig$|ig_?/,"📸"],
+[/tiktok|^tt$|tt_?/,"🎵"],
+[/signal/,"💬"],
+[/google|^go$/,"🔍"],
+[/twitter|^tw$|^x$/,"𝕏"],
+[/youtube|^yt$/,"▶️"],
+[/discord|^dc$/,"🎮"],
+[/microsoft|^ms$/,"🪟"],
+[/apple|^ap$/,"🍎"],
+[/snapchat|^sc$/,"👻"],
+[/reddit|^rd$/,"👽"],
+[/linkedin|^li$/,"💼"],
+[/viber|^vi$/,"📞"],
+[/wechat|^wc$/,"💬"],
+[/line|^ln$/,"💚"],
+[/amazon|^am$/,"📦"],
+[/yahoo|^yh$/,"🟣"]
+];
+
+const match=icons.find(([pattern])=>
+pattern.test(text)
+);
+
+return match?match[1]:"📱";
 }
 
 function visualPickerMarkup(id,title,placeholder){
