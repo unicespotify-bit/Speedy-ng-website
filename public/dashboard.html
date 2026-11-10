@@ -1689,11 +1689,13 @@ if(order.category==="visual_numbers"){
     "You can return to this order anytime from Order History."
   );
 
-  if(!delivery.sms_code&&
-     !order.sms_code&&
-     !["completed","failed"].includes(
-       String(order.status||"").toLowerCase()
-     )){
+  if(
+  !delivery.sms_code&&
+  !order.sms_code&&
+  ["pending","processing","review"].includes(
+    String(order.status||"").toLowerCase()
+  )
+){
     window.visualNumberPollTimer=setInterval(()=>{
       if(!window.visualNumberCheckBusy){
         checkNumber(order.id,true);
