@@ -2565,8 +2565,7 @@ const active=["pending","processing","review"].includes(status);
     $("copyVisualCode").onclick=()=>copyVisualText(code);
   }
 
-  if(!received&&status!=="failed"&&expires){
-    updateVisualCountdown(expires);
+  if(active&&!received&&expires){
 
     clearInterval(window.visualNumberCountdownTimer);
 
