@@ -1648,35 +1648,8 @@ transactionRows=t.transactions||[];
       `).join("")
       :'<div class="muted">No wallet transactions yet.</div>';
 
-    $("activityOrders").innerHTML=
-      customerOrders.length
-      ?customerOrders.map(x=>`
-        <div class="listing">
-          <strong>${esc(x.service||x.category||"Order")}</strong>
-          <p>Order ID: ${esc(x.id)}</p>
-          <p>Country: ${esc(x.country||"Not specified")}</p>
-          <p>Status: ${esc(x.status||"Unknown")}</p>
-          <p>
-            Amount:
-            ${esc(money(Number(x.amount_minor||0)/100,x.currency||"USD"))}
-          </p>
-          <p>${esc(x.created_at||"")}</p>
-
-          <button class="secondary" data-order="${esc(x.id)}">
-            View Order
-          </button>
-        </div>
-      `).join("")
-      :'<div class="muted">No orders found.</div>';
-
-    $("activityOrders").querySelectorAll("[data-order]")
-      .forEach(button=>{
-        button.onclick=()=>viewActivityOrder(button.dataset.order);
-      });
-
   }catch(e){
     $("activityTransactions").textContent=e.message;
-    $("activityOrders").textContent=e.message;
   }
 }
 
