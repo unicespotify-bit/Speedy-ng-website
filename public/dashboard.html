@@ -1140,7 +1140,6 @@ async function refreshAll(){
     $("usd").textContent=money(w.balances?.USD,"USD");
 
     status("Your wallet and account are up to date.");
-await loadSuccessfulOrders();
   }catch(e){
     status(e.message,true);
 
