@@ -657,6 +657,7 @@ let selectedQuote=null;
 let quoteRequestId=0;
 let logListings=[];
 let debounceTimer=null;
+let visualQuoteTimer=null;
 
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
   "&":"&amp;",
@@ -1159,7 +1160,20 @@ async function loadNumbers(){
     };
 
     $("countrySelect").onchange=loadCountryServices;
-    $("serviceSelect").onchange=loadQuote;
+    $("serviceSelect").onchange=()=>{
+  clearTimeout(visualQuoteTimer);
+
+  quoteRequestId++;
+  selectedQuote=null;
+  $("numberBuy").disabled=true;
+
+  $("numberQuote").textContent=
+    "Checking live price and availability…";
+
+  visualQuoteTimer=setTimeout(()=>{
+    loadQuote();
+  },350);
+};
     $("numberBuy").onclick=buyNumber;
 
     if(!numberCountries.length){
