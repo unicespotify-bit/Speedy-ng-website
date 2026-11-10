@@ -1314,140 +1314,258 @@ function optionValue(x){
 }
 /* VISUAL NUMBERS */
 
+function visualCountryFlag(x){
+  const code=String(
+    x?.iso2??x?.iso_code??x?.country_code??x?.iso??""
+  ).trim().toUpperCase();
+
+  if(!/^[A-Z]{2}$/.test(code))return "🌍";
+
+  return String.fromCodePoint(
+    ...[...code].map(c=>127397+c.charCodeAt(0))
+  );
+}
+
+function visualServiceIcon(x){
+  const name=label(x).toLowerCase();
+
+  const icons={
+    whatsapp:"🟢",
+    facebook:"🔵",
+    telegram:"✈️",
+    instagram:"📸",
+    tiktok:"🎵",
+    signal:"💬",
+    google:"🔍",
+    twitter:"𝕏",
+    x:"𝕏",
+    youtube:"▶️",
+    discord:"🎮",
+    microsoft:"🪟",
+    apple:"🍎"
+  };
+
+  const match=Object.keys(icons).find(k=>
+    name.includes(k)
+  );
+
+  return match?icons[match]:"📱";
+}
+
+function visualPickerMarkup(id,title,placeholder){
+  return `
+    <label>${title}</label>
+
+    <div class="visual-picker" id="${id}Picker">
+
+      <button
+        type="button"
+        class="visual-picker-button"
+        id="${id}Button"
+      >
+        <span id="${id}Selected">${placeholder}</span>
+        <span class="visual-picker-arrow">⌄</span>
+      </button>
+
+      <div class="visual-picker-panel">
+
+        <input
+          class="visual-picker-search"
+          id="${id}Search"
+          placeholder="Search ${title.toLowerCase()}..."
+          autocomplete="off"
+        >
+
+        <div
+          class="visual-picker-list"
+          id="${id}List"
+        ></div>
+
+      </div>
+
+    </div>
+
+    <select
+      id="${id}"
+      class="visual-native-select"
+    >
+      <option value="">${placeholder}</option>
+    </select>
+  `;
+}
+
 function showNumbers(){
   modal(
     "Buy Numbers",
-    "Search for a country and service. Availability and price are checked before purchase.",
+    "Choose a country and service to check live availability and price.",
     `
-      <label>Search country</label>
-      <input id="countrySearch" placeholder="Type a country name">
+      ${visualPickerMarkup(
+        "countrySelect",
+        "Country",
+        "Choose a country"
+      )}
 
-      <label>Country</label>
-      <select id="countrySelect">
-        <option value="">Loading countries…</option>
-      </select>
-
-      <label>Search service</label>
-      <input id="serviceSearch" placeholder="Type a service name">
-
-      <label>Service</label>
-      <select id="serviceSelect">
-        <option value="">Loading services…</option>
-      </select>
+      ${visualPickerMarkup(
+        "serviceSelect",
+        "Service",
+        "Choose a service"
+      )}
 
       <div id="numberQuote" class="result">
         Choose a country and service to check availability.
       </div>
 
-      <button class="primary" id="numberBuy" disabled>Buy number</button>
+      <button class="primary" id="numberBuy" disabled>
+        Buy number
+      </button>
+
       <div id="numberOrder"></div>
     `
+  );
+
+  setupVisualPicker(
+    "countrySelect",
+    "country",
+    "Choose a country"
+  );
+
+  setupVisualPicker(
+    "serviceSelect",
+    "service",
+    "Choose a service"
   );
 
   loadNumbers();
 }
 
-async function loadNumbers(){
-  try{
-    const c=await api("/api/customer/visual-numbers/countries");
+function setupVisualPicker(id,type,placeholder){
+  const button=$(id+"Button");
+  const search=$(id+"Search");
+  const picker=$(id+"Picker");
 
-    numberCountries=normalizeCountries(c.countries||c);
-    numberServices=[];
+  button.onclick=()=>{
+    const opening=!picker.classList.contains("open");
 
-    fillSelect("countrySelect",numberCountries);
-    fillSelect("serviceSelect",[]);
+    document.querySelectorAll(".visual-picker.open")
+      .forEach(x=>x.classList.remove("open"));
 
-    $("countrySearch").oninput=()=>{
-  const previous=$("countrySelect").value;
-
-  filterSelect(
-    "countrySelect",
-    numberCountries,
-    $("countrySearch").value
-  );
-
-  if($("countrySelect").value!==previous){
-    loadCountryServices();
-  }
-};
-
-    $("serviceSearch").oninput=()=>{
-      filterSelect("serviceSelect",numberServices,$("serviceSearch").value);
-    };
-
-    $("countrySelect").onchange=loadCountryServices;
-    $("serviceSelect").onchange=()=>{
-  clearTimeout(visualQuoteTimer);
-
-  quoteRequestId++;
-  selectedQuote=null;
-  $("numberBuy").disabled=true;
-
-  $("numberQuote").textContent=
-    "Checking live price and availability…";
-
-  visualQuoteTimer=setTimeout(()=>{
-    loadQuote();
-  },350);
-};
-    $("numberBuy").onclick=buyNumber;
-
-    if(!numberCountries.length){
-      throw Error("The live country list is empty. Please refresh later.");
+    if(opening){
+      picker.classList.add("open");
+      search.focus();
     }
+  };
 
-  }catch(e){
-    $("numberQuote").textContent=e.message;
-  }
+  search.oninput=()=>{
+    renderVisualPicker(id,type);
+  };
+
+  document.addEventListener("click",event=>{
+    if(!picker.contains(event.target)){
+      picker.classList.remove("open");
+    }
+  });
 }
 
-async function loadCountryServices(){
-  const country=$("countrySelect").value;
-  const requestId=loadCountryServices.requestId=
-    (loadCountryServices.requestId||0)+1;
+function renderVisualPicker(id,type){
+  const rows=type==="country"
+    ?numberCountries
+    :numberServices;
 
-  quoteRequestId++;
-  selectedQuote=null;
-  numberServices=[];
+  const search=$(id+"Search").value.trim().toLowerCase();
 
-  fillSelect("serviceSelect",[]);
-  $("numberBuy").disabled=true;
+  const filtered=rows.filter(x=>{
+    const text=[
+      label(x),
+      x?.name,
+      x?.title,
+      x?.country,
+      x?.country_name,
+      x?.service,
+      x?.service_name,
+      x?.code,
+      x?.id,
+      x?.slug
+    ].filter(Boolean).join(" ").toLowerCase();
 
-  if(!country){
-    loadQuote();
+    return text.includes(search);
+  });
+
+  const select=$(id);
+  const current=select.value;
+
+  if(!filtered.length){
+    $(id+"List").innerHTML=`
+      <div class="visual-picker-empty">
+        No matching ${type} found.
+      </div>
+    `;
     return;
   }
 
-  $("numberQuote").textContent="Loading services for this country…";
+  $(id+"List").innerHTML=filtered.map((x,i)=>{
+    const value=optionValue(x);
+    const name=label(x)||`Option ${i+1}`;
 
-  try{
-    const result=await api(
-      "/api/customer/visual-numbers/services?country="+encodeURIComponent(country)
-    );
+    const icon=type==="country"
+      ?visualCountryFlag(x)
+      :visualServiceIcon(x);
 
-    if(
-      requestId!==loadCountryServices.requestId||
-      $("countrySelect").value!==country
-    )return;
+    return `
+      <button
+        type="button"
+        class="visual-picker-option ${value===current?"selected":""}"
+        data-value="${esc(value)}"
+      >
+        <span class="visual-picker-icon">${icon}</span>
+        <span>${esc(name)}</span>
+      </button>
+    `;
+  }).join("");
 
-    numberServices=unwrap(result.services||result);
-    fillSelect("serviceSelect",numberServices);
+  $(id+"List").querySelectorAll(".visual-picker-option")
+    .forEach(button=>{
+      button.onclick=()=>{
+        select.value=button.dataset.value;
 
-    if(!numberServices.length){
-      $("numberQuote").textContent="No services available for this country.";
-      return;
-    }
+        $(id+"Picker").classList.remove("open");
+        $(id+"Search").value="";
 
-    $("numberQuote").textContent="Choose a service to check availability.";
+        updateVisualPickerLabel(id,type);
 
-  }catch(e){
-    if(
-      requestId===loadCountryServices.requestId&&
-      $("countrySelect").value===country
-    ){
-      $("numberQuote").textContent=e.message;
-    }
+        select.dispatchEvent(
+          new Event("change",{bubbles:true})
+        );
+      };
+    });
+}
+
+function updateVisualPickerLabel(id,type){
+  const select=$(id);
+  const rows=type==="country"
+    ?numberCountries
+    :numberServices;
+
+  const selected=rows.find(
+    x=>optionValue(x)===select.value
+  );
+
+  const placeholder=type==="country"
+    ?"Choose a country"
+    :"Choose a service";
+
+  if(!selected){
+    $(id+"Selected").textContent=placeholder;
+    return;
   }
+
+  const icon=type==="country"
+    ?visualCountryFlag(selected)
+    :visualServiceIcon(selected);
+
+  $(id+"Selected").textContent=
+    `${icon} ${label(selected)||select.value}`;
+
+  renderVisualPicker(id,type);
 }
 
 function fillSelect(id,rows){
@@ -1463,37 +1581,118 @@ function fillSelect(id,rows){
     `).join("")}
   `;
 
-  if(rows.some(x=>optionValue(x)===old))select.value=old;
+  if(rows.some(x=>optionValue(x)===old)){
+    select.value=old;
+  }
+
+  const type=id==="countrySelect"?"country":"service";
+
+  updateVisualPickerLabel(id,type);
+}
+
+async function loadNumbers(){
+  try{
+    const c=await api("/api/customer/visual-numbers/countries");
+
+    numberCountries=normalizeCountries(c.countries||c);
+    numberServices=[];
+
+    fillSelect("countrySelect",numberCountries);
+    fillSelect("serviceSelect",[]);
+
+    renderVisualPicker("countrySelect","country");
+    renderVisualPicker("serviceSelect","service");
+
+    $("countrySelect").onchange=loadCountryServices;
+
+    $("serviceSelect").onchange=()=>{
+      clearTimeout(visualQuoteTimer);
+
+      quoteRequestId++;
+      selectedQuote=null;
+      $("numberBuy").disabled=true;
+
+      $("numberQuote").textContent=
+        "Checking live price and availability…";
+
+      visualQuoteTimer=setTimeout(()=>{
+        loadQuote();
+      },350);
+    };
+
+    $("numberBuy").onclick=buyNumber;
+
+    if(!numberCountries.length){
+      throw Error("The live country list is empty. Please refresh later.");
+    }
+
+  }catch(e){
+    $("numberQuote").textContent=e.message;
+  }
+}
+
+async function loadCountryServices(){
+  const country=$("countrySelect").value;
+
+  const requestId=loadCountryServices.requestId=
+    (loadCountryServices.requestId||0)+1;
+
+  quoteRequestId++;
+  selectedQuote=null;
+  numberServices=[];
+
+  fillSelect("serviceSelect",[]);
+  $("numberBuy").disabled=true;
+
+  if(!country){
+    loadQuote();
+    return;
+  }
+
+  $("numberQuote").textContent=
+    "Loading services for this country…";
+
+  try{
+    const result=await api(
+      "/api/customer/visual-numbers/services?country="+
+      encodeURIComponent(country)
+    );
+
+    if(
+      requestId!==loadCountryServices.requestId||
+      $("countrySelect").value!==country
+    )return;
+
+    numberServices=unwrap(result.services||result);
+
+    fillSelect("serviceSelect",numberServices);
+
+    if(!numberServices.length){
+      $("numberQuote").textContent=
+        "No services available for this country.";
+      return;
+    }
+
+    $("numberQuote").textContent=
+      "Choose a service to check availability.";
+
+  }catch(e){
+    if(
+      requestId===loadCountryServices.requestId&&
+      $("countrySelect").value===country
+    ){
+      $("numberQuote").textContent=e.message;
+    }
+  }
 }
 
 function filterSelect(id,rows,q){
-  const search=String(q||"").trim().toLowerCase();
+  const type=id==="countrySelect"?"country":"service";
 
-  const filtered=!search
-    ?rows
-    :rows.filter(x=>{
-      const searchable=[
-        label(x),
-        x?.name,
-        x?.title,
-        x?.country,
-        x?.country_name,
-        x?.service,
-        x?.service_name,
-        x?.code,
-        x?.id,
-        x?.slug
-      ].filter(Boolean).join(" ").toLowerCase();
+  $(id+"Search").value=q||"";
 
-      return searchable.includes(search);
-    });
-
-  fillSelect(id,filtered);
-
-  if(!$(id).value){
-    loadQuote();
+  renderVisualPicker(id,type);
   }
-}
 
 async function loadQuote(){
   const requestId=++quoteRequestId;
