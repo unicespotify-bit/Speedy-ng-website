@@ -931,9 +931,53 @@ function modal(title,intro,html){
 }
 
 function closeModal(){
+  const title=$("modalTitle").textContent;
+  const order=window.visualCurrentOrder||{};
+  const orderStatus=String(order.status||"").toLowerCase();
+
+  if(
+    title==="Visual Number Order"&&
+    order.id&&
+    !["completed","failed","cancelled","expired"].includes(orderStatus)&&
+    !order.sms_code
+  ){
+    confirmLeaveVisualOrder();
+    return;
+  }
+
   clearInterval(depositPoll);
   depositPoll=null;
   $("modalBack").classList.remove("show");
+}
+function confirmLeaveVisualOrder(){
+  const order=window.visualCurrentOrder||{};
+  if(!order.id)return;
+
+  stopVisualOrderTimers();
+
+  modal(
+    "Leave active order?",
+    "Your order is still active. Leaving this page will not cancel your order. You can return to it anytime from Order History.",
+    `
+      <button class="secondary" id="stayOnOrder">
+        Stay on Order
+      </button>
+
+      <button class="primary" id="leaveOrder">
+        Leave Order
+      </button>
+    `
+  );
+
+  $("stayOnOrder").onclick=()=>{
+    viewActivityOrder(order.id);
+  };
+
+  $("leaveOrder").onclick=()=>{
+    stopVisualOrderTimers();
+    window.visualCurrentOrder=null;
+    activities();
+  };
 }
 
 $("closeModal").onclick=closeModal;
