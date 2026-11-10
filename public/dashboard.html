@@ -959,12 +959,12 @@ async function refreshAll(){
 
     customer=m.customer||{};
     walletData=w;
+    transactionRows=t.transactions||[];
 
     $("email").textContent=customer.email||"Your Speedy.ng account";
     $("ngn").textContent=money(w.balances?.NGN,"NGN");
     $("usd").textContent=money(w.balances?.USD,"USD");
 
-    renderTx(t.transactions||[]);
     status("Your wallet and account are up to date.");
 
   }catch(e){
@@ -974,7 +974,7 @@ async function refreshAll(){
       setTimeout(()=>location.replace("/"),1000);
     }
   }
-}
+    }
 
 function renderTx(rows){
   $("transactionList").innerHTML=rows.length
