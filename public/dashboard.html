@@ -858,6 +858,8 @@ const $=id=>document.getElementById(id);
 
 let customer={};
 let walletData={};
+let transactionRows = [];
+let customerOrders = [];
 let depositPoll=null;
 let activeDeposit=null;
 let numberCountries=[];
@@ -1194,21 +1196,28 @@ function convert(){
   };
 }
 
-/* PROFILE AND LOGOUT */
-
 function profile(){
   modal(
     "Profile & settings",
-    "Your Speedy.ng account information.",
+    "Manage your Speedy.ng account.",
     `
       <div class="result">
         Email: ${esc(customer.email||"")}<br>
         Account status: ${esc(customer.status||"Active")}<br>
         Email verified: ${customer.email_verified?"Yes":"Not confirmed"}
       </div>
-      <button class="primary" id="logout">Log out securely</button>
+
+      <button class="primary" id="openActivities">
+        View Activities
+      </button>
+
+      <button class="primary" id="logout">
+        Log out securely
+      </button>
     `
   );
+
+  $("openActivities").onclick=activities;
 
   $("logout").onclick=async()=>{
     try{
@@ -1223,6 +1232,140 @@ function profile(){
     location.replace("/");
   };
 }
+
+async function activities(){
+  modal(
+    "Activities",
+    "Your wallet transactions and complete order history.",
+    `
+      <h3>Wallet Transactions</h3>
+      <div id="activityTransactions">
+        Loading transactions…
+      </div>
+
+      <br>
+
+      <h3>Order History</h3>
+      <div id="activityOrders">
+        Loading orders…
+      </div>
+
+      <button class="primary" id="refreshActivities">
+        Refresh Activities
+      </button>
+    `
+  );
+
+  $("refreshActivities").onclick=activities;
+
+  try{
+    const [t,o]=await Promise.all([
+      api("/api/customer/wallet/transactions"),
+      api("/api/customer/orders")
+    ]);
+
+    transactionRows=t.transactions||[];
+    customerOrders=o.orders||[];
+
+    $("activityTransactions").innerHTML=
+      transactionRows.length
+      ?transactionRows.map(x=>`
+        <div class="tx">
+          <div>
+            <div class="tx-title">
+              ${esc(x.description||x.type||"Wallet transaction")}
+            </div>
+            <div class="tx-date">
+              ${esc(x.created_at||"")}
+            </div>
+          </div>
+          <div>
+            <div class="tx-amount">
+              ${esc(money(Number(x.amount_minor||0)/100,x.currency||"NGN"))}
+            </div>
+            <div class="tx-status">
+              ${esc(x.status||"Pending")}
+            </div>
+          </div>
+        </div>
+      `).join("")
+      :'<div class="muted">No wallet transactions yet.</div>';
+
+    $("activityOrders").innerHTML=
+      customerOrders.length
+      ?customerOrders.map(x=>`
+        <div class="listing">
+          <strong>${esc(x.service||x.category||"Order")}</strong>
+          <p>Order ID: ${esc(x.id)}</p>
+          <p>Country: ${esc(x.country||"Not specified")}</p>
+          <p>Status: ${esc(x.status||"Unknown")}</p>
+          <p>
+            Amount:
+            ${esc(money(Number(x.amount_minor||0)/100,x.currency||"USD"))}
+          </p>
+          <p>${esc(x.created_at||"")}</p>
+
+          <button class="secondary" data-order="${esc(x.id)}">
+            View Order
+          </button>
+        </div>
+      `).join("")
+      :'<div class="muted">No orders found.</div>';
+
+    $("activityOrders").querySelectorAll("[data-order]")
+      .forEach(button=>{
+        button.onclick=()=>viewActivityOrder(button.dataset.order);
+      });
+
+  }catch(e){
+    $("activityTransactions").textContent=e.message;
+    $("activityOrders").textContent=e.message;
+  }
+}
+
+async function viewActivityOrder(id){
+  try{
+    const result=await api(
+      "/api/customer/orders/"+encodeURIComponent(id)
+    );
+
+    const order=result.order||{};
+    const delivery=result.delivery||{};
+
+    const phone=delivery.phone_number||
+      order.phone_number||order.provider_phone||"";
+
+    const code=delivery.sms_code||order.sms_code||"";
+
+    modal(
+      "Order Details",
+      "Your saved order information.",
+      `
+        <div class="result">
+          Order ID: ${esc(order.id||id)}<br>
+          Service: ${esc(order.service||order.category||"")}<br>
+          Country: ${esc(order.country||"")}<br>
+          Status: ${esc(order.status||"")}<br>
+          Amount:
+          ${esc(money(Number(order.amount_minor||0)/100,order.currency||"USD"))}
+          ${phone?`<br>Phone Number: ${esc(phone)}`:""}
+          ${code?`<br>SMS Code: ${esc(code)}`:""}
+          ${order.expires_at?`<br>Expiry: ${esc(order.expires_at)}`:""}
+        </div>
+
+        <button class="primary" id="backActivities">
+          Back to Activities
+        </button>
+      `
+    );
+
+    $("backActivities").onclick=activities;
+
+  }catch(e){
+    $("modalStatus").textContent=e.message;
+    $("modalStatus").className="status danger";
+  }
+          }
 
 /* CUSTOMER SUPPORT */
 
