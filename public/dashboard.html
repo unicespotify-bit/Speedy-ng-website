@@ -2758,7 +2758,14 @@ async function buyNumber(){
 }
 
 async function checkNumber(id,automatic=false){
-  if(!id||window.visualNumberCheckBusy)return;
+  const current=window.visualCurrentOrder||{};
+const currentStatus=String(current.status||"").toLowerCase();
+
+if(
+  !id||
+  window.visualNumberCheckBusy||
+  !["pending","processing","review"].includes(currentStatus)
+)return;
 
   window.visualNumberCheckBusy=true;
 
