@@ -1068,7 +1068,7 @@ function closeModal(){
   if(
     title==="Visual Number Order"&&
     order.id&&
-    !["completed","failed","cancelled","expired"].includes(orderStatus)&&
+    ["pending","processing","review"].includes(orderStatus)&&
     !order.sms_code
   ){
     confirmLeaveVisualOrder();
