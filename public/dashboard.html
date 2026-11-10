@@ -1327,53 +1327,53 @@ function visualCountryFlag(x){
 }
 
 function visualServiceIcon(x){
-const name=String(
-label(x)||
-x?.name||
-x?.title||
-x?.service_name||
-x?.service||
-""
-).trim().toLowerCase();
+  const name=String(
+    label(x)||
+    x?.name||
+    x?.title||
+    x?.service_name||
+    x?.service||
+    ""
+  ).trim().toLowerCase();
 
-const code=String(
-x?.code??
-x?.id??
-x?.slug??
-""
-).trim().toLowerCase();
+  const code=String(
+    x?.code??
+    x?.id??
+    x?.slug??
+    ""
+  ).trim().toLowerCase();
 
-const text="${name} ${code}";
+  const icons=[
+    {keys:["whatsapp","wa"],icon:"🟢"},
+    {keys:["facebook","fb"],icon:"🔵"},
+    {keys:["telegram","tg"],icon:"✈️"},
+    {keys:["instagram","ig"],icon:"📸"},
+    {keys:["tiktok","tt"],icon:"🎵"},
+    {keys:["signal"],icon:"💬"},
+    {keys:["google","go"],icon:"🔍"},
+    {keys:["twitter","tw"],icon:"𝕏"},
+    {keys:["youtube","yt"],icon:"▶️"},
+    {keys:["discord","dc"],icon:"🎮"},
+    {keys:["microsoft","ms"],icon:"🪟"},
+    {keys:["apple","ap"],icon:"🍎"},
+    {keys:["snapchat","sc"],icon:"👻"},
+    {keys:["reddit","rd"],icon:"👽"},
+    {keys:["linkedin","li"],icon:"💼"},
+    {keys:["viber","vi"],icon:"📞"},
+    {keys:["wechat","wc"],icon:"💬"},
+    {keys:["line","ln"],icon:"💚"},
+    {keys:["amazon","am"],icon:"📦"},
+    {keys:["yahoo","yh"],icon:"🟣"}
+  ];
 
-const icons=[
-[/whatsapp|^wa$|wa_?/,"🟢"],
-[/facebook|^fb$|fb_?/,"🔵"],
-[/telegram|^tg$|tg_?/,"✈️"],
-[/instagram|^ig$|ig_?/,"📸"],
-[/tiktok|^tt$|tt_?/,"🎵"],
-[/signal/,"💬"],
-[/google|^go$/,"🔍"],
-[/twitter|^tw$|^x$/,"𝕏"],
-[/youtube|^yt$/,"▶️"],
-[/discord|^dc$/,"🎮"],
-[/microsoft|^ms$/,"🪟"],
-[/apple|^ap$/,"🍎"],
-[/snapchat|^sc$/,"👻"],
-[/reddit|^rd$/,"👽"],
-[/linkedin|^li$/,"💼"],
-[/viber|^vi$/,"📞"],
-[/wechat|^wc$/,"💬"],
-[/line|^ln$/,"💚"],
-[/amazon|^am$/,"📦"],
-[/yahoo|^yh$/,"🟣"]
-];
+  const match=icons.find(item=>
+    item.keys.some(key=>
+      name.includes(key)||code===key
+    )
+  );
 
-const match=icons.find(([pattern])=>
-pattern.test(text)
-);
-
-return match?match[1]:"📱";
-}
+  return match?match.icon:"📱";
+    }
 
 function visualPickerMarkup(id,title,placeholder){
   return `
