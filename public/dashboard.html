@@ -1603,7 +1603,7 @@ async function loadCustomerOrders(){
 async function activities(){
   modal(
     "Activities",
-    "Your wallet transactions and complete order history.",
+    "Your wallet transactions.",
     `
       <h3>Wallet Transactions</h3>
       <div id="activityTransactions">
@@ -1611,12 +1611,6 @@ async function activities(){
       </div>
 
       <br>
-
-      <h3>Order History</h3>
-      <div id="activityOrders">
-        Loading orders…
-      </div>
-
       <button class="primary" id="refreshActivities">
         Refresh Activities
       </button>
