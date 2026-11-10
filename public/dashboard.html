@@ -2482,7 +2482,7 @@ function renderVisualOrder(order,delivery={},message=""){
   const code=delivery.sms_code||order.sms_code||"";
   const status=String(order.status||"processing").toLowerCase();
   const received=Boolean(code)||status==="completed";
-
+const active=["pending","processing","review"].includes(status);
   const expires=order.expires_at
     ?new Date(order.expires_at).getTime()
     :null;
@@ -2527,7 +2527,7 @@ function renderVisualOrder(order,delivery={},message=""){
             </button>
           `:""}
         </div>
-      `:`
+      `:active?`
         <div class="visual-countdown" id="visualNumberCountdown">
           Checking order countdown…
         </div>
@@ -2542,7 +2542,7 @@ function renderVisualOrder(order,delivery={},message=""){
         ${message?`<br>${esc(message)}`:""}
       </div>
 
-      ${!received&&status!=="failed"?`
+      ${active&&!received?`
         <button class="secondary" id="checkNumber">
           Check SMS
         </button>
@@ -2569,7 +2569,7 @@ function renderVisualOrder(order,delivery={},message=""){
     },1000);
   }
 
-  if(!received&&status!=="failed"){
+  if(active&&!received){
     $("checkNumber").onclick=()=>checkNumber(order.id);
   }
 }
