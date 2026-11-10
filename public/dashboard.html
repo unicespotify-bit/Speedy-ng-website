@@ -1650,6 +1650,16 @@ modal(
   Date:
   ${esc(order.created_at?new Date(order.created_at).toLocaleString():"Not available")}
 </div>
+Order ID: ${esc(order.id||id)}<br>
+Service: ${esc(order.service||order.category||"")}<br>
+Country: ${esc(order.country||"Not specified")}<br>
+Quantity: ${esc(order.quantity??"Not specified")}<br>
+Status: ${esc(orderStatusLabel(order.status))}<br>
+Amount:
+${esc(money(Number(order.amount_minor||0)/100,order.currency||"USD"))}<br>
+Date:
+${esc(order.created_at?new Date(order.created_at).toLocaleString():"Not available")}
+</div>
 
     <button class="primary" id="backActivities">
       Back to Activities
