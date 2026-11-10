@@ -718,7 +718,105 @@ main{
 
 .live{color:var(--green)}
 .offline{color:var(--red)}
-
+.orders-page{
+  display:none;
+  padding:16px 14px 100px;
+  min-height:70vh;
+}
+.orders-page-head{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-bottom:20px;
+}
+.orders-page-head h1{
+  font-size:28px;
+  margin:8px 0;
+}
+.orders-tools{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-bottom:15px;
+}
+.orders-tools input,
+.orders-tools select{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #345b88;
+  background:#0a1d39;
+  color:white;
+}
+.order-history-card{
+  padding:15px;
+  margin:12px 0;
+  border:1px solid #345b88;
+  border-radius:15px;
+  background:#10284b;
+}
+.order-history-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+.order-history-title{
+  font-size:14px;
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+.order-history-meta{
+  font-size:11px;
+  line-height:1.8;
+  color:var(--muted);
+  margin-top:10px;
+  overflow-wrap:anywhere;
+}
+.order-status-badge{
+  padding:5px 9px;
+  border-radius:20px;
+  background:#24456e;
+  color:#d8eaff;
+  font-size:10px;
+  white-space:nowrap;
+}
+.order-history-card button{
+  margin-top:12px;
+}
+.order-detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:13px;
+}
+.order-detail-item{
+  padding:11px;
+  border-radius:11px;
+  background:#071832;
+  border:1px solid #294a72;
+  overflow-wrap:anywhere;
+}
+.order-detail-item small{
+  display:block;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+.order-detail-item strong{
+  font-size:12px;
+}
+.order-delivery{
+  margin-top:12px;
+  padding:13px;
+  border-radius:12px;
+  background:#071832;
+  border:1px solid #294a72;
+  overflow-wrap:anywhere;
+}
+@media(min-width:700px){
+  .orders-tools{
+    grid-template-columns:1.5fr 1fr;
+  }
+}
 @media(min-width:700px){
   .welcome h1{font-size:34px}
   .wallet{padding:23px;min-height:165px}
@@ -784,6 +882,9 @@ main{
   <button class="action" id="convertOpen">
     <span class="ico">⇄</span>Convert
   </button>
+  <button class="action" id="ordersOpen">
+    <span class="ico">▤</span>Orders
+  </button>
   
 </section>
 
@@ -817,7 +918,6 @@ main{
   </button>
 </section>
 
-<section class="successful-orders" id="successfulOrdersSection">
   <div class="section-head">
     <h2>Successful Orders</h2>
     <span class="muted">Completed orders only</span>
@@ -831,7 +931,38 @@ main{
 <div class="status" id="pageStatus">Connecting securely…</div>
 
 </main>
+<section id="ordersPage" class="orders-page">
+  <div class="orders-page-head">
+    <button class="secondary" id="ordersBack">← Dashboard</button>
+    <div>
+      <div class="eyebrow">YOUR PURCHASE HISTORY</div>
+      <h1>Orders</h1>
+      <p class="muted">View all your previous and current orders.</p>
+    </div>
+  </div>
 
+  <div class="orders-tools">
+    <input id="ordersSearch" type="search"
+      placeholder="Search order ID, service or country">
+
+    <select id="ordersStatusFilter">
+      <option value="">All statuses</option>
+      <option value="processing">Processing</option>
+      <option value="review">Under Review</option>
+      <option value="completed">Completed</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="expired">Expired</option>
+      <option value="failed">Failed</option>
+      <option value="refund_pending">Refund Pending</option>
+      <option value="refunded">Refunded</option>
+    </select>
+  </div>
+
+  <div id="ordersCount" class="muted">Loading orders…</div>
+  <div id="ordersList">
+    <div class="status">Loading your orders…</div>
+  </div>
+</section>
 <nav class="bottom">
   <div class="nav">
     <button class="active" data-scroll="top"><span>⌂</span>Home</button>
@@ -1356,7 +1487,119 @@ function profile(){
     location.replace("/");
   };
 }
+function showDashboard(){
+  $("ordersPage").style.display="none";
+  $("top").style.display="";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 
+function showOrders(){
+  $("top").style.display="none";
+  $("ordersPage").style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+  loadCustomerOrders();
+}
+
+function orderStatusLabel(status){
+  const labels={
+    pending:"Processing",
+    processing:"Processing",
+    review:"Under Review",
+    completed:"Completed",
+    cancelled:"Cancelled",
+    expired:"Expired",
+    failed:"Failed",
+    refund_pending:"Refund Pending",
+    refunded:"Refunded"
+  };
+
+  return labels[String(status||"").toLowerCase()]
+    || String(status||"Unknown");
+}
+
+function renderCustomerOrders(){
+  const query=$("ordersSearch").value.toLowerCase().trim();
+  const selected=$("ordersStatusFilter").value.toLowerCase();
+
+  const filtered=customerOrders.filter(order=>{
+    const status=String(order.status||"").toLowerCase();
+
+    const matchesStatus=!selected ||
+      status===selected ||
+      (selected==="processing"&&status==="pending");
+
+    const searchText=[
+      order.id,
+      order.service,
+      order.country,
+      order.category
+    ].join(" ").toLowerCase();
+
+    return matchesStatus &&
+      (!query||searchText.includes(query));
+  });
+
+  $("ordersCount").textContent=
+    filtered.length+" of "+customerOrders.length+" orders";
+
+  $("ordersList").innerHTML=filtered.length
+    ?filtered.map(order=>`
+      <div class="order-history-card">
+        <div class="order-history-top">
+          <div class="order-history-title">
+            ${esc(order.service||order.category||"Order")}
+          </div>
+          <span class="order-status-badge">
+            ${esc(orderStatusLabel(order.status))}
+          </span>
+        </div>
+
+        <div class="order-history-meta">
+          Order ID: ${esc(order.id)}<br>
+          Product: ${esc(order.category||"—")}<br>
+          Country: ${esc(order.country||"Not specified")}<br>
+          Quantity: ${esc(order.quantity||1)}<br>
+          Amount: ${esc(money(
+            Number(order.amount_minor||0)/100,
+            order.currency||"USD"
+          ))}<br>
+          Date: ${esc(order.created_at||"—")}
+        </div>
+
+        <button class="secondary"
+          data-view-order="${esc(order.id)}">
+          View Order
+        </button>
+      </div>
+    `).join("")
+    :'<div class="result">No orders found.</div>';
+
+  document.querySelectorAll("[data-view-order]")
+    .forEach(button=>{
+      button.onclick=()=>{
+        viewActivityOrder(button.dataset.viewOrder);
+      };
+    });
+}
+
+async function loadCustomerOrders(){
+  $("ordersList").innerHTML=
+    '<div class="status">Loading your orders…</div>';
+
+  try{
+    const result=await api("/api/customer/orders");
+
+    customerOrders=Array.isArray(result.orders)
+      ?result.orders
+      :[];
+
+    renderCustomerOrders();
+
+  }catch(error){
+    $("ordersList").innerHTML=
+      '<div class="result danger">'+esc(error.message)+'</div>';
+  }
+}
 async function activities(){
   modal(
     "Activities",
@@ -2793,7 +3036,11 @@ $("convertOpen").onclick=convert;
 $("numbersOpen").onclick=showNumbers;
 $("logsOpen").onclick=showLogs;
 $("boostOpen").onclick=boosting;
+$("ordersOpen").onclick=showOrders;
+$("ordersBack").onclick=showDashboard;
 
+$("ordersSearch").addEventListener("input",renderCustomerOrders);
+$("ordersStatusFilter").onchange=renderCustomerOrders;
 $("profileBtn").onclick=$("navProfile").onclick=profile;
 $("supportBtn").onclick=support;
 
