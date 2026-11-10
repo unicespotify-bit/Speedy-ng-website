@@ -491,7 +491,118 @@ main{
   font-size:12px;
   line-height:1.8;
 }
+/* VISUAL NUMBER ORDER STATUS */
 
+.visual-order-card{
+  margin-top:16px;
+  padding:18px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#142d52,#091a35);
+  border:1px solid #315985;
+  box-shadow:0 12px 30px #0005;
+}
+
+.visual-order-heading{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:900;
+}
+
+.visual-wait-dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:#ffbd55;
+  box-shadow:0 0 0 0 #ffbd5570;
+  animation:visualPulse 1.4s infinite;
+}
+
+.visual-wait-dot.success{
+  background:#42dfa0;
+  animation:none;
+  box-shadow:0 0 12px #42dfa080;
+}
+
+@keyframes visualPulse{
+  0%{box-shadow:0 0 0 0 #ffbd5570}
+  70%{box-shadow:0 0 0 10px #ffbd5500}
+  100%{box-shadow:0 0 0 0 #ffbd5500}
+}
+
+.visual-order-status{
+  color:#b9cce5;
+  font-size:12px;
+  margin:9px 0 16px;
+}
+
+.visual-data-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px;
+  margin-top:10px;
+  border-radius:12px;
+  background:#071832;
+  border:1px solid #294a72;
+}
+
+.visual-data-label{
+  color:#9fb8d8;
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+.visual-data-value{
+  color:#fff;
+  font-size:15px;
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+
+.visual-copy-btn{
+  flex-shrink:0;
+  padding:9px 12px;
+  border-radius:9px;
+  background:#253f70;
+  border:1px solid #6488c7;
+  color:white;
+  font-size:11px;
+  font-weight:800;
+}
+
+.visual-code-box{
+  margin-top:13px;
+  padding:17px;
+  text-align:center;
+  border-radius:13px;
+  background:#102b4b;
+  border:1px solid #42dfa080;
+}
+
+.visual-code-value{
+  font-size:27px;
+  font-weight:950;
+  letter-spacing:4px;
+  color:#42dfa0;
+  overflow-wrap:anywhere;
+}
+
+.visual-countdown{
+  margin-top:13px;
+  text-align:center;
+  color:#b9cce5;
+  font-size:12px;
+}
+
+.visual-copy-message{
+  color:#42dfa0;
+  font-size:11px;
+  margin-top:9px;
+  text-align:center;
+  }
 .price-toggle{
   background:transparent;
   color:var(--cyan);
