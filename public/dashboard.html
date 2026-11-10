@@ -2497,15 +2497,21 @@ const active=["pending","processing","review"].includes(status);
     <div class="visual-order-card">
 
       <div class="visual-order-heading">
-        <span class="visual-wait-dot ${received?"success":""}"></span>
-        ${received?"Verification code received!":"Waiting for verification"}
-      </div>
+  <span class="visual-wait-dot ${received?"success":""}"></span>
+  ${received
+    ?"Verification code received!"
+    :active
+      ?"Waiting for verification"
+      :orderStatusLabel(status)}
+</div>
 
-      <div class="visual-order-status">
-        ${received
-          ?"Your SMS verification code has arrived."
-          :"Your number is ready. Waiting for the SMS message…"}
-      </div>
+<div class="visual-order-status">
+  ${received
+    ?"Your SMS verification code has arrived."
+    :active
+      ?"Your number is ready. Waiting for the SMS message…"
+      :"This order is no longer active. Status: "+orderStatusLabel(status)+"."}
+</div>
 
       <div class="visual-data-row">
         <div>
