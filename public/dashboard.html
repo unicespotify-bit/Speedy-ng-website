@@ -1620,13 +1620,9 @@ async function activities(){
   $("refreshActivities").onclick=activities;
 
   try{
-    const [t,o]=await Promise.all([
-      api("/api/customer/wallet/transactions"),
-      api("/api/customer/orders")
-    ]);
+    const t=await api("/api/customer/wallet/transactions");
 
-    transactionRows=t.transactions||[];
-    customerOrders=o.orders||[];
+transactionRows=t.transactions||[];
 
     $("activityTransactions").innerHTML=
       transactionRows.length
