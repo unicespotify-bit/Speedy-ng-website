@@ -1576,7 +1576,9 @@ const result=await api(
 
 const order=result.order||{};
 const delivery=result.delivery||{};
-
+const active=["pending","processing","review"].includes(
+  String(order.status||"").toLowerCase()
+);
 if(order.category==="visual_numbers"){
   stopVisualOrderTimers();
 
@@ -1586,9 +1588,11 @@ if(order.category==="visual_numbers"){
     `
       <div id="numberOrder"></div>
 
-      <button class="secondary" id="refreshRestoredOrder">
-        Check SMS Status
-      </button>
+      ${active?`
+  <button class="secondary" id="refreshRestoredOrder">
+    Check SMS Status
+  </button>
+`:""}
 
       <button class="primary" id="backActivities">
         Back to Activities
@@ -1618,9 +1622,11 @@ if(order.category==="visual_numbers"){
     },15000);
   }
 
+  if(active){
   $("refreshRestoredOrder").onclick=()=>{
     checkNumber(order.id);
   };
+  }
 
   $("backActivities").onclick=()=>{
   confirmLeaveVisualOrder();
