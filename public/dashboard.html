@@ -1438,32 +1438,44 @@ function showNumbers(){
   loadNumbers();
 }
 
+function closeVisualPickers(event){
+if(event.target.closest(".visual-picker"))return;
+
+document.querySelectorAll(".visual-picker.open")
+.forEach(x=>x.classList.remove("open"));
+}
+
 function setupVisualPicker(id,type,placeholder){
-  const button=$(id+"Button");
-  const search=$(id+"Search");
-  const picker=$(id+"Picker");
+const button=$(id+"Button");
+const search=$(id+"Search");
+const picker=$(id+"Picker");
 
-  button.onclick=()=>{
-    const opening=!picker.classList.contains("open");
+button.onclick=()=>{
+const opening=!picker.classList.contains("open");
 
-    document.querySelectorAll(".visual-picker.open")
-      .forEach(x=>x.classList.remove("open"));
+document.querySelectorAll(".visual-picker.open")
+  .forEach(x=>x.classList.remove("open"));
 
-    if(opening){
-      picker.classList.add("open");
-      search.focus();
-    }
-  };
+if(opening){
+  picker.classList.add("open");
+  search.focus();
+}
 
-  search.oninput=()=>{
-    renderVisualPicker(id,type);
-  };
+};
 
-  document.addEventListener("click",event=>{
-    if(!picker.contains(event.target)){
-      picker.classList.remove("open");
-    }
-  });
+search.oninput=()=>{
+renderVisualPicker(id,type);
+};
+
+document.removeEventListener(
+"click",
+closeVisualPickers
+);
+
+document.addEventListener(
+"click",
+closeVisualPickers
+);
 }
 
 function renderVisualPicker(id,type){
