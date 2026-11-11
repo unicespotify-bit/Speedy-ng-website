@@ -993,6 +993,7 @@ let activeDeposit=null;
 let numberCountries=[];
 let numberServices=[];
 let selectedQuote=null;
+let pendingVisualPurchase=null;  
 let quoteRequestId=0;
 let logListings=[];
 let debounceTimer=null;
@@ -2654,7 +2655,18 @@ async function buyNumber(){
   b.disabled=true;
   b.textContent="Requesting number…";
 
-  const idempotencyKey=key();
+  const purchaseIdentity=
+  `${quoteAtStart.country}:${quoteAtStart.service}`;
+
+const idempotencyKey=
+  pendingVisualPurchase?.identity===purchaseIdentity
+    ?pendingVisualPurchase.key
+    :key();
+
+pendingVisualPurchase={
+  identity:purchaseIdentity,
+  key:idempotencyKey
+};
   let purchaseSucceeded=false;
   let purchaseNeedsReview=false;
 
@@ -2673,6 +2685,7 @@ async function buyNumber(){
     );
 
     purchaseSucceeded=true;
+pendingVisualPurchase=null;
 
     const o=d.order||{};
     const orderId=o.id||d.order_id;
@@ -2701,6 +2714,17 @@ async function buyNumber(){
 
   }catch(e){
     purchaseNeedsReview=e.payload?.status==="review";
+
+const uncertainPurchase=
+  !e.statusCode||
+  e.statusCode===408||
+  e.statusCode===429||
+  e.statusCode>=500||
+  purchaseNeedsReview;
+
+if(!uncertainPurchase){
+  pendingVisualPurchase=null;
+}
 
     $("numberOrder").innerHTML=
       `<div class="result danger">${esc(e.message)}</div>`;
