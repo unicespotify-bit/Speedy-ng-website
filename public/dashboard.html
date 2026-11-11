@@ -1316,8 +1316,6 @@ async function checkDeposit(){
     $("ngn").textContent=money(w.balances?.NGN,"NGN");
     $("usd").textContent=money(w.balances?.USD,"USD");
 
-    renderTx(t.transactions||[]);
-
     const expectedMinor=Math.round(activeDeposit.amount*100);
     const reference=String(activeDeposit.reference||"");
 
