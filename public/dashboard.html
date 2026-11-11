@@ -1125,15 +1125,13 @@ async function refreshAll(){
   }
 
   try{
-    const [m,w,t]=await Promise.all([
-      api("/api/customer/me"),
-      api("/api/customer/wallet"),
-      api("/api/customer/wallet/transactions")
-    ]);
+    const [m,w]=await Promise.all([
+  api("/api/customer/me"),
+  api("/api/customer/wallet")
+]);
 
-    customer=m.customer||{};
-    walletData=w;
-    transactionRows=t.transactions||[];
+customer=m.customer||{};
+walletData=w;
 
     $("email").textContent=customer.email||"Your Speedy.ng account";
     $("ngn").textContent=money(w.balances?.NGN,"NGN");
