@@ -1631,12 +1631,6 @@ if(order.category==="visual_numbers"){
     `
       <div id="numberOrder"></div>
 
-      ${active?`
-  <button class="secondary" id="refreshRestoredOrder">
-    Check SMS Status
-  </button>
-`:""}
-
       <button class="primary" id="backActivities">
         Back to Activities
       </button>
@@ -1663,12 +1657,6 @@ if(order.category==="visual_numbers"){
         checkNumber(order.id,true);
       }
     },15000);
-  }
-
-  if(active){
-  $("refreshRestoredOrder").onclick=()=>{
-    checkNumber(order.id);
-  };
   }
 
   $("backActivities").onclick=()=>{
