@@ -1214,35 +1214,80 @@ async function createDeposit(){
 
     const p=d.paymentInstructions||{};
 
-    $("modalBody").innerHTML=`
-      <div class="orderbox">
-        <span class="pill">FLUTTERWAVE BANK TRANSFER</span>
-        <h3>${esc(money(activeDeposit.amount,"NGN"))}</h3>
+$("modalBody").innerHTML=`
+  <div class="orderbox">
+    <span class="pill">FLUTTERWAVE BANK TRANSFER</span>
 
-        <p class="muted">Bank name</p>
-        <strong>${esc(p.bankName||"Not provided")}</strong>
+    <h3>${esc(money(activeDeposit.amount,"NGN"))}</h3>
 
-        <p class="muted">Account name</p>
-        <strong>${esc(p.accountName||"Speedy.ng")}</strong>
+    <p class="muted">Bank name</p>
+    <strong id="depBank"></strong>
 
-        <p class="muted">Account number</p>
-        <strong style="font-size:22px">${esc(p.accountNumber||"Not provided")}</strong>
+    <p class="muted">Account name</p>
+    <strong id="depAccountName"></strong>
 
-        <p class="muted">Payment reference</p>
-        <strong>${esc(d.reference||"")}</strong>
+    <p class="muted">Account number</p>
+    <strong id="depAccountNumber"
+      style="font-size:22px;overflow-wrap:anywhere"></strong>
 
-        <p class="muted">
-          Transfer the exact amount shown. Your wallet will be credited
-          after Flutterwave confirms payment.
-        </p>
-      </div>
+    <button class="secondary" id="depCopy" type="button">
+      Copy account number
+    </button>
 
-      <button class="secondary" id="depCheck">Check payment status</button>
-      <button class="secondary" id="depDone">Close</button>
-    `;
+    <p class="muted">Payment reference</p>
+    <strong id="depReference"></strong>
+
+    <p class="muted">Account expiry</p>
+    <strong id="depExpiry"></strong>
+
+    <p class="muted">
+      Transfer the exact amount shown. Your wallet will be credited
+      only after Flutterwave confirms payment.
+    </p>
+  </div>
+
+  <div id="depState" class="status" aria-live="polite">
+    Waiting for verified payment confirmation…
+  </div>
+
+  <button class="secondary" id="depCheck" type="button">
+    Check payment status
+  </button>
+
+  <button class="secondary" id="depDone" type="button">
+    Close
+  </button>
+`;
+
+$("depBank").textContent=p.bankName||"Not provided";
+$("depAccountName").textContent=p.accountName||"Speedy.ng";
+$("depAccountNumber").textContent=p.accountNumber||"Not provided";
+$("depReference").textContent=d.reference||"";
+$("depExpiry").textContent=p.expiresAt
+  ?new Date(p.expiresAt).toLocaleString()
+  :"Not provided";
+
+$("depCopy").onclick=async()=>{
+  const account=String(p.accountNumber||"");
+
+  if(!account){
+    $("depState").textContent="No account number was returned.";
+    return;
+  }
+
+  try{
+    await navigator.clipboard.writeText(account);
+    $("depState").textContent="Account number copied.";
+  }catch(e){
+    $("depState").textContent=
+      "Copy the account number manually.";
+  }
+};
+
 $("depDone").onclick=closeModal;
-    $("depCheck").onclick=checkDeposit;
-    startDepositPoll();
+$("depCheck").onclick=checkDeposit;
+
+startDepositPoll();
   }catch(e){
     $("modalStatus").textContent=e.message;
     $("modalStatus").className="status danger";
