@@ -1218,17 +1218,24 @@ function deposit(){
     `
   );
 
-  $("depCreate").onclick=()=>{
-  const method=$("depMethod").value;
+    $("depMethod").onchange=()=>{
+    $("ussdBankWrap").style.display=
+      $("depMethod").value==="ussd"?"block":"none";
+  };
 
-  if(method==="card"){
-    createCardDeposit();
-  }else if(method==="pay_with_bank"){
-    createPayWithBankDeposit();
-  }else{
-    createDeposit();
-  }
-};
+  $("depCreate").onclick=()=>{
+    const method=$("depMethod").value;
+
+    if(method==="card"){
+      createCardDeposit();
+    }else if(method==="pay_with_bank"){
+      createPayWithBankDeposit();
+    }else if(method==="ussd"){
+      createUSSDDeposit();
+    }else{
+      createDeposit();
+    }
+  };
 }
 function validDepositAmount(){
   const amount=Number($("depAmount")?.value);
