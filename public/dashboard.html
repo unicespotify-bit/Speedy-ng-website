@@ -2791,42 +2791,31 @@ function visualPickerMarkup(id,title,placeholder){
 function showNumbers(){
   modal(
     "Buy Numbers",
-    "Choose a country and service to check live availability and price.",
+    "Search for a country and service. Availability and price are checked before purchase.",
     `
-      ${visualPickerMarkup(
-        "countrySelect",
-        "Country",
-        "Choose a country"
-      )}
+      <label>Search country</label>
+      <input id="countrySearch" placeholder="Type a country name">
 
-      ${visualPickerMarkup(
-        "serviceSelect",
-        "Service",
-        "Choose a service"
-      )}
+      <label>Country</label>
+      <select id="countrySelect">
+        <option value="">Loading countries…</option>
+      </select>
+
+      <label>Search service</label>
+      <input id="serviceSearch" placeholder="Type a service name">
+
+      <label>Service</label>
+      <select id="serviceSelect">
+        <option value="">Loading services…</option>
+      </select>
 
       <div id="numberQuote" class="result">
         Choose a country and service to check availability.
       </div>
 
-      <button class="primary" id="numberBuy" disabled>
-        Buy number
-      </button>
-
+      <button class="primary" id="numberBuy" disabled>Buy number</button>
       <div id="numberOrder"></div>
     `
-  );
-
-  setupVisualPicker(
-    "countrySelect",
-    "country",
-    "Choose a country"
-  );
-
-  setupVisualPicker(
-    "serviceSelect",
-    "service",
-    "Choose a service"
   );
 
   loadNumbers();
@@ -3004,10 +2993,27 @@ async function loadNumbers(){
     numberServices=[];
 
     fillSelect("countrySelect",numberCountries);
-    fillSelect("serviceSelect",[]);
+    $("countrySearch").oninput=()=>{
+  const previous=$("countrySelect").value;
 
-    renderVisualPicker("countrySelect","country");
-    renderVisualPicker("serviceSelect","service");
+  filterSelect(
+    "countrySelect",
+    numberCountries,
+    $("countrySearch").value
+  );
+
+  if($("countrySelect").value!==previous){
+    loadCountryServices();
+  }
+};
+
+$("serviceSearch").oninput=()=>{
+  filterSelect(
+    "serviceSelect",
+    numberServices,
+    $("serviceSearch").value
+  );
+};
 
     $("countrySelect").onchange=loadCountryServices;
 
