@@ -1286,6 +1286,90 @@ async function createPayWithBankDeposit(){
     b.textContent="Continue";
   }
   }
+  async function createUSSDDeposit(){
+  const amount=validDepositAmount();
+  if(amount===null)return;
+
+  const bankCode=$("ussdBank").value;
+
+  if(!bankCode){
+    $("modalStatus").textContent="Please select your bank.";
+    $("modalStatus").className="status danger";
+    return;
+  }
+
+  const b=$("depCreate");
+  b.disabled=true;
+  b.textContent="Generating USSD instruction…";
+
+  try{
+    const d=await api(
+      "/api/customer/wallet/deposit",
+      "POST",
+      {
+        amount,
+        payment_method:"ussd",
+        bank_code:bankCode
+      }
+    );
+
+    const instruction=d.paymentInstructions?.instruction;
+
+    if(!d.reference||!instruction){
+      throw Error("Flutterwave did not return the USSD payment instruction.");
+    }
+
+    activeDeposit={
+      reference:d.reference,
+      amount:Number(d.amount??amount)
+    };
+
+    $("modalBody").innerHTML=`
+      <div class="orderbox">
+        <span class="pill">FLUTTERWAVE USSD PAYMENT</span>
+        <h3>${esc(money(activeDeposit.amount,"NGN"))}</h3>
+
+        <p class="muted">Payment instruction</p>
+        <strong id="ussdInstruction"
+          style="font-size:18px;overflow-wrap:anywhere"></strong>
+
+        <p class="muted">Deposit reference</p>
+        <strong>${esc(d.reference)}</strong>
+
+        <p class="muted">
+          Follow the instruction using the mobile number linked
+          to your selected bank account. Complete the payment
+          before closing this screen.
+        </p>
+      </div>
+
+      <div id="depState" class="status" aria-live="polite">
+        Waiting for verified payment confirmation…
+      </div>
+
+      <button class="secondary" id="depCheck" type="button">
+        Check payment status
+      </button>
+
+      <button class="secondary" id="depDone" type="button">
+        Close
+      </button>
+    `;
+
+    $("ussdInstruction").textContent=instruction;
+    $("depCheck").onclick=checkDeposit;
+    $("depDone").onclick=closeModal;
+
+    startDepositPoll();
+
+  }catch(e){
+    $("modalStatus").textContent=e.message;
+    $("modalStatus").className="status danger";
+  }finally{
+    b.disabled=false;
+    b.textContent="Continue";
+  }
+  }
 async function createDeposit(){
   const amount=validDepositAmount();
   if(amount===null)return;
