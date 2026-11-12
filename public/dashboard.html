@@ -3716,12 +3716,13 @@ if(!uncertainPurchase){
 }
 
 async function checkNumber(id,automatic=false){
-  function isVisualOrderCountdownActive(order,code=""){
-  const status=String(order?.status||"processing").toLowerCase();
-  if(code||status==="completed")return false;
-  const expires=order?.expires_at?new Date(order.expires_at).getTime():NaN;
-  return Number.isFinite(expires)&&Date.now()<expires;
-  }
+  const current=window.visualCurrentOrder||{};
+
+  if(
+    !id||
+    window.visualNumberCheckBusy||
+    !isVisualOrderCountdownActive(current,current.sms_code||"")
+  )return;
 
   window.visualNumberCheckBusy=true;
 
@@ -3748,13 +3749,12 @@ async function checkNumber(id,automatic=false){
     renderVisualOrder(o,delivery,d.message||"");
 
     const code=delivery.sms_code||o.sms_code;
-    const status=String(o.status||"").toLowerCase();
 
     if(
-  code||
-  !["pending","processing","review"].includes(status)
-){
-  stopVisualOrderTimers();
+      code||
+      !isVisualOrderCountdownActive(o,code||"")
+    ){
+      stopVisualOrderTimers();
     }
 
     await refreshAll();
@@ -3767,7 +3767,7 @@ async function checkNumber(id,automatic=false){
   }finally{
     window.visualNumberCheckBusy=false;
   }
-  }
+}
 
 /* SOCIAL LOGS */
 
