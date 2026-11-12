@@ -3224,75 +3224,221 @@ function renderVisualOrder(order,delivery={},message=""){
   const code=delivery.sms_code||order.sms_code||"";
   const status=String(order.status||"processing").toLowerCase();
   const received=Boolean(code)||status==="completed";
-const active=["pending","processing","review"].includes(status);
+  const active=["pending","processing","review"].includes(status);
+
   const expires=order.expires_at
     ?new Date(order.expires_at).getTime()
     :null;
 
+  const countryValue=String(order.country||"");
+
+  const countryRow=numberCountries.find(x=>
+    optionValue(x).toLowerCase()===countryValue.toLowerCase()||
+    label(x).toLowerCase()===countryValue.toLowerCase()
+  );
+
+  const countryName=label(countryRow)||countryValue||"Unknown";
+
+  const serviceValue=String(order.service||"");
+
+  const serviceRow=numberServices.find(x=>
+    optionValue(x).toLowerCase()===serviceValue.toLowerCase()||
+    label(x).toLowerCase()===serviceValue.toLowerCase()
+  );
+
+  const serviceName=label(serviceRow)||serviceValue||"Service";
+
+  const countryCode=String(
+    countryRow?.iso2||
+    countryRow?.iso_code||
+    countryRow?.country_code||
+    countryRow?.iso||
+    (/^[a-z]{2}$/i.test(countryValue)?countryValue:"")
+  ).toLowerCase();
+
+  const flagEmoji=visualCountryFlag(
+    countryRow||{name:countryName}
+  );
+
+  const flagHTML=/^[a-z]{2}$/.test(countryCode)
+    ?`<img class="visual-country-flag"
+        src="https://flagcdn.com/w160/${esc(countryCode)}.png"
+        alt="${esc(countryName)} flag"
+        onerror="this.style.display='none'">`
+    :`<span style="font-size:38px">${flagEmoji}</span>`;
+
+  const logoNames={
+    whatsapp:"whatsapp",
+    facebook:"facebook",
+    telegram:"telegram",
+    instagram:"instagram",
+    tiktok:"tiktok",
+    signal:"signal",
+    google:"google",
+    twitter:"x",
+    youtube:"youtube",
+    discord:"discord",
+    microsoft:"microsoft",
+    apple:"apple",
+    snapchat:"snapchat",
+    reddit:"reddit",
+    linkedin:"linkedin",
+    viber:"viber",
+    wechat:"wechat",
+    line:"line",
+    amazon:"amazon",
+    yahoo:"yahoo"
+  };
+
+  const serviceKey=serviceName.toLowerCase();
+
+  const logoKey=Object.keys(logoNames).find(k=>
+    serviceKey.includes(k)||
+    serviceValue.toLowerCase()===k
+  );
+
+  const logoHTML=logoKey
+    ?`<img class="visual-service-logo"
+        src="https://cdn.simpleicons.org/${logoNames[logoKey]}"
+        alt="${esc(serviceName)} logo"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+      <span class="visual-service-fallback">${visualServiceIcon(serviceRow||serviceName)}</span>`
+    :`<span class="visual-service-fallback" style="display:inline-flex">
+        ${visualServiceIcon(serviceRow||serviceName)}
+      </span>`;
+
+  const amount=money(
+    Number(order.amount_minor||0)/100,
+    order.currency||"USD"
+  );
+
+  const reference=order.reference||
+    order.order_reference||
+    order.id||"";
+
   $("numberOrder").innerHTML=`
     <div class="visual-order-card">
 
-      <div class="visual-order-heading">
-  <span class="visual-wait-dot ${received?"success":""}"></span>
-  ${received
-    ?"Verification code received!"
-    :active
-      ?"Waiting for verification"
-      :orderStatusLabel(status)}
-</div>
+      <div class="visual-wait-panel ${received?"success":""}">
 
-<div class="visual-order-status">
-  ${received
-    ?"Your SMS verification code has arrived."
-    :active
-      ?"Your number is ready. Waiting for the SMS message…"
-      :"This order is no longer active. Status: "+orderStatusLabel(status)+"."}
-</div>
+        <div class="visual-loader-circle">
+          <div class="visual-loader-ring"></div>
+        </div>
 
-      <div class="visual-data-row">
-        <div>
-          <div class="visual-data-label">Your phone number</div>
-          <div class="visual-data-value">
+        <div class="visual-time"
+          id="visualNumberCountdown">
+          ${active&&!received?"--:--":received?"✓":"00:00"}
+        </div>
+
+        <div class="visual-time-label">
+          ${received?"VERIFICATION CODE RECEIVED":"TIME LEFT ON YOUR NUMBER"}
+        </div>
+
+        <div class="visual-wait-badge">
+          ${received
+            ?"Verification Code Received"
+            :active
+              ?"Waiting for Verification Code"
+              :esc(orderStatusLabel(status))}
+        </div>
+
+        <div class="visual-wait-description">
+          ${received
+            ?"Your verification code has arrived. Copy it below and continue."
+            :active
+              ?"We have not received your code yet. It usually arrives while your number is active. There is nothing for you to do."
+              :"This order is no longer active. Status: "+esc(orderStatusLabel(status))}
+        </div>
+
+      </div>
+
+      <div class="visual-order-details">
+
+        <div class="visual-detail-row">
+          <span class="visual-detail-label">Country</span>
+          <span class="visual-detail-value">
+            ${flagHTML}
+            ${esc(countryName)}
+          </span>
+        </div>
+
+        <div class="visual-detail-row">
+          <span class="visual-detail-label">Service</span>
+          <span class="visual-detail-value">
+            ${logoHTML}
+            ${esc(serviceName)} · ${esc(countryName)}
+          </span>
+        </div>
+
+        <div class="visual-detail-row">
+          <span class="visual-detail-label">Your number</span>
+          <span class="visual-detail-value visual-phone-value">
             ${esc(phone||"Waiting for number")}
+            ${phone?`
+              <button class="visual-copy-icon"
+                id="copyVisualPhone"
+                aria-label="Copy phone number">▢</button>
+            `:""}
+          </span>
+        </div>
+
+        <div class="visual-detail-row">
+          <span class="visual-detail-label">Amount paid</span>
+          <span class="visual-detail-value">${esc(amount)}</span>
+        </div>
+
+        <div class="visual-detail-row">
+          <span class="visual-detail-label">Order reference</span>
+          <span class="visual-detail-value visual-order-reference">
+            ${esc(reference)}
+          </span>
+        </div>
+
+        ${received?`
+          <div class="visual-code-box">
+            <div class="visual-detail-label">
+              SMS VERIFICATION CODE
+            </div>
+
+            <div class="visual-code-value">
+              ${esc(code||"Code received")}
+            </div>
+
+            ${code?`
+              <button class="visual-copy-btn"
+                id="copyVisualCode">
+                Copy Code
+              </button>
+            `:""}
           </div>
-        </div>
-
-        ${phone?`
-          <button class="visual-copy-btn" id="copyVisualPhone">
-            Copy
-          </button>
         `:""}
+
+        <div class="visual-copy-message"
+          id="visualCopyMessage"></div>
+
       </div>
 
-      ${received?`
-        <div class="visual-code-box">
-          <div class="visual-data-label">SMS VERIFICATION CODE</div>
-          <div class="visual-code-value">${esc(code||"Code received")}</div>
-
-          ${code?`
-            <button class="visual-copy-btn" id="copyVisualCode">
-              Copy Code
-            </button>
-          `:""}
-        </div>
-      `:active?`
-        <div class="visual-countdown" id="visualNumberCountdown">
-          Checking order countdown…
-        </div>
-      `:""}
-
-      <div class="visual-copy-message" id="visualCopyMessage"></div>
-
-      <div class="visual-order-status">
-        Order: ${esc(order.id||"")}
-        <br>
-        Status: ${esc(status)}
-        ${message?`<br>${esc(message)}`:""}
+      <div class="visual-bottom-message">
+        You can close this screen — your number countdown continues.
+        Your verification code, refund and order history will update
+        automatically.
       </div>
+
+      <button class="visual-close-button"
+        id="closeVisualOrder">
+        Close — keep it running
+      </button>
+
+      <button class="visual-orders-button"
+        id="seeVisualOrders">
+        See my orders
+      </button>
 
       ${active&&!received?`
-        <button class="secondary" id="checkNumber">
-          Check SMS
+        <button class="visual-copy-btn"
+          id="checkNumber"
+          style="width:100%;margin-top:14px">
+          Check Verification Code
         </button>
       `:""}
 
@@ -3307,9 +3453,19 @@ const active=["pending","processing","review"].includes(status);
     $("copyVisualCode").onclick=()=>copyVisualText(code);
   }
 
-  if(active&&!received&&expires){
+  $("closeVisualOrder").onclick=()=>{
+    closeModal();
+  };
 
+  $("seeVisualOrders").onclick=()=>{
+    closeModal();
+    showOrders();
+  };
+
+  if(active&&!received&&expires){
     clearInterval(window.visualNumberCountdownTimer);
+
+    updateVisualCountdown(expires);
 
     window.visualNumberCountdownTimer=setInterval(()=>{
       updateVisualCountdown(expires);
@@ -3333,10 +3489,14 @@ function updateVisualCountdown(expires){
   const minutes=Math.floor(remaining/60);
   const seconds=remaining%60;
 
-  box.textContent=remaining>0
-    ?`Number expires in ${minutes}:${String(seconds).padStart(2,"0")}`
-    :"Number countdown finished. Checking final order status…";
-}
+  box.textContent=
+    String(minutes).padStart(2,"0")+":"+
+    String(seconds).padStart(2,"0");
+
+  if(remaining===0){
+    box.textContent="00:00";
+  }
+  }
 
 async function buyNumber(){
   if(!selectedQuote)return;
