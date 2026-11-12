@@ -3092,27 +3092,10 @@ async function loadNumbers(){
     numberServices=[];
 
     fillSelect("countrySelect",numberCountries);
-    $("countrySearch").oninput=()=>{
-  const previous=$("countrySelect").value;
+    fillSelect("serviceSelect",[]);
 
-  filterSelect(
-    "countrySelect",
-    numberCountries,
-    $("countrySearch").value
-  );
-
-  if($("countrySelect").value!==previous){
-    loadCountryServices();
-  }
-};
-
-$("serviceSearch").oninput=()=>{
-  filterSelect(
-    "serviceSelect",
-    numberServices,
-    $("serviceSearch").value
-  );
-};
+    renderVisualPicker("countrySelect","country");
+    renderVisualPicker("serviceSelect","service");
 
     $("countrySelect").onchange=loadCountryServices;
 
