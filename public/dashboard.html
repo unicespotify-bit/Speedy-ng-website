@@ -1182,21 +1182,27 @@ function deposit(){
         step=".01" placeholder="Enter amount">
 
       <label>Payment method</label>
-      <select id="depMethod">
-        <option value="bank_transfer">Bank Transfer</option>
-        <option value="card">Debit or Credit Card</option>
-      </select>
+<select id="depMethod">
+  <option value="bank_transfer">Bank Transfer</option>
+  <option value="pay_with_bank">Pay with Bank</option>
+  <option value="card">Debit or Credit Card</option>
+</select>
 
       <button class="primary" id="depCreate">Continue</button>
     `
   );
 
   $("depCreate").onclick=()=>{
-    const method=$("depMethod").value;
-    if(method==="card")createCardDeposit();
-    else createDeposit();
-  };
-}
+  const method=$("depMethod").value;
+
+  if(method==="card"){
+    createCardDeposit();
+  }else if(method==="pay_with_bank"){
+    createPayWithBankDeposit();
+  }else{
+    createDeposit();
+  }
+};
 
 function validDepositAmount(){
   const amount=Number($("depAmount")?.value);
@@ -1215,7 +1221,38 @@ function validDepositAmount(){
 
   return amount;
 }
+async function createPayWithBankDeposit(){
+  const amount=validDepositAmount();
+  if(amount===null)return;
 
+  const b=$("depCreate");
+  b.disabled=true;
+  b.textContent="Connecting to your bank…";
+
+  try{
+    const d=await api(
+      "/api/customer/wallet/deposit",
+      "POST",
+      {
+        amount,
+        payment_method:"pay_with_bank"
+      }
+    );
+
+    if(!d.redirectUrl){
+      throw Error("Flutterwave did not provide a bank payment link.");
+    }
+
+    window.location.assign(d.redirectUrl);
+
+  }catch(e){
+    $("modalStatus").textContent=e.message;
+    $("modalStatus").className="status danger";
+  }finally{
+    b.disabled=false;
+    b.textContent="Continue";
+  }
+  }
 async function createDeposit(){
   const amount=validDepositAmount();
   if(amount===null)return;
