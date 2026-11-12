@@ -1927,7 +1927,9 @@ async function checkDeposit(){
         String(x.payment_reference||"")
       ];
 
-      const correctReference=refs.includes(reference);
+      const correctReference =
+  refs.includes(reference) ||
+  refs.includes(`FLW-${reference}`);
       const correctAmount=!expectedMinor||
         Number(x.amount_minor)===expectedMinor;
 
