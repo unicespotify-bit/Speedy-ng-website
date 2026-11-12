@@ -3324,7 +3324,12 @@ async function copyVisualText(value){
     },1800);
   }
 }
-
+function isVisualOrderCountdownActive(order,code=""){
+  const status=String(order?.status||"processing").toLowerCase();
+  if(code||status==="completed")return false;
+  const expires=order?.expires_at?new Date(order.expires_at).getTime():NaN;
+  return Number.isFinite(expires)&&Date.now()<expires;
+  }
 function renderVisualOrder(order,delivery={},message=""){
   const phone=delivery.phone_number||
     order.phone_number||order.provider_phone||"";
@@ -3332,7 +3337,7 @@ function renderVisualOrder(order,delivery={},message=""){
   const code=delivery.sms_code||order.sms_code||"";
   const status=String(order.status||"processing").toLowerCase();
   const received=Boolean(code)||status==="completed";
-  const active=["pending","processing","review"].includes(status);
+  const active=isVisualOrderCountdownActive(order,code);
 
   const expires=order.expires_at
     ?new Date(order.expires_at).getTime()
@@ -3711,14 +3716,12 @@ if(!uncertainPurchase){
 }
 
 async function checkNumber(id,automatic=false){
-  const current=window.visualCurrentOrder||{};
-const currentStatus=String(current.status||"").toLowerCase();
-
-if(
-  !id||
-  window.visualNumberCheckBusy||
-  !["pending","processing","review"].includes(currentStatus)
-)return;
+  function isVisualOrderCountdownActive(order,code=""){
+  const status=String(order?.status||"processing").toLowerCase();
+  if(code||status==="completed")return false;
+  const expires=order?.expires_at?new Date(order.expires_at).getTime():NaN;
+  return Number.isFinite(expires)&&Date.now()<expires;
+  }
 
   window.visualNumberCheckBusy=true;
 
