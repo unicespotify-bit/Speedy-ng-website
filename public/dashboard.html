@@ -1168,22 +1168,38 @@ function renderTx(rows){
 
 /* WALLET DEPOSIT */
 
+/* WALLET DEPOSIT — BANK TRANSFER + FLUTTERWAVE CARD */
+
+let cardEncryptionKey = null;
+
 function deposit(){
   modal(
     "Add money",
-    "Make a secure Flutterwave payment. Your wallet should update after the backend verifies the payment.",
+    "Choose how you want to fund your NGN wallet.",
     `
       <label>Amount in naira (₦)</label>
-      <input id="depAmount" type="number" min="100" max="5000000" step=".01" placeholder="Enter amount">
-      <button class="primary" id="depCreate">Continue to payment</button>
+      <input id="depAmount" type="number" min="100" max="5000000"
+        step=".01" placeholder="Enter amount">
+
+      <label>Payment method</label>
+      <select id="depMethod">
+        <option value="bank_transfer">Bank Transfer</option>
+        <option value="card">Debit or Credit Card</option>
+      </select>
+
+      <button class="primary" id="depCreate">Continue</button>
     `
   );
 
-  $("depCreate").onclick=createDeposit;
+  $("depCreate").onclick=()=>{
+    const method=$("depMethod").value;
+    if(method==="card")createCardDeposit();
+    else createDeposit();
+  };
 }
 
-async function createDeposit(){
-  const amount=Number($("depAmount").value);
+function validDepositAmount(){
+  const amount=Number($("depAmount")?.value);
 
   if(
     !Number.isFinite(amount)||
@@ -1191,9 +1207,18 @@ async function createDeposit(){
     amount>5000000||
     Math.round(amount*100)!==amount*100
   ){
-    $("modalStatus").textContent="Enter ₦100 to ₦5,000,000, up to 2 decimal places.";
-    return;
+    $("modalStatus").textContent=
+      "Enter an amount from ₦100 to ₦5,000,000, with up to 2 decimal places.";
+    $("modalStatus").className="status danger";
+    return null;
   }
+
+  return amount;
+}
+
+async function createDeposit(){
+  const amount=validDepositAmount();
+  if(amount===null)return;
 
   const b=$("depCreate");
   b.disabled=true;
@@ -1203,7 +1228,7 @@ async function createDeposit(){
     const d=await api(
       "/api/customer/wallet/deposit",
       "POST",
-      {amount}
+      {amount,payment_method:"bank_transfer"}
     );
 
     activeDeposit={
@@ -1213,87 +1238,509 @@ async function createDeposit(){
 
     const p=d.paymentInstructions||{};
 
-$("modalBody").innerHTML=`
-  <div class="orderbox">
-    <span class="pill">FLUTTERWAVE BANK TRANSFER</span>
+    $("modalBody").innerHTML=`
+      <div class="orderbox">
+        <span class="pill">FLUTTERWAVE BANK TRANSFER</span>
+        <h3>${esc(money(activeDeposit.amount,"NGN"))}</h3>
 
-    <h3>${esc(money(activeDeposit.amount,"NGN"))}</h3>
+        <p class="muted">Bank name</p>
+        <strong id="depBank"></strong>
 
-    <p class="muted">Bank name</p>
-    <strong id="depBank"></strong>
+        <p class="muted">Account name</p>
+        <strong id="depAccountName"></strong>
 
-    <p class="muted">Account name</p>
-    <strong id="depAccountName"></strong>
+        <p class="muted">Account number</p>
+        <strong id="depAccountNumber"
+          style="font-size:22px;overflow-wrap:anywhere"></strong>
 
-    <p class="muted">Account number</p>
-    <strong id="depAccountNumber"
-      style="font-size:22px;overflow-wrap:anywhere"></strong>
+        <button class="secondary" id="depCopy" type="button">
+          Copy account number
+        </button>
 
-    <button class="secondary" id="depCopy" type="button">
-      Copy account number
-    </button>
+        <p class="muted">Payment reference</p>
+        <strong id="depReference"></strong>
 
-    <p class="muted">Payment reference</p>
-    <strong id="depReference"></strong>
+        <p class="muted">Account expiry</p>
+        <strong id="depExpiry"></strong>
 
-    <p class="muted">Account expiry</p>
-    <strong id="depExpiry"></strong>
+        <p class="muted">
+          Transfer the exact amount shown. Your wallet will only be
+          credited after Flutterwave confirms the payment.
+        </p>
+      </div>
 
-    <p class="muted">
-      Transfer the exact amount shown. Your wallet will be credited
-      only after Flutterwave confirms payment.
-    </p>
-  </div>
+      <div id="depState" class="status" aria-live="polite">
+        Waiting for verified payment confirmation…
+      </div>
 
-  <div id="depState" class="status" aria-live="polite">
-    Waiting for verified payment confirmation…
-  </div>
+      <button class="secondary" id="depCheck" type="button">
+        Check payment status
+      </button>
+      <button class="secondary" id="depDone" type="button">Close</button>
+    `;
 
-  <button class="secondary" id="depCheck" type="button">
-    Check payment status
-  </button>
+    $("depBank").textContent=p.bankName||"Not provided";
+    $("depAccountName").textContent=p.accountName||"Speedy.ng";
+    $("depAccountNumber").textContent=p.accountNumber||"Not provided";
+    $("depReference").textContent=d.reference||"";
+    $("depExpiry").textContent=p.expiresAt
+      ?new Date(p.expiresAt).toLocaleString()
+      :"Not provided";
 
-  <button class="secondary" id="depDone" type="button">
-    Close
-  </button>
-`;
+    $("depCopy").onclick=async()=>{
+      const account=String(p.accountNumber||"");
+      if(!account)return;
 
-$("depBank").textContent=p.bankName||"Not provided";
-$("depAccountName").textContent=p.accountName||"Speedy.ng";
-$("depAccountNumber").textContent=p.accountNumber||"Not provided";
-$("depReference").textContent=d.reference||"";
-$("depExpiry").textContent=p.expiresAt
-  ?new Date(p.expiresAt).toLocaleString()
-  :"Not provided";
+      try{
+        await navigator.clipboard.writeText(account);
+        $("depState").textContent="Account number copied.";
+      }catch{
+        $("depState").textContent="Please copy the account number manually.";
+      }
+    };
 
-$("depCopy").onclick=async()=>{
-  const account=String(p.accountNumber||"");
+    $("depDone").onclick=closeModal;
+    $("depCheck").onclick=checkDeposit;
+    startDepositPoll();
 
-  if(!account){
-    $("depState").textContent="No account number was returned.";
-    return;
-  }
-
-  try{
-    await navigator.clipboard.writeText(account);
-    $("depState").textContent="Account number copied.";
-  }catch(e){
-    $("depState").textContent=
-      "Copy the account number manually.";
-  }
-};
-
-$("depDone").onclick=closeModal;
-$("depCheck").onclick=checkDeposit;
-
-startDepositPoll();
   }catch(e){
     $("modalStatus").textContent=e.message;
     $("modalStatus").className="status danger";
   }finally{
     b.disabled=false;
-    b.textContent="Continue to payment";
+    b.textContent="Continue";
   }
+}
+
+/* FLUTTERWAVE CARD ENCRYPTION */
+
+function randomNonce(){
+  const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const bytes=crypto.getRandomValues(new Uint8Array(12));
+  return Array.from(bytes,x=>chars[x%chars.length]).join("");
+}
+
+function base64ToBytes(value){
+  const binary=atob(value);
+  return Uint8Array.from(binary,c=>c.charCodeAt(0));
+}
+
+function bytesToBase64(value){
+  let binary="";
+  value.forEach(byte=>binary+=String.fromCharCode(byte));
+  return btoa(binary);
+}
+
+async function getCardEncryptionKey(){
+  if(cardEncryptionKey)return cardEncryptionKey;
+
+  const config=await api("/api/customer/wallet/card/config");
+  if(!config.encryptionKey){
+    throw Error("Card encryption is not configured.");
+  }
+
+  cardEncryptionKey=await crypto.subtle.importKey(
+    "raw",
+    base64ToBytes(config.encryptionKey),
+    {name:"AES-GCM"},
+    false,
+    ["encrypt"]
+  );
+
+  return cardEncryptionKey;
+}
+
+async function encryptCardValue(value,key,nonce){
+  const encrypted=await crypto.subtle.encrypt(
+    {
+      name:"AES-GCM",
+      iv:new TextEncoder().encode(nonce)
+    },
+    key,
+    new TextEncoder().encode(String(value))
+  );
+
+  return bytesToBase64(new Uint8Array(encrypted));
+}
+
+async function createCardDeposit(){
+  const amount=validDepositAmount();
+  if(amount===null)return;
+
+  const b=$("depCreate");
+  b.disabled=true;
+  b.textContent="Preparing secure card form…";
+
+  try{
+    await getCardEncryptionKey();
+
+    $("modalBody").innerHTML=`
+      <div class="orderbox">
+        <span class="pill">SECURE CARD PAYMENT</span>
+
+        <label>Card number</label>
+        <input id="cardNumber" inputmode="numeric"
+          autocomplete="cc-number" placeholder="Card number">
+
+        <div class="grid2">
+          <div>
+            <label>Expiry month</label>
+            <input id="cardMonth" inputmode="numeric"
+              autocomplete="cc-exp-month" placeholder="MM">
+          </div>
+          <div>
+            <label>Expiry year</label>
+            <input id="cardYear" inputmode="numeric"
+              autocomplete="cc-exp-year" placeholder="YY or YYYY">
+          </div>
+        </div>
+
+        <label>CVV</label>
+        <input id="cardCvv" type="password" inputmode="numeric"
+          autocomplete="cc-csc" placeholder="CVV">
+
+        <p class="muted">
+          Your card details are encrypted in your browser before
+          being sent for payment processing.
+        </p>
+
+        <button class="primary" id="cardPay">
+          Pay ${esc(money(amount,"NGN"))}
+        </button>
+        <button class="secondary" id="cardCancel">Cancel</button>
+      </div>
+    `;
+
+    $("cardCancel").onclick=deposit;
+    $("cardPay").onclick=()=>submitCardDeposit(amount);
+
+  }catch(e){
+    $("modalStatus").textContent=e.message;
+    $("modalStatus").className="status danger";
+  }finally{
+    b.disabled=false;
+    b.textContent="Continue";
+  }
+}
+
+async function submitCardDeposit(amount){
+  const number=$("cardNumber").value.replace(/\s+/g,"");
+  const month=$("cardMonth").value.trim();
+  let year=$("cardYear").value.trim();
+  const cvv=$("cardCvv").value.trim();
+
+  if(!/^\d{12,19}$/.test(number)){
+    $("modalStatus").textContent="Enter a valid card number.";
+    return;
+  }
+
+  if(!/^(0[1-9]|1[0-2])$/.test(month)){
+    $("modalStatus").textContent="Enter the expiry month as MM.";
+    return;
+  }
+
+  if(/^\d{2}$/.test(year))year="20"+year;
+
+  if(!/^\d{4}$/.test(year)){
+    $("modalStatus").textContent="Enter the expiry year.";
+    return;
+  }
+
+  if(!/^\d{3,4}$/.test(cvv)){
+    $("modalStatus").textContent="Enter a valid CVV.";
+    return;
+  }
+
+  const b=$("cardPay");
+  b.disabled=true;
+  b.textContent="Encrypting card details…";
+
+  try{
+    const key=await getCardEncryptionKey();
+    const nonce=randomNonce();
+
+    const card={
+      encrypted_card_number:await encryptCardValue(number,key,nonce),
+      encrypted_expiry_month:await encryptCardValue(month,key,nonce),
+      encrypted_expiry_year:await encryptCardValue(year,key,nonce),
+      encrypted_cvv:await encryptCardValue(cvv,key,nonce),
+      nonce
+    };
+
+    // Clear the raw card values from the form immediately.
+    $("cardNumber").value="";
+    $("cardMonth").value="";
+    $("cardYear").value="";
+    $("cardCvv").value="";
+
+    b.textContent="Starting card payment…";
+
+    const d=await api(
+      "/api/customer/wallet/deposit",
+      "POST",
+      {amount,payment_method:"card",card}
+    );
+
+    activeDeposit={
+      reference:d.reference,
+      amount:Number(d.amount??amount)
+    };
+
+    await handleCardNextAction(d);
+
+  }catch(e){
+    $("modalStatus").textContent=e.message;
+    $("modalStatus").className="status danger";
+  }finally{
+    if($("cardPay")){
+      $("cardPay").disabled=false;
+      $("cardPay").textContent="Try card payment again";
+    }
+  }
+}
+
+/* CARD AUTHORIZATION: PIN, OTP AND BILLING ADDRESS */
+
+async function handleCardNextAction(result){
+  const next=result.nextAction||{};
+  const type=String(next.type||"").toLowerCase();
+
+  if(result.redirectUrl||next.redirect_url?.url){
+    const url=result.redirectUrl||next.redirect_url.url;
+    modal(
+      "Continue card payment",
+      "Flutterwave requires you to complete an additional secure payment step.",
+      `
+        <div class="result">
+          Continue to Flutterwave to complete your card payment.
+        </div>
+        <button class="primary" id="continueCardRedirect">
+          Continue securely
+        </button>
+      `
+    );
+    $("continueCardRedirect").onclick=()=>GenUI.openUrl(url);
+    return;
+  }
+
+  if(type==="requires_pin"||next.requires_pin){
+    renderCardPin();
+    return;
+  }
+
+  if(type==="requires_otp"||next.requires_otp){
+    renderCardOtp();
+    return;
+  }
+
+  if(
+    type==="requires_additional_fields"||
+    next.requires_additional_fields
+  ){
+    renderCardAddress();
+    return;
+  }
+
+  showCardPending();
+}
+
+function renderCardPin(){
+  modal(
+    "Card PIN required",
+    "Enter the PIN requested by Flutterwave to continue your payment.",
+    `
+      <label>Card PIN</label>
+      <input id="cardPin" type="password" inputmode="numeric"
+        maxlength="6" placeholder="Enter PIN">
+      <button class="primary" id="submitCardPin">Continue</button>
+    `
+  );
+
+  $("submitCardPin").onclick=async()=>{
+    const pin=$("cardPin").value.trim();
+    if(!/^\d{4,6}$/.test(pin)){
+      $("modalStatus").textContent="Enter a valid card PIN.";
+      return;
+    }
+
+    const b=$("submitCardPin");
+    b.disabled=true;
+
+    try{
+      const key=await getCardEncryptionKey();
+      const nonce=randomNonce();
+      const encryptedPin=await encryptCardValue(pin,key,nonce);
+
+      $("cardPin").value="";
+
+      const d=await api(
+        "/api/customer/wallet/card/authorize",
+        "POST",
+        {
+          reference:activeDeposit.reference,
+          authorization_type:"pin",
+          encrypted_pin:encryptedPin,
+          nonce
+        }
+      );
+
+      await handleCardNextAction(d);
+
+    }catch(e){
+      $("modalStatus").textContent=e.message;
+      $("modalStatus").className="status danger";
+    }finally{
+      b.disabled=false;
+    }
+  };
+}
+
+function renderCardOtp(){
+  modal(
+    "Card OTP required",
+    "Enter the one-time password sent by your bank.",
+    `
+      <label>OTP</label>
+      <input id="cardOtp" inputmode="numeric"
+        maxlength="8" placeholder="Enter OTP">
+      <button class="primary" id="submitCardOtp">Verify OTP</button>
+    `
+  );
+
+  $("submitCardOtp").onclick=async()=>{
+    const otp=$("cardOtp").value.trim();
+
+    if(!/^\d{4,8}$/.test(otp)){
+      $("modalStatus").textContent="Enter the OTP sent by your bank.";
+      return;
+    }
+
+    const b=$("submitCardOtp");
+    b.disabled=true;
+
+    try{
+      const d=await api(
+        "/api/customer/wallet/card/authorize",
+        "POST",
+        {
+          reference:activeDeposit.reference,
+          authorization_type:"otp",
+          otp
+        }
+      );
+
+      $("cardOtp").value="";
+      await handleCardNextAction(d);
+
+    }catch(e){
+      $("modalStatus").textContent=e.message;
+      $("modalStatus").className="status danger";
+    }finally{
+      b.disabled=false;
+    }
+  };
+}
+
+function renderCardAddress(){
+  modal(
+    "Billing address required",
+    "Enter the billing address associated with your card.",
+    `
+      <label>Address line 1</label>
+      <input id="cardAddress1" placeholder="Street address">
+
+      <label>Address line 2 (optional)</label>
+      <input id="cardAddress2" placeholder="Apartment or area">
+
+      <div class="grid2">
+        <div>
+          <label>City</label>
+          <input id="cardCity" placeholder="City">
+        </div>
+        <div>
+          <label>State</label>
+          <input id="cardState" placeholder="State">
+        </div>
+      </div>
+
+      <label>Postal code</label>
+      <input id="cardPostal" placeholder="Postal code">
+
+      <label>Country code (2 letters)</label>
+      <input id="cardCountry" maxlength="2"
+        placeholder="NG">
+
+      <button class="primary" id="submitCardAddress">
+        Submit billing address
+      </button>
+    `
+  );
+
+  $("submitCardAddress").onclick=async()=>{
+    const address={
+      line1:$("cardAddress1").value.trim(),
+      line2:$("cardAddress2").value.trim(),
+      city:$("cardCity").value.trim(),
+      state:$("cardState").value.trim(),
+      postal_code:$("cardPostal").value.trim(),
+      country:$("cardCountry").value.trim().toUpperCase()
+    };
+
+    if(
+      !address.line1||!address.city||!address.state||
+      !address.postal_code||!/^[A-Z]{2}$/.test(address.country)
+    ){
+      $("modalStatus").textContent="Complete all required billing address fields.";
+      return;
+    }
+
+    const b=$("submitCardAddress");
+    b.disabled=true;
+
+    try{
+      const d=await api(
+        "/api/customer/wallet/card/authorize",
+        "POST",
+        {
+          reference:activeDeposit.reference,
+          authorization_type:"avs",
+          address
+        }
+      );
+
+      await handleCardNextAction(d);
+
+    }catch(e){
+      $("modalStatus").textContent=e.message;
+      $("modalStatus").className="status danger";
+    }finally{
+      b.disabled=false;
+    }
+  };
+}
+
+/* CHECK PAYMENT AND WAIT FOR VERIFIED WALLET CREDIT */
+
+function showCardPending(){
+  modal(
+    "Card payment processing",
+    "Your payment is being checked. Your wallet will only be credited after verified confirmation.",
+    `
+      <div class="result">
+        <span class="pill">PAYMENT PENDING</span>
+        <p>Deposit reference:</p>
+        <strong>${esc(activeDeposit?.reference||"")}</strong>
+        <p id="depState">Waiting for verified payment confirmation…</p>
+      </div>
+
+      <button class="secondary" id="depCheck">Check payment status</button>
+      <button class="secondary" id="depDone">Close</button>
+    `
+  );
+
+  $("depCheck").onclick=checkDeposit;
+  $("depDone").onclick=closeModal;
+  startDepositPoll();
 }
 
 function startDepositPoll(){
@@ -1315,37 +1762,90 @@ async function checkDeposit(){
     $("ngn").textContent=money(w.balances?.NGN,"NGN");
     $("usd").textContent=money(w.balances?.USD,"USD");
 
-    const expectedMinor=Math.round(activeDeposit.amount*100);
     const reference=String(activeDeposit.reference||"");
+    const expectedMinor=Math.round(Number(activeDeposit.amount||0)*100);
 
     const match=(t.transactions||[]).find(x=>{
       const refs=[
         String(x.reference||""),
-        String(x.payment_reference||""),
-        String(x.reference||"").replace(/^FLW-/,"")
+        String(x.payment_reference||"")
       ];
 
-      return refs.includes(reference)&&
-        Number(x.amount_minor)===expectedMinor&&
+      const correctReference=refs.includes(reference);
+      const correctAmount=!expectedMinor||
+        Number(x.amount_minor)===expectedMinor;
+
+      return correctReference&&correctAmount&&
         String(x.currency||"").toUpperCase()==="NGN"&&
-        ["successful","completed","success"].includes(
+        ["successful","completed","success","succeeded"].includes(
           String(x.status||"").toLowerCase()
         );
     });
 
     if(match){
-      $("depState").textContent="Payment confirmed. Your wallet transaction is recorded.";
-      $("depState").className="good";
       clearInterval(depositPoll);
       depositPoll=null;
+
+      const state=$("depState");
+      if(state){
+        state.textContent="Payment confirmed. Your NGN wallet has been updated.";
+        state.className="status good";
+      }
+
+      await refreshAll();
       setTimeout(closeModal,2500);
+
     }else{
-      $("depState").textContent="We are still waiting for verified payment confirmation. Do not pay again until you check your payment status.";
+      const state=$("depState");
+      if(state){
+        state.textContent=
+          "We are still waiting for verified payment confirmation. Do not pay again while this deposit is pending.";
+        state.className="status";
+      }
     }
 
   }catch(e){
-    $("depState").textContent="Unable to check right now. Please try again shortly.";
+    const state=$("depState");
+    if(state){
+      state.textContent=
+        "Unable to check payment status right now. Please try again shortly.";
+    }
   }
+}
+
+/* HANDLE RETURN FROM FLUTTERWAVE REDIRECT */
+
+async function checkReturnedDeposit(){
+  const params=new URLSearchParams(location.search);
+  const reference=params.get("deposit");
+
+  if(!reference||!/^SPD-[A-Za-z0-9-]{10,80}$/.test(reference))return;
+
+  activeDeposit={reference,amount:0};
+
+  history.replaceState(
+    {},
+    document.title,
+    location.pathname+location.hash
+  );
+
+  modal(
+    "Checking your payment",
+    "We are checking the payment with Speedy.ng. Please wait.",
+    `
+      <div id="depState" class="status">
+        Checking verified payment confirmation…
+      </div>
+      <button class="secondary" id="depCheck">Check again</button>
+      <button class="secondary" id="depDone">Close</button>
+    `
+  );
+
+  $("depCheck").onclick=checkDeposit;
+  $("depDone").onclick=closeModal;
+
+  await checkDeposit();
+  startDepositPoll();
 }
 
 /* CURRENCY CONVERSION */
