@@ -1185,8 +1185,34 @@ function deposit(){
 <select id="depMethod">
   <option value="bank_transfer">Bank Transfer</option>
   <option value="pay_with_bank">Pay with Bank</option>
+  <option value="ussd">USSD</option>
   <option value="card">Debit or Credit Card</option>
 </select>
+
+<div id="ussdBankWrap" style="display:none">
+  <label>Select your bank</label>
+  <select id="ussdBank">
+    <option value="">Choose your bank</option>
+    <option value="044">Access Bank</option>
+    <option value="050">Ecobank</option>
+    <option value="070">Fidelity Bank</option>
+    <option value="011">First Bank</option>
+    <option value="214">FCMB</option>
+    <option value="058">GTBank</option>
+    <option value="030">Heritage Bank</option>
+    <option value="082">Keystone Bank</option>
+    <option value="303">Lotus Bank</option>
+    <option value="105">Premium Trust Bank</option>
+    <option value="221">Stanbic IBTC</option>
+    <option value="232">Sterling Bank</option>
+    <option value="032">Union Bank</option>
+    <option value="033">UBA</option>
+    <option value="215">Unity Bank</option>
+    <option value="090110">VFD Microfinance Bank</option>
+    <option value="035">Wema Bank</option>
+    <option value="057">Zenith Bank</option>
+  </select>
+</div>
 
       <button class="primary" id="depCreate">Continue</button>
     `
