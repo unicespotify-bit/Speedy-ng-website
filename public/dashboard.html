@@ -2979,6 +2979,7 @@ function fillSelect(id,rows){
   if(rows.some(x=>optionValue(x)===old)){
     select.value=old;
   }
+}
 
   const type=id==="countrySelect"?"country":"service";
 
@@ -3095,15 +3096,33 @@ async function loadCountryServices(){
     ){
       $("numberQuote").textContent=e.message;
     }
+  function filterSelect(id,rows,q){
+  const search=String(q||"").trim().toLowerCase();
+
+  const filtered=!search
+    ?rows
+    :rows.filter(x=>{
+      const searchable=[
+        label(x),
+        x?.name,
+        x?.title,
+        x?.country,
+        x?.country_name,
+        x?.service,
+        x?.service_name,
+        x?.code,
+        x?.id,
+        x?.slug
+      ].filter(Boolean).join(" ").toLowerCase();
+
+      return searchable.includes(search);
+    });
+
+  fillSelect(id,filtered);
+
+  if(!$(id).value){
+    loadQuote();
   }
-}
-
-function filterSelect(id,rows,q){
-  const type=id==="countrySelect"?"country":"service";
-
-  $(id+"Search").value=q||"";
-
-  renderVisualPicker(id,type);
   }
 
 async function loadQuote(){
