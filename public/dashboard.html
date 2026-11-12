@@ -3532,6 +3532,10 @@ document.querySelectorAll("[data-scroll]").forEach(b=>{
 
 refreshAll();
 
+if(token){
+  checkReturnedDeposit();
+}
+
 setInterval(()=>{
   if(token)refreshAll();
 },60000);
