@@ -851,6 +851,110 @@ main{
     font-size:42px;
   }
 }
+.visual-picker{
+  position:relative;
+  margin:8px 0 16px;
+}
+
+.visual-picker-button{
+  width:100%;
+  min-height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 15px;
+  border-radius:12px;
+  border:1px solid #345b88;
+  background:#0a1d39;
+  color:white;
+  text-align:left;
+  font-size:13px;
+  font-weight:800;
+}
+
+.visual-picker-button:focus{
+  outline:2px solid #42bdf5;
+}
+
+.visual-picker-arrow{
+  color:#65c9ff;
+  font-size:17px;
+}
+
+.visual-picker-panel{
+  display:none;
+  position:absolute;
+  z-index:100;
+  top:calc(100% + 6px);
+  left:0;
+  right:0;
+  max-height:280px;
+  overflow:hidden;
+  border:1px solid #345b88;
+  border-radius:13px;
+  background:#071832;
+  box-shadow:0 15px 35px #0009;
+}
+
+.visual-picker.open .visual-picker-panel{
+  display:block;
+}
+
+.visual-picker-search{
+  width:100%;
+  box-sizing:border-box;
+  padding:13px;
+  border:0;
+  border-bottom:1px solid #294a72;
+  border-radius:0;
+  background:#102b4b;
+  color:white;
+  outline:none;
+}
+
+.visual-picker-list{
+  max-height:220px;
+  overflow-y:auto;
+}
+
+.visual-picker-option{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:12px 14px;
+  border:0;
+  border-bottom:1px solid #183555;
+  background:transparent;
+  color:white;
+  text-align:left;
+  font-size:13px;
+}
+
+.visual-picker-option:active,
+.visual-picker-option.selected{
+  background:#153b65;
+}
+
+.visual-picker-icon{
+  width:25px;
+  flex-shrink:0;
+  text-align:center;
+  font-size:19px;
+}
+
+.visual-picker-empty{
+  padding:16px;
+  color:#9fb8d8;
+  font-size:12px;
+  text-align:center;
+}
+
+.visual-native-select{
+  display:none!important;
+}
+  
 @media(min-width:700px){
   .welcome h1{font-size:34px}
   .wallet{padding:23px;min-height:165px}
@@ -2791,32 +2895,25 @@ function visualPickerMarkup(id,title,placeholder){
 function showNumbers(){
   modal(
     "Buy Numbers",
-    "Search for a country and service. Availability and price are checked before purchase.",
+    "Choose a country and service to check live availability and price.",
     `
-      <label>Search country</label>
-      <input id="countrySearch" placeholder="Type a country name">
-
-      <label>Country</label>
-      <select id="countrySelect">
-        <option value="">Loading countries…</option>
-      </select>
-
-      <label>Search service</label>
-      <input id="serviceSearch" placeholder="Type a service name">
-
-      <label>Service</label>
-      <select id="serviceSelect">
-        <option value="">Loading services…</option>
-      </select>
+      ${visualPickerMarkup("countrySelect","Country","Choose a country")}
+      ${visualPickerMarkup("serviceSelect","Service","Choose a service")}
 
       <div id="numberQuote" class="result">
         Choose a country and service to check availability.
       </div>
 
-      <button class="primary" id="numberBuy" disabled>Buy number</button>
+      <button class="primary" id="numberBuy" disabled>
+        Buy number
+      </button>
+
       <div id="numberOrder"></div>
     `
   );
+
+  setupVisualPicker("countrySelect","country","Choose a country");
+  setupVisualPicker("serviceSelect","service","Choose a service");
 
   loadNumbers();
 }
@@ -2979,7 +3076,13 @@ function fillSelect(id,rows){
   if(rows.some(x=>optionValue(x)===old)){
     select.value=old;
   }
-}
+
+  const type=id==="countrySelect"
+    ?"country"
+    :"service";
+
+  updateVisualPickerLabel(id,type);
+  }
 
 async function loadNumbers(){
   try{
