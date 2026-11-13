@@ -2631,6 +2631,28 @@ function label(x){
 function optionValue(x){
   return String(x?.id??x?.code??x?.iso??x?.slug??label(x));
 }
+
+function visualOptionValue(x,type){
+  if(typeof x==="string")return x;
+
+  if(type==="service"){
+    return String(
+      x?.code??
+      x?.id??
+      x?.service??
+      x?.slug??
+      label(x)
+    );
+  }
+
+  return String(
+    x?.id??
+    x?.code??
+    x?.iso??
+    x?.slug??
+    label(x)
+  );
+}
 /* VISUAL NUMBERS */
 
 function visualCountryFlag(x){
@@ -3043,7 +3065,7 @@ function renderVisualPicker(id,type){
   }
 
   $(id+"List").innerHTML=filtered.map((x,i)=>{
-    const value=optionValue(x);
+    const value=visualOptionValue(x,type);
     const name=label(x)||`Option ${i+1}`;
 
     const icon=type==="country"
@@ -3086,8 +3108,8 @@ function updateVisualPickerLabel(id,type){
     :numberServices;
 
   const selected=rows.find(
-    x=>optionValue(x)===select.value
-  );
+    x=>visualOptionValue(x,type)===select.value
+      ):
 
   const placeholder=type==="country"
     ?"Choose a country"
@@ -3108,29 +3130,30 @@ function updateVisualPickerLabel(id,type){
   renderVisualPicker(id,type);
 }
 
+
 function fillSelect(id,rows){
   const select=$(id);
   const old=select.value;
-
-  select.innerHTML=`
-    <option value="">Select an option</option>
-    ${rows.map((x,i)=>`
-      <option value="${esc(optionValue(x))}">
-        ${esc(label(x)||`Option ${i+1}`)}
-      </option>
-    `).join("")}
-  `;
-
-  if(rows.some(x=>optionValue(x)===old)){
-    select.value=old;
-  }
 
   const type=id==="countrySelect"
     ?"country"
     :"service";
 
-  updateVisualPickerLabel(id,type);
+  select.innerHTML=`
+    <option value="">Select an option</option>
+    ${rows.map((x,i)=>`
+      <option value="${esc(visualOptionValue(x,type))}">
+        ${esc(label(x)||`Option ${i+1}`)}
+      </option>
+    `).join("")}
+  `;
+
+  if(rows.some(x=>visualOptionValue(x,type)===old)){
+    select.value=old;
   }
+
+  updateVisualPickerLabel(id,type);
+}
 
 async function loadNumbers(){
   try{
@@ -3299,8 +3322,8 @@ const available=stockKnown&&stockNumber>0;
       ?money(price*rate,"NGN")
       :"";
 
-    const displayCountryName=label(numberCountries.find(x=>optionValue(x)===c))||c;
-    const serviceName=label(numberServices.find(x=>optionValue(x)===s))||s;
+    const displayCountryName=label(numberCountries.find(x=>visualOptionValue(x,"country")===c))||c;
+const serviceName=label(numberServices.find(x=>visualOptionValue(x,"service")===s))||s;
 
     $("numberQuote").innerHTML=`
       <strong>${esc(displayCountryName)} · ${esc(serviceName)}</strong>
