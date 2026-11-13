@@ -3310,7 +3310,7 @@ if(requestId!==quoteRequestId)return;
     }
 
     const price=priceMinor/100;
-    const rate=Number(walletData.rate||1500);
+    const rate=Number(q.exchange_rate_ngn_per_usd||walletData.rate||1500);
     const stockNumber=Number(stock);
 const stockKnown=stock!==null&&stock!==undefined&&
   stock!==""&&Number.isFinite(stockNumber);
