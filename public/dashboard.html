@@ -1306,7 +1306,10 @@ let pendingVisualPurchase=null;
 let quoteRequestId=0;
 let logListings=[];
 let debounceTimer=null;
-let visualQuoteTimer=null;
+let supportPoll=null;
+let supportUnreadTimer=null;
+let announcementTimer=null;
+let supportTelegramUrl="";
 
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
   "&":"&amp;",
