@@ -3109,7 +3109,7 @@ function updateVisualPickerLabel(id,type){
 
   const selected=rows.find(
     x=>visualOptionValue(x,type)===select.value
-      ):
+    );
 
   const placeholder=type==="country"
     ?"Choose a country"
@@ -3417,7 +3417,7 @@ function renderVisualOrder(order,delivery={},message=""){
   const countryValue=String(order.country||"");
 
   const countryRow=numberCountries.find(x=>
-    optionValue(x).toLowerCase()===countryValue.toLowerCase()||
+    visualOptionValue(x,"country").toLowerCase()===countryValue.toLowerCase()||
     label(x).toLowerCase()===countryValue.toLowerCase()
   );
 
@@ -3426,7 +3426,7 @@ function renderVisualOrder(order,delivery={},message=""){
   const serviceValue=String(order.service||"");
 
   const serviceRow=numberServices.find(x=>
-    optionValue(x).toLowerCase()===serviceValue.toLowerCase()||
+    visualOptionValue(x,"service").toLowerCase()===serviceValue.toLowerCase()||
     label(x).toLowerCase()===serviceValue.toLowerCase()
   );
 
