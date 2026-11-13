@@ -2678,19 +2678,212 @@ $("modalStatus").className="status danger";
 
 /* CUSTOMER SUPPORT */
 
+function closeAnnouncement(){
+  clearTimeout(announcementTimer);
+  announcementTimer=null;
+  $("announcementBack").classList.remove("show");
+}
+
+$("announcementClose").onclick=closeAnnouncement;
+$("announcementDone").onclick=closeAnnouncement;
+
+async function loadSupportMessages(){
+  if(!$("supportThread"))return;
+
+  try{
+    const data=await api("/api/customer/support/messages");
+    const messages=data.messages||[];
+
+    $("supportThread").innerHTML=messages.length
+      ?messages.map(m=>{
+        const mine=m.sender_type==="customer";
+        return `
+          <div style="
+            max-width:88%;
+            margin:${mine?"10px 0 10px auto":"10px auto 10px 0"};
+            padding:12px;
+            border-radius:14px;
+            background:${mine?"#17477e":"#10294c"};
+            border:1px solid #315d8e;
+            overflow-wrap:anywhere;
+          ">
+            <strong>${mine?"You":"Speedy Support"}</strong>
+            <div style="margin-top:7px;white-space:pre-wrap">${esc(m.message)}</div>
+            <small style="display:block;margin-top:8px;color:#a6bbd9">
+              ${esc(m.created_at||"")}
+            </small>
+          </div>
+        `;
+      }).join("")
+      :'<p class="muted">No messages yet. Send us a message and our team will reply here.</p>';
+
+    $("supportThread").scrollTop=$("supportThread").scrollHeight;
+  }catch(e){
+    $("supportThread").innerHTML=
+      `<p class="result danger">${esc(e.message)}</p>`;
+  }
+}
+
+async function updateSupportUnread(){
+  if(!token)return;
+
+  try{
+    const data=await api("/api/customer/support/unread");
+    const count=Number(data.unread_count||0);
+    const badge=$("supportUnreadBadge");
+
+    if(count>0){
+      badge.textContent=count>9?"9+":String(count);
+      badge.style.display="flex";
+    }else{
+      badge.style.display="none";
+    }
+  }catch(e){}
+}
+
 function support(){
   modal(
-    "Support",
-    "Need help with a payment or order?",
+    "Private Support",
+    "Chat privately with the Speedy.ng support team.",
     `
-      <div class="result">
-        Keep your payment reference or order reference available when contacting Speedy.ng support.
-        <br><br>
-        Never share your password or email verification code.
-      </div>
+      <div id="supportThread" style="
+        min-height:180px;
+        max-height:45vh;
+        overflow:auto;
+        padding:8px;
+        background:#071832;
+        border:1px solid #244875;
+        border-radius:14px;
+      ">Loading messages…</div>
+
+      <form id="supportForm" style="margin-top:13px">
+        <textarea id="supportMessage"
+          rows="3"
+          maxlength="3000"
+          placeholder="Write your message..."
+          required
+          style="width:100%;padding:12px;border-radius:12px;
+          background:#071832;color:white;border:1px solid #315d8e">
+        </textarea>
+
+        <button class="primary" id="supportSend"
+          type="submit" style="width:100%;margin-top:9px">
+          Send Message
+        </button>
+      </form>
+
+      <p class="muted" style="font-size:11px;margin-top:10px">
+        Your conversation is private. Never share your password or verification code.
+      </p>
     `
   );
+
+  clearInterval(supportPoll);
+  loadSupportMessages();
+
+  supportPoll=setInterval(loadSupportMessages,5000);
+
+  $("supportForm").onsubmit=async e=>{
+    e.preventDefault();
+
+    const field=$("supportMessage");
+    const button=$("supportSend");
+    const message=field.value.trim();
+
+    if(!message)return;
+
+    button.disabled=true;
+    button.textContent="Sending...";
+
+    try{
+      await api(
+        "/api/customer/support/messages",
+        "POST",
+        {message}
+      );
+
+      field.value="";
+      await loadSupportMessages();
+      await updateSupportUnread();
+
+    }catch(error){
+      $("modalStatus").textContent=error.message;
+      $("modalStatus").className="status danger";
+    }finally{
+      button.disabled=false;
+      button.textContent="Send Message";
+    }
+  };
 }
+
+async function loadCommunicationUI(){
+  if(!token)return;
+
+  try{
+    const [settings,announcements]=await Promise.all([
+      api("/api/customer/support/settings"),
+      api("/api/customer/announcements")
+    ]);
+
+    supportTelegramUrl=String(settings.telegram_url||"").trim();
+
+    const banner=$("telegramBanner");
+
+    if(supportTelegramUrl){
+      banner.href=supportTelegramUrl;
+      banner.style.display="block";
+    }else{
+      banner.style.display="none";
+    }
+
+    const items=announcements.announcements||[];
+    if(!items.length)return;
+
+    const latest=items[0];
+
+    const now=new Date();
+    const day=[
+      now.getFullYear(),
+      String(now.getMonth()+1).padStart(2,"0"),
+      String(now.getDate()).padStart(2,"0")
+    ].join("-");
+
+    const storageKey="speedy_announcement_seen_"+day;
+
+    if(localStorage.getItem(storageKey))return;
+
+    $("announcementTitle").textContent=latest.title||"Speedy.ng Announcement";
+    $("announcementMessage").textContent=latest.message||"";
+
+    const telegram=$("announcementTelegram");
+
+    if(supportTelegramUrl){
+      telegram.href=supportTelegramUrl;
+      telegram.style.display="block";
+    }else{
+      telegram.style.display="none";
+    }
+
+    $("announcementBack").classList.add("show");
+    localStorage.setItem(storageKey,"yes");
+
+    clearTimeout(announcementTimer);
+    announcementTimer=setTimeout(closeAnnouncement,5000);
+
+  }catch(e){
+    console.warn("Communication update could not load:",e.message);
+  }
+}
+
+function initializeCommunicationUI(){
+  if(!token)return;
+
+  loadCommunicationUI();
+  updateSupportUnread();
+
+  clearInterval(supportUnreadTimer);
+  supportUnreadTimer=setInterval(updateSupportUnread,15000);
+  }
 
 /* SHARED DATA HELPERS */
 function unwrap(value){
