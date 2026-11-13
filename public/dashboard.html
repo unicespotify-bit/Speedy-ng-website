@@ -1123,6 +1123,16 @@ main{
   <div class="brand">Speedy<span>.ng</span></div>
   <button class="profile" id="profileBtn" aria-label="Profile">👤</button>
 </header>
+  <a
+  class="telegram-banner"
+  id="telegramBanner"
+  href="#"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  ✈ <span>Join Speedy.ng on Telegram</span>
+  — Get updates and support.
+  </a>
 
 <main id="top">
 
@@ -1244,7 +1254,10 @@ main{
   </div>
 </nav>
 
-<button class="support" id="supportBtn" aria-label="Support">☏</button>
+<button class="support" id="supportBtn" aria-label="Support">
+  ☏
+  <span class="support-badge" id="supportUnreadBadge"></span>
+</button>
 
 <div class="modal-back" id="modalBack">
   <section class="modal" role="dialog" aria-modal="true">
@@ -1255,6 +1268,20 @@ main{
     <div id="modalStatus" class="status" aria-live="polite"></div>
   </section>
 </div>
+  <div class="announcement-back" id="announcementBack">
+  <section class="announcement-card" role="dialog" aria-modal="true">
+    <button class="announcement-close" id="announcementClose">×</button>
+    <h3 id="announcementTitle">Speedy.ng Announcement</h3>
+    <p id="announcementMessage"></p>
+    <div class="announcement-actions">
+      <button id="announcementDone">Close</button>
+      <a id="announcementTelegram" href="#" target="_blank"
+         rel="noopener noreferrer" style="display:none">
+        Join Telegram
+      </a>
+    </div>
+  </section>
+  </div>
 <script>
 "use strict";
 
