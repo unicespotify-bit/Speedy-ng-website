@@ -3961,9 +3961,24 @@ async function fetchLogs(){
         const title=x.title||x.name||x.slug||"Social Log";
         const slug=x.slug||x.listing_slug||x.id;
 
+        const country=socialLogCountryMarkup(x);
+        const service=socialLogServiceMarkup(x);
+
         return `
           <article class="listing">
-            <strong>${esc(title)}</strong>
+
+            <div class="social-log-heading">
+              ${country.flag}
+              ${service.logo}
+
+              <div>
+                <strong>${esc(title)}</strong>
+                <div class="social-log-country">
+                  ${esc(country.countryName||"Country not specified")}
+                </div>
+              </div>
+            </div>
+
             <p>${esc(x.category_name||x.category||"Available listing")}</p>
             <p>Stock: ${esc(x.available_stock??x.stock??"Check at purchase")}</p>
             <div class="price">
