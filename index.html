@@ -16,6 +16,12 @@ body{min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--text);f
 .page{position:relative;z-index:1;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 header{padding:27px 22px;display:flex;align-items:center;justify-content:space-between;max-width:1100px;width:100%;margin:auto}
 .logo{display:flex;align-items:center;gap:10px;font-size:23px;font-weight:800;letter-spacing:-.8px}.logo-icon{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#3985ff,#55e6ff);color:#061126;box-shadow:0 0 25px #3985ff55}.logo span{color:var(--cyan)}
+  .logo img{
+  display:block;
+  width:220px;
+  height:auto;
+  max-width:100%;
+  }
 .badge{color:#b8c8e8;font-size:12px;padding:9px 12px;border:1px solid #ffffff16;background:#ffffff08;border-radius:20px}
 main{width:100%;max-width:1100px;margin:auto;padding:15px 20px 45px;display:grid;grid-template-columns:1fr 420px;align-items:center;gap:65px}
 .intro{animation:appear .8s ease both}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #55e6ff30;background:#55e6ff0c;color:var(--cyan);border-radius:30px;padding:9px 13px;font-size:12px;margin-bottom:25px}
@@ -49,7 +55,12 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
 <body>
 <div class="background" aria-hidden="true"><div class="glow one"></div><div class="glow two"></div><div class="glow three"></div></div>
 <div class="page">
-<header><div class="logo"><div class="logo-icon">S</div>Speedy<span>.ng</span></div><div class="badge">YOUR DIGITAL SERVICES HUB</div></header>
+<header>
+  <a class="logo" href="/" aria-label="Speedy.ng home">
+    <img src="/assets/speedy-blue-logo.svg" alt="Speedy.ng">
+  </a>
+  <div class="badge">YOUR DIGITAL SERVICES HUB</div>
+</header>
 <main>
 <section class="intro">
 <div class="eyebrow"><span class="dot"></span>SIMPLE. SMART. SPEEDY.</div>
