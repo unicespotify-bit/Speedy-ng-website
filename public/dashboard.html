@@ -3818,7 +3818,85 @@ async function checkNumber(id,automatic=false){
 }
 
 /* SOCIAL LOGS */
+function socialLogCountryMarkup(x){
+  const countryName=String(
+    x?.country_name||
+    x?.country||
+    x?.countryName||
+    ""
+  ).trim();
 
+  const countryCode=String(
+    x?.country_code||
+    x?.country_iso||
+    x?.iso2||
+    x?.iso_code||
+    ""
+  ).trim().toLowerCase();
+
+  const flag=/^[a-z]{2}$/.test(countryCode)
+    ?`<img class="social-log-flag"
+        src="https://flagcdn.com/w160/${esc(countryCode)}.png"
+        alt="${esc(countryName||"Country")} flag"
+        onerror="this.style.display='none'">`
+    :`<span style="font-size:27px">${
+        visualCountryFlag({country_name:countryName})
+      }</span>`;
+
+  return {countryName,flag};
+}
+
+function socialLogServiceMarkup(x){
+  const serviceName=String(
+    x?.service_name||
+    x?.service||
+    x?.title||
+    x?.name||
+    x?.category_name||
+    x?.category||
+    "Social Log"
+  ).trim();
+
+  const names={
+    whatsapp:"whatsapp",
+    facebook:"facebook",
+    telegram:"telegram",
+    instagram:"instagram",
+    tiktok:"tiktok",
+    signal:"signal",
+    google:"google",
+    twitter:"x",
+    youtube:"youtube",
+    discord:"discord",
+    snapchat:"snapchat",
+    reddit:"reddit",
+    linkedin:"linkedin",
+    viber:"viber",
+    wechat:"wechat",
+    line:"line",
+    amazon:"amazon",
+    yahoo:"yahoo",
+    apple:"apple"
+  };
+
+  const key=Object.keys(names).find(k=>
+    serviceName.toLowerCase().includes(k)
+  );
+
+  const logo=key
+    ?`<img class="social-log-service-logo"
+        src="https://cdn.simpleicons.org/${names[key]}"
+        alt="${esc(serviceName)} logo"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+      <span class="social-log-service-fallback" style="display:none">
+        ${visualServiceIcon(serviceName)}
+      </span>`
+    :`<span class="social-log-service-fallback">
+        ${visualServiceIcon(serviceName)}
+      </span>`;
+
+  return {serviceName,logo};
+                          }
 function showLogs(){
   modal(
     "Social Logs",
