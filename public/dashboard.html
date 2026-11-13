@@ -337,6 +337,102 @@ main{
   font-size:24px;
   border:2px solid #ffffff50;
 }
+.support{position:relative}
+
+.support-badge{
+  position:absolute;
+  top:-5px;
+  right:-5px;
+  min-width:19px;
+  height:19px;
+  padding:0 5px;
+  border-radius:20px;
+  background:#ff304f;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border:2px solid #06132c;
+}
+
+.telegram-banner{
+  display:none;
+  max-width:1068px;
+  margin:0 auto 12px;
+  padding:12px 16px;
+  border:1px solid #287cff;
+  border-radius:14px;
+  background:linear-gradient(110deg,#123d70,#10294c);
+  color:#fff;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:800;
+}
+
+.telegram-banner span{color:#55dcff}
+
+.announcement-back{
+  position:fixed;
+  inset:0;
+  z-index:30;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:#020916ed;
+}
+
+.announcement-back.show{display:flex}
+
+.announcement-card{
+  width:min(440px,100%);
+  padding:22px;
+  border:1px solid #3985ff;
+  border-radius:20px;
+  background:linear-gradient(150deg,#163967,#071832);
+  box-shadow:0 20px 70px #000b;
+}
+
+.announcement-card h3{margin:0 35px 12px 0}
+.announcement-card p{
+  color:#dceaff;
+  font-size:14px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.announcement-actions{
+  display:flex;
+  gap:9px;
+  margin-top:16px;
+}
+
+.announcement-actions button,
+.announcement-actions a{
+  flex:1;
+  text-align:center;
+  padding:12px;
+  border:0;
+  border-radius:11px;
+  background:#287cff;
+  color:white;
+  text-decoration:none;
+  font-weight:800;
+}
+
+.announcement-close{
+  float:right;
+  width:32px;
+  height:32px;
+  border:0;
+  border-radius:50%;
+  background:#203e69;
+  color:white;
+  font-size:20px;
+}
 
 .modal-back{
   position:fixed;
