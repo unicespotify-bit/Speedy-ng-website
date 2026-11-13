@@ -1388,8 +1388,12 @@ function closeModal(){
     return;
   }
 
-  clearInterval(depositPoll);
+    clearInterval(depositPoll);
   depositPoll=null;
+
+  clearInterval(supportPoll);
+  supportPoll=null;
+
   $("modalBack").classList.remove("show");
 }
 function confirmLeaveVisualOrder(){
