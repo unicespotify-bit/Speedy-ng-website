@@ -3644,7 +3644,9 @@ const stockKnown=stock!==null&&stock!==undefined&&
   stock!==""&&Number.isFinite(stockNumber);
 const available=stockKnown&&stockNumber>0;
 
-    selectedQuote={country:c,service:s,priceMinor,stock,currency};
+    selectedQuote=available
+  ?{country:c,service:s,priceMinor,stock,currency}
+  :null;
 
     const ngnEquivalent=currency==="USD"
       ?money(price*rate,"NGN")
@@ -3683,7 +3685,7 @@ const serviceName=label(numberServices.find(x=>visualOptionValue(x,"service")===
       };
     }
 
-    $("numberBuy").disabled=stockKnown&&Number(stock)<=0;
+    $("numberBuy").disabled=!available;
 
   }catch(e){
     if(requestId!==quoteRequestId)return;
