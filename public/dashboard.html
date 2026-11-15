@@ -3438,7 +3438,7 @@ function updateVisualPickerLabel(id,type){
 
   const selected=rows.find(
     x=>visualOptionValue(x,type)===select.value
-    );
+  );
 
   const placeholder=type==="country"
     ?"Choose a country"
@@ -3446,15 +3446,14 @@ function updateVisualPickerLabel(id,type){
 
   if(!selected){
     $(id+"Selected").textContent=placeholder;
-    return;
+  }else{
+    const icon=type==="country"
+      ?visualCountryFlag(selected)
+      :visualServiceIcon(selected);
+
+    $(id+"Selected").textContent=
+      `${icon} ${label(selected)||select.value}`;
   }
-
-  const icon=type==="country"
-    ?visualCountryFlag(selected)
-    :visualServiceIcon(selected);
-
-  $(id+"Selected").textContent=
-    `${icon} ${label(selected)||select.value}`;
 
   renderVisualPicker(id,type);
 }
