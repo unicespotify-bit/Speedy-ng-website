@@ -3423,9 +3423,23 @@ function renderVisualPicker(id,type){
 
         updateVisualPickerLabel(id,type);
 
-        select.dispatchEvent(
-          new Event("change",{bubbles:true})
-        );
+        if(type==="country"){
+          loadCountryServices();
+          return;
+        }
+
+        clearTimeout(visualQuoteTimer);
+
+        quoteRequestId++;
+        selectedQuote=null;
+        $("numberBuy").disabled=true;
+
+        $("numberQuote").textContent=
+          "Checking live price and availability…";
+
+        visualQuoteTimer=setTimeout(()=>{
+          loadQuote();
+        },350);
       };
     });
 }
