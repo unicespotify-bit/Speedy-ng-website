@@ -1,0 +1,35 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190">
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#55e6ff"/>
+    <stop offset=".5" stop-color="#168cff"/>
+    <stop offset="1" stop-color="#1648ff"/>
+  </linearGradient>
+  <linearGradient id="cyan">
+    <stop stop-color="#55e6ff"/>
+    <stop offset="1" stop-color="#168cff"/>
+  </linearGradient>
+</defs>
+<g>
+  <path d="M28 62h67M12 88h74M27 114h54"
+    fill="none" stroke="url(#cyan)" stroke-width="10"
+    stroke-linecap="round"/>
+  <path d="M145 34c-31 0-51 16-51 38 0 18 14 27 42 30l31 4c12 2 17 5 17 11 0 8-9 13-25 13H91l-21 25h99c39 0 63-17 63-43 0-18-13-28-42-32l-32-4c-11-1-16-4-16-10 0-7 8-11 22-11h78l20-21z"
+    fill="url(#blue)"/>
+  <path d="M75 44C101 10 154 4 191 22c28 13 41 37 37 61"
+    fill="none" stroke="url(#cyan)" stroke-width="7"
+    stroke-linecap="round"/>
+  <path d="M65 151c26 31 83 37 128 18 16-7 27-17 35-29"
+    fill="none" stroke="url(#blue)" stroke-width="7"
+    stroke-linecap="round"/>
+</g>
+<text x="258" y="124" font-family="Arial,sans-serif"
+  font-size="91" font-style="italic" font-weight="800"
+  letter-spacing="-5" fill="#f4f7ff">Speedy</text>
+<text x="574" y="124" font-family="Arial,sans-serif"
+  font-size="91" font-style="italic" font-weight="800"
+  letter-spacing="-5" fill="url(#cyan)">.ng</text>
+<path d="M260 145h330" stroke="url(#cyan)"
+  stroke-width="4" stroke-linecap="round"/>
+</svg>
