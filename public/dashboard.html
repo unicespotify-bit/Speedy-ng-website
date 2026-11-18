@@ -3558,7 +3558,27 @@ function fillSelect(id,rows){
 
 async function loadNumbers(){
   try{
-    const c=await api("/api/customer/visual-numbers/countries");
+    $("numberQuote").textContent="Loading countries...";
+    $("numberBuy").disabled=true;
+
+    let c;
+
+    if(numberSource==="prime"){
+      c=await api(
+        "/api/customer/official-numbers/countries?driver="+
+        encodeURIComponent(numberDriver)
+      );
+
+      const s=await api(
+        "/api/customer/official-numbers/services?driver="+
+        encodeURIComponent(numberDriver)
+      );
+
+      primeNumberServices=unwrap(s.services||s);
+    }else{
+      c=await api("/api/customer/visual-numbers/countries");
+      primeNumberServices=[];
+    }
 
     numberCountries=normalizeCountries(c.countries||c);
     numberServices=[];
@@ -3572,6 +3592,13 @@ async function loadNumbers(){
     $("countrySelect").onchange=loadCountryServices;
 
     $("serviceSelect").onchange=()=>{
+      if(numberSource==="prime"){
+        $("numberBuy").disabled=true;
+        $("numberQuote").textContent=
+          "Services loaded. Pricing and ordering will be connected next.";
+        return;
+      }
+
       clearTimeout(visualQuoteTimer);
 
       quoteRequestId++;
@@ -3589,11 +3616,14 @@ async function loadNumbers(){
     $("numberBuy").onclick=buyNumber;
 
     if(!numberCountries.length){
-      throw Error("The live country list is empty. Please refresh later.");
+      throw Error("The country list is currently empty.");
     }
 
+    $("numberQuote").textContent="Choose a country.";
+
   }catch(e){
-    $("numberQuote").textContent=e.message;
+    $("numberQuote").textContent=
+      "Unable to load the country list. Please try again later.";
   }
 }
 
