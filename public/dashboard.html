@@ -3629,7 +3629,20 @@ async function loadNumbers(){
 
 async function loadCountryServices(){
   const country=$("countrySelect").value;
+if(numberSource==="prime"){
+    numberServices=primeNumberServices.slice();
 
+    fillSelect("serviceSelect",numberServices);
+
+    $("numberBuy").disabled=true;
+
+    $("numberQuote").textContent=
+      numberServices.length
+        ? "Choose a service. Pricing and ordering will be connected next."
+        : "No services are currently available.";
+
+    return;
+}
   const requestId=loadCountryServices.requestId=
     (loadCountryServices.requestId||0)+1;
 
@@ -3639,7 +3652,6 @@ async function loadCountryServices(){
 
   fillSelect("serviceSelect",[]);
   $("numberBuy").disabled=true;
-
   if(!country){
     loadQuote();
     return;
