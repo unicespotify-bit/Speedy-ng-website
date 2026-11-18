@@ -1307,6 +1307,9 @@ let depositPoll=null;
 let activeDeposit=null;
 let numberCountries=[];
 let numberServices=[];
+let numberSource="alternative";
+let numberDriver="";
+let primeNumberServices=[];
 let selectedQuote=null;
 let pendingVisualPurchase=null;  
 let quoteRequestId=0;
@@ -3295,28 +3298,83 @@ function visualPickerMarkup(id,title,placeholder){
 function showNumbers(){
   modal(
     "Buy Numbers",
-    "Choose a country and service to check live availability and price.",
+    "Choose your preferred number option.",
     `
-      ${visualPickerMarkup("countrySelect","Country","Choose a country")}
-      ${visualPickerMarkup("serviceSelect","Service","Choose a service")}
-
-      <div id="numberQuote" class="result">
-        Choose a country and service to check availability.
+      <div style="display:flex;gap:10px;margin-bottom:15px;">
+        <button class="primary" id="numberPrime" style="flex:1;">
+          Prime
+        </button>
+        <button class="primary" id="numberAlternative" style="flex:1;">
+          Alternative
+        </button>
       </div>
 
-      <button class="primary" id="numberBuy" disabled>
-        Buy number
-      </button>
+      <div id="numberServers" style="display:none;margin-bottom:15px;">
+        <p style="margin-bottom:10px;">Choose a server:</p>
+        <div style="display:flex;gap:10px;">
+          <button class="primary" id="numberServer1" style="flex:1;">
+            Server 1
+          </button>
+          <button class="primary" id="numberServer2" style="flex:1;">
+            Server 2
+          </button>
+        </div>
+      </div>
 
-      <div id="numberOrder"></div>
+      <div id="numberListing" style="display:none;">
+        ${visualPickerMarkup("countrySelect","Country","Choose a country")}
+        ${visualPickerMarkup("serviceSelect","Service","Choose a service")}
+
+        <div id="numberQuote" class="result">
+          Choose a country and service.
+        </div>
+
+        <button class="primary" id="numberBuy" disabled>
+          Buy number
+        </button>
+
+        <div id="numberOrder"></div>
+      </div>
     `
   );
 
+  $("numberPrime").onclick=()=>{
+    $("numberServers").style.display="block";
+    $("numberListing").style.display="none";
+  };
+
+  $("numberAlternative").onclick=()=>{
+    numberSource="alternative";
+    numberDriver="";
+    $("numberServers").style.display="none";
+    $("numberListing").style.display="block";
+    setupNumberPickers();
+    loadNumbers();
+  };
+
+  $("numberServer1").onclick=()=>{
+    numberSource="prime";
+    numberDriver="prime";
+    $("numberServers").style.display="none";
+    $("numberListing").style.display="block";
+    setupNumberPickers();
+    loadNumbers();
+  };
+
+  $("numberServer2").onclick=()=>{
+    numberSource="prime";
+    numberDriver="alternate";
+    $("numberServers").style.display="none";
+    $("numberListing").style.display="block";
+    setupNumberPickers();
+    loadNumbers();
+  };
+}
+
+function setupNumberPickers(){
   setupVisualPicker("countrySelect","country","Choose a country");
   setupVisualPicker("serviceSelect","service","Choose a service");
-
-  loadNumbers();
-}
+    }
 
 function closeVisualPickers(event){
 if(event.target.closest(".visual-picker"))return;
