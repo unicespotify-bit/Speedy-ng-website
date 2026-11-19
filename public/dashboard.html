@@ -3868,12 +3868,19 @@ async function loadPrimeQuote(){
 
       <br><br>
       <span class="muted">
-        Live price and stock retrieved successfully.
-        Purchasing will be enabled after checkout integration.
-      </span>
-    `;
+  Live price and stock retrieved successfully.
+  You can now place your Prime order.
+</span>
+`;
 
-    $("numberBuy").disabled=true;
+selectedQuote = {
+  country,
+  service,
+  stock: stockKnown ? stock : null,
+  provider: "prime"
+};
+
+$("numberBuy").disabled = !available;
 
   }catch(e){
     if(requestId!==quoteRequestId)return;
