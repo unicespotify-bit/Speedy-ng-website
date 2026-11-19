@@ -3737,6 +3737,25 @@ async function loadPrimeQuote(){
     "Checking live price and availability…";
 
   try{
+    const compatibility = await api(
+      `/api/customer/official-numbers/countries/${encodeURIComponent(service)}?driver=${encodeURIComponent(numberDriver)}`
+    );
+
+    if(requestId!==quoteRequestId)return;
+
+    const compatibleCountries = normalizeCountries(
+      compatibility.countries || compatibility
+    );
+
+    const countrySupported = compatibleCountries.some(
+      item => visualOptionValue(item,"country") === country
+    );
+
+    if(!countrySupported){
+      $("numberQuote").textContent =
+        "This service is not available in the selected country. Please choose another service or country.";
+      return;
+    }
     const d=await api(
       "/api/customer/official-numbers/price",
       "POST",
