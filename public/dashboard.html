@@ -2966,17 +2966,27 @@ function optionValue(x){
 }
 
 function visualOptionValue(x,type){
-  if(typeof x==="string")return x;
+if(typeof x==="string")return x;
 
-  if(type==="service"){
-    return String(
-      x?.code??
-      x?.id??
-      x?.service??
-      x?.slug??
-      label(x)
-    );
-  }
+if(type==="service"){
+return String(
+x?.id??
+x?.service_id??
+x?.code??
+x?.service??
+x?.slug??
+label(x)
+);
+}
+
+return String(
+x?.id??
+x?.code??
+x?.iso??
+x?.slug??
+label(x)
+);
+     }
 
   return String(
     x?.id??
