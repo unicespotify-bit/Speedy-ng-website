@@ -3610,20 +3610,6 @@ async function loadNumbers(){
       },350);
     };
 
-      clearTimeout(visualQuoteTimer);
-
-      quoteRequestId++;
-      selectedQuote=null;
-      $("numberBuy").disabled=true;
-
-      $("numberQuote").textContent=
-        "Checking live price and availability…";
-
-      visualQuoteTimer=setTimeout(()=>{
-        loadQuote();
-      },350);
-    };
-
     $("numberBuy").onclick=buyNumber;
 
     if(!numberCountries.length){
