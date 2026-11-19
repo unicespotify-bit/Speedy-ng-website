@@ -3592,12 +3592,23 @@ async function loadNumbers(){
     $("countrySelect").onchange=loadCountryServices;
 
     $("serviceSelect").onchange=()=>{
-      if(numberSource==="prime"){
-        $("numberBuy").disabled=true;
-        $("numberQuote").textContent=
-          "Services loaded. Pricing and ordering will be connected next.";
-        return;
-      }
+      clearTimeout(visualQuoteTimer);
+
+      quoteRequestId++;
+      selectedQuote=null;
+      $("numberBuy").disabled=true;
+
+      $("numberQuote").textContent=
+        "Checking live price and availability…";
+
+      visualQuoteTimer=setTimeout(()=>{
+        if(numberSource==="prime"){
+          loadPrimeQuote();
+        }else{
+          loadQuote();
+        }
+      },350);
+    };
 
       clearTimeout(visualQuoteTimer);
 
@@ -3721,7 +3732,121 @@ if(numberSource==="prime"){
     loadQuote();
   }
   }
+async function loadPrimeQuote(){
+  const requestId=++quoteRequestId;
+  const country=$("countrySelect").value;
+  const service=$("serviceSelect").value;
 
+  selectedQuote=null;
+  $("numberBuy").disabled=true;
+
+  if(!country||!service){
+    $("numberQuote").textContent=
+      "Choose a country and service.";
+    return;
+  }
+
+  $("numberQuote").textContent=
+    "Checking live price and availability…";
+
+  try{
+    const d=await api(
+      "/api/customer/official-numbers/price",
+      "POST",
+      {
+        driver:numberDriver,
+        country,
+        service
+      }
+    );
+
+    if(requestId!==quoteRequestId)return;
+
+    const q=d.price||d;
+
+    const priceData=q.price||{};
+    const alternatePrice=q.price_alt||{};
+
+    const amount=Number(
+      priceData.amount??q.amount
+    );
+
+    const stock=Number(
+      q.stock??q.available_stock
+    );
+
+    const stockKnown=
+      q.stock!==undefined&&
+      q.stock!==null&&
+      q.stock!==""&&
+      Number.isFinite(stock);
+
+    const available=stockKnown&&stock>0;
+
+    if(!Number.isFinite(amount)||amount<=0){
+      throw Error(
+        "A valid price is not currently available."
+      );
+    }
+
+    const usdPrice=amount/100;
+
+    const ngnAmount=Number(alternatePrice.amount);
+
+    const hasNgnPrice=
+      Number.isFinite(ngnAmount)&&ngnAmount>0;
+
+    const ngnPrice=hasNgnPrice
+      ?ngnAmount/100
+      :0;
+
+    const countryName=
+      $("countrySelect").selectedOptions[0]?.textContent?.trim()||
+      country;
+
+    const serviceName=
+      $("serviceSelect").selectedOptions[0]?.textContent?.trim()||
+      service;
+
+    $("numberQuote").innerHTML=`
+      <strong>${esc(countryName)} · ${esc(serviceName)}</strong>
+      <br><br>
+
+      USD Price:
+      <strong>${esc(money(usdPrice,"USD"))}</strong>
+
+      ${hasNgnPrice?`
+        <br>
+        NGN Price:
+        <strong>${esc(money(ngnPrice,"NGN"))}</strong>
+      `:""}
+
+      <br>
+      Availability:
+      <strong class="${available?"live":"offline"}">
+        ${!stockKnown?"UNKNOWN":available?"ONLINE":"OFFLINE"}
+      </strong>
+
+      <br>
+      Available stock:
+      <strong>${stockKnown?stock:"Not confirmed"}</strong>
+
+      <br><br>
+      <span class="muted">
+        Live price and stock retrieved successfully.
+        Purchasing will be enabled after checkout integration.
+      </span>
+    `;
+
+    $("numberBuy").disabled=true;
+
+  }catch(e){
+    if(requestId!==quoteRequestId)return;
+
+    $("numberQuote").textContent=
+      "Unable to retrieve live pricing. Please try again.";
+  }
+}
 async function loadQuote(){
   const requestId=++quoteRequestId;
   const c=$("countrySelect").value;
