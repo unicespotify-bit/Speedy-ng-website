@@ -4329,16 +4329,22 @@ pendingVisualPurchase={
   stopVisualOrderTimers();
 
   try{
-    const d=await api(
-      "/api/customer/visual-numbers/purchase",
-      "POST",
-      {
-        country:quoteAtStart.country,
-        service:quoteAtStart.service,
-        idempotency_key:idempotencyKey
-      },
-      {"Idempotency-Key":idempotencyKey}
-    );
+    const primePurchase = quoteAtStart.provider === "prime";
+
+const purchaseEndpoint = primePurchase
+  ? "/api/customer/visual-numbers/prime/purchase"
+  : "/api/customer/visual-numbers/purchase";
+
+const d=await api(
+  purchaseEndpoint,
+  "POST",
+  {
+    country:quoteAtStart.country,
+    service:quoteAtStart.service,
+    idempotency_key:idempotencyKey
+  },
+  {"Idempotency-Key":idempotencyKey}
+);
 
     purchaseSucceeded=true;
 pendingVisualPurchase=null;
@@ -4418,11 +4424,20 @@ async function checkNumber(id,automatic=false){
   window.visualNumberCheckBusy=true;
 
   try{
-    const d=await api(
-      `/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`,
-      "POST",
-      {}
-    );
+    const currentOrder = window.visualCurrentOrder || {};
+
+const isPrimeOrder =
+  currentOrder.provider === "nexar_virtual";
+
+const statusEndpoint = isPrimeOrder
+  ? `/api/customer/visual-numbers/prime/orders/${encodeURIComponent(id)}/check`
+  : `/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`;
+
+const d=await api(
+  statusEndpoint,
+  "POST",
+  {}
+);
 
     const previous=window.visualCurrentOrder||{};
 
