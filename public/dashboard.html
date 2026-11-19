@@ -3633,19 +3633,27 @@ async function loadNumbers(){
 async function loadCountryServices(){
   const country=$("countrySelect").value;
 if(numberSource==="prime"){
-    numberServices=primeNumberServices.slice();
-
-    fillSelect("serviceSelect",numberServices);
-
+    quoteRequestId++;
+    selectedQuote=null;
     $("numberBuy").disabled=true;
+
+    if(!country){
+      numberServices=[];
+      fillSelect("serviceSelect",[]);
+      $("numberQuote").textContent="Choose a country first.";
+      return;
+    }
+
+    numberServices=primeNumberServices.slice();
+    fillSelect("serviceSelect",numberServices);
 
     $("numberQuote").textContent=
       numberServices.length
-        ? "Choose a service. Pricing and ordering will be connected next."
+        ? "Choose a service to check live price and availability."
         : "No services are currently available.";
 
     return;
-}
+  }
   const requestId=loadCountryServices.requestId=
     (loadCountryServices.requestId||0)+1;
 
