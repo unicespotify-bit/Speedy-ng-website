@@ -3499,8 +3499,12 @@ function renderVisualPicker(id,type){
           "Checking live price and availability…";
 
         visualQuoteTimer=setTimeout(()=>{
-          loadQuote();
-        },350);
+  if(numberSource==="prime"){
+    loadPrimeQuote();
+  }else{
+    loadQuote();
+  }
+},350);
       };
     });
 }
