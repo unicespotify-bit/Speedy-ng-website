@@ -3723,6 +3723,22 @@ async function loadPrimeQuote(){
   const requestId=++quoteRequestId;
   const country=$("countrySelect").value;
   const service=$("serviceSelect").value;
+  // SPEEDY.NG NEXAR INVESTIGATION
+  const selectedCountryRow = numberCountries.find(
+    item => visualOptionValue(item, "country") === country
+  );
+
+  const selectedServiceRow = primeNumberServices.find(
+    item => visualOptionValue(item, "service") === service
+  );
+
+  console.log("[NEXAR INVESTIGATION]", {
+    driver: numberDriver,
+    countrySent: country,
+    serviceSent: service,
+    selectedCountryObject: selectedCountryRow,
+    selectedServiceObject: selectedServiceRow
+  });
 
   selectedQuote=null;
   $("numberBuy").disabled=true;
@@ -3849,8 +3865,16 @@ async function loadPrimeQuote(){
   }catch(e){
     if(requestId!==quoteRequestId)return;
 
-    $("numberQuote").textContent=
-      "Unable to retrieve live pricing. Please try again.";
+    console.error("[NEXAR PRICE ERROR]", {
+      message: e?.message || String(e),
+      driver: numberDriver,
+      country: country,
+      service: service
+    });
+
+    $("numberQuote").textContent =
+      "Nexar price request failed: " +
+      (e?.message || "Unknown provider error");
   }
 }
 async function loadQuote(){
