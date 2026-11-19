@@ -4312,7 +4312,7 @@ async function buyNumber(){
   b.textContent="Requesting number…";
 
   const purchaseIdentity=
-  `${quoteAtStart.country}:${quoteAtStart.service}`;
+  `${quoteAtStart.provider||"alternate"}:${quoteAtStart.country}:${quoteAtStart.service}`;
 
 const idempotencyKey=
   pendingVisualPurchase?.identity===purchaseIdentity
