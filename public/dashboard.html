@@ -4459,7 +4459,7 @@ async function refundVisualNumberOrder(id){
   )return;
 
   const isPrimeOrder=
-    order.provider==="nexar_virtual";
+    order.visual_route==="prime";
 
   const refundEndpoint=isPrimeOrder
     ? `/api/customer/visual-numbers/prime/orders/${encodeURIComponent(id)}/cancel`
@@ -4479,12 +4479,10 @@ async function refundVisualNumberOrder(id){
       refundEndpoint,
       "POST",
       {}
-    );
-
-    if(!d.ok&&!d.refunded){
-      throw new Error(
-        d.message||"Refund could not be completed."
-      );
+    if(d.refunded!==true){
+  throw new Error(
+    d.message||"Your refund is not yet confirmed. Your wallet has not been credited. Please check the order again."
+  );
     }
 
     window.visualCurrentOrder={
@@ -4547,7 +4545,7 @@ try{
 const currentOrder=window.visualCurrentOrder||{};
 
 const isPrimeOrder=
-  currentOrder.provider==="nexar_virtual";
+  currentOrder.visual_route==="prime";
 
 const statusEndpoint=isPrimeOrder
   ? `/api/customer/visual-numbers/prime/orders/${encodeURIComponent(id)}/check`
