@@ -4599,9 +4599,9 @@ await refreshAll();
 
 }catch(e){
 if(!automatic){
-$("numberOrder").innerHTML=
-"<div class="result danger">${esc(e.message)}</div>";
-}
+  $("numberOrder").innerHTML=
+    `<div class="result danger">${esc(e.message)}</div>`;
+  }
 }finally{
 window.visualNumberCheckBusy=false;
 }
