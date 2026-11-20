@@ -4519,23 +4519,37 @@ async function refundVisualNumberOrder(id){
   }
 }
 async function checkNumber(id,automatic=false){
-  const current=window.visualCurrentOrder||{};
+const current=window.visualCurrentOrder||{};
 
-  if(
-    !id||
-    window.visualNumberCheckBusy||
-    !isVisualOrderCountdownActive(current,current.sms_code||"")
-  )return;
+const currentCode=current.sms_code||"";
+const currentStatus=String(current.status||"processing").toLowerCase();
+const currentExpiry=current.expires_at
+?new Date(current.expires_at).getTime()
+:NaN;
 
-  window.visualNumberCheckBusy=true;
+const expired=
+Number.isFinite(currentExpiry)&&
+Date.now()>=currentExpiry;
 
-  try{
-    const currentOrder = window.visualCurrentOrder || {};
+if(
+!id||
+window.visualNumberCheckBusy||
+currentCode||
+currentStatus==="completed"||
+currentStatus==="failed"||
+currentStatus==="refunded"||
+(!expired&&!isVisualOrderCountdownActive(current,currentCode))
+)return;
 
-const isPrimeOrder =
-  currentOrder.provider === "nexar_virtual";
+window.visualNumberCheckBusy=true;
 
-const statusEndpoint = isPrimeOrder
+try{
+const currentOrder=window.visualCurrentOrder||{};
+
+const isPrimeOrder=
+  currentOrder.provider==="nexar_virtual";
+
+const statusEndpoint=isPrimeOrder
   ? `/api/customer/visual-numbers/prime/orders/${encodeURIComponent(id)}/check`
   : `/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/check`;
 
@@ -4545,41 +4559,53 @@ const d=await api(
   {}
 );
 
-    const previous=window.visualCurrentOrder||{};
+const previous=window.visualCurrentOrder||{};
 
-    const o={
-      ...previous,
-      ...(d.order||{}),
-      id:(d.order||{}).id||id,
-      status:(d.order||{}).status||d.status||previous.status||"processing"
-    };
+const o={
+  ...previous,
+  ...(d.order||{}),
+  id:(d.order||{}).id||id,
+  status:(d.order||{}).status||d.status||previous.status||"processing",
+  refund_available:d.refund_available===true
+};
 
-    window.visualCurrentOrder=o;
+const delivery=d.delivery||{};
+const code=delivery.sms_code||o.sms_code||"";
 
-    const delivery=d.delivery||{};
-
-    renderVisualOrder(o,delivery,d.message||"");
-
-    const code=delivery.sms_code||o.sms_code;
-
-    if(
-      code||
-      !isVisualOrderCountdownActive(o,code||"")
-    ){
-      stopVisualOrderTimers();
-    }
-
-    await refreshAll();
-
-  }catch(e){
-    if(!automatic){
-      $("numberOrder").innerHTML=
-        `<div class="result danger">${esc(e.message)}</div>`;
-    }
-  }finally{
-    window.visualNumberCheckBusy=false;
-  }
+if(code){
+  o.refund_available=false;
+  o.sms_code=code;
 }
+
+window.visualCurrentOrder=o;
+
+renderVisualOrder(
+  o,
+  delivery,
+  d.message||""
+);
+
+if(
+  code||
+  o.refund_available===true||
+  ["completed","failed","refunded"].includes(
+    String(o.status||"").toLowerCase()
+  )
+){
+  stopVisualOrderTimers();
+}
+
+await refreshAll();
+
+}catch(e){
+if(!automatic){
+$("numberOrder").innerHTML=
+"<div class="result danger">${esc(e.message)}</div>";
+}
+}finally{
+window.visualNumberCheckBusy=false;
+}
+  }
 
 /* SOCIAL LOGS */
 function socialLogCountryMarkup(x){
