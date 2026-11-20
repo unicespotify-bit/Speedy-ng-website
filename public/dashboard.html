@@ -4479,6 +4479,8 @@ async function refundVisualNumberOrder(id){
       refundEndpoint,
       "POST",
       {}
+    );
+
     if(d.refunded!==true){
   throw new Error(
     d.message||"Your refund is not yet confirmed. Your wallet has not been credited. Please check the order again."
