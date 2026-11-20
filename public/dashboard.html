@@ -4567,7 +4567,7 @@ const o={
   ...(d.order||{}),
   id:(d.order||{}).id||id,
   status:(d.order||{}).status||d.status||previous.status||"processing",
-  refund_available:d.refund_available===true
+ refund_available:d.refund_available===true||(d.order||{}).refund_available===true
 };
 
 const delivery=d.delivery||{};
