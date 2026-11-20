@@ -3919,9 +3919,21 @@ async function loadQuote(){
 );
 if(requestId!==quoteRequestId)return;
     const q=d.quote||{};
-    const priceMinor=Number(q.customer_price_minor);
-    const stock=q.stock??null;
-    const currency=q.currency||"USD";
+const inventory=d.inventory||{};
+
+const priceMinor=Number(
+  q.customer_price_minor ??
+  inventory.customer_price_minor ??
+  (q.customer_price_usd!=null
+    ? Math.round(Number(q.customer_price_usd)*100)
+    : undefined) ??
+  (inventory.customer_price_usd!=null
+    ? Math.round(Number(inventory.customer_price_usd)*100)
+    : undefined)
+);
+
+const stock=q.stock??q.available??inventory.available??null;
+const currency=q.currency||inventory.currency||"USD";
 
     if(!Number.isFinite(priceMinor)||priceMinor<=0){
       throw Error("A valid price is not currently available for this service.");
