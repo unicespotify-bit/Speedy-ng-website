@@ -3960,12 +3960,11 @@ const serviceName=label(numberServices.find(x=>visualOptionValue(x,"service")===
     $("numberQuote").innerHTML=`
       <strong>${esc(displayCountryName)} · ${esc(serviceName)}</strong>
       <br><br>
-      Price: <strong>${esc(money(price,currency))}</strong>
-      ${ngnEquivalent?`
-        <br>
-        <button class="price-toggle" id="showNgn">⌄ Show NGN price</button>
-        <div id="ngnEquivalent" class="hidden">${esc(ngnEquivalent)}</div>
-      `:""}
+      Price (USD): <strong>${esc(money(price,currency))}</strong>
+${ngnEquivalent?`
+  <br>
+  Price (NGN): <strong>${esc(ngnEquivalent)}</strong>
+`:""}
       <br>
       Availability:
       <strong class="${!stockKnown?"":available?"live":"offline"}">
