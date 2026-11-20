@@ -4030,6 +4030,18 @@ function renderVisualOrder(order,delivery={},message=""){
   const received=Boolean(code)||status==="completed";
   const active=isVisualOrderCountdownActive(order,code);
 
+  const orderExpiry=order.expires_at
+    ?new Date(order.expires_at).getTime()
+    :NaN;
+
+  const refundAvailable=
+    order.refund_available===true&&
+    Number.isFinite(orderExpiry)&&
+    Date.now()>=orderExpiry&&
+    !received&&
+    status!=="failed"&&
+    status!=="refunded";
+
   const expires=order.expires_at
     ?new Date(order.expires_at).getTime()
     :null;
@@ -4246,6 +4258,14 @@ function renderVisualOrder(order,delivery={},message=""){
         </button>
       `:""}
 
+      ${refundAvailable?`
+        <button class="visual-copy-btn"
+          id="refundVisualOrder"
+          style="width:100%;margin-top:14px">
+          Refund to USD Wallet
+        </button>
+      `:""}
+
     </div>
   `;
 
@@ -4279,6 +4299,10 @@ function renderVisualOrder(order,delivery={},message=""){
   if(active&&!received){
     $("checkNumber").onclick=()=>checkNumber(order.id);
   }
+
+  if(refundAvailable){
+    $("refundVisualOrder").onclick=()=>refundVisualNumberOrder(order.id);
+  }
 }
 
 function updateVisualCountdown(expires){
@@ -4299,8 +4323,21 @@ function updateVisualCountdown(expires){
 
   if(remaining===0){
     box.textContent="00:00";
+
+    clearInterval(window.visualNumberCountdownTimer);
+
+    const order=window.visualCurrentOrder||{};
+
+    if(
+      order.id&&
+      !order.sms_code&&
+      !window.visualExpiryCheckOrderId
+    ){
+      window.visualExpiryCheckOrderId=order.id;
+      checkNumber(order.id,true);
+    }
   }
-  }
+    }
 
 async function buyNumber(){
   if(!selectedQuote)return;
