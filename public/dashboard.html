@@ -3976,16 +3976,6 @@ ${ngnEquivalent?`
       <span class="muted">The backend must verify the final price and stock again before charging your wallet.</span>
     `;
 
-    if(ngnEquivalent){
-      $("showNgn").onclick=()=>{
-        const box=$("ngnEquivalent");
-        box.classList.toggle("hidden");
-        $("showNgn").textContent=box.classList.contains("hidden")
-          ?"⌄ Show NGN price"
-          :"⌃ Hide NGN price";
-      };
-    }
-
     $("numberBuy").disabled=!available;
 
   }catch(e){
