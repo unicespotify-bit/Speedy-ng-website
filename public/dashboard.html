@@ -4448,7 +4448,76 @@ if(!uncertainPurchase){
     }
   }
 }
+async function refundVisualNumberOrder(id){
+  const order=window.visualCurrentOrder||{};
 
+  if(
+    !id||
+    order.id!==id||
+    order.refund_available!==true||
+    window.visualRefundBusy
+  )return;
+
+  const isPrimeOrder=
+    order.provider==="nexar_virtual";
+
+  const refundEndpoint=isPrimeOrder
+    ? `/api/customer/visual-numbers/prime/orders/${encodeURIComponent(id)}/cancel`
+    : `/api/customer/visual-numbers/orders/${encodeURIComponent(id)}/cancel`;
+
+  const button=$("refundVisualOrder");
+
+  window.visualRefundBusy=true;
+
+  if(button){
+    button.disabled=true;
+    button.textContent="Processing refund…";
+  }
+
+  try{
+    const d=await api(
+      refundEndpoint,
+      "POST",
+      {}
+    );
+
+    if(!d.ok&&!d.refunded){
+      throw new Error(
+        d.message||"Refund could not be completed."
+      );
+    }
+
+    window.visualCurrentOrder={
+      ...order,
+      status:d.status||"failed",
+      refund_available:false,
+      refunded:true
+    };
+
+    stopVisualOrderTimers();
+
+    renderVisualOrder(
+      window.visualCurrentOrder,
+      {},
+      d.message||"Your exact payment has been returned to your USD wallet."
+    );
+
+    await refreshAll();
+
+  }catch(e){
+    if(button){
+      button.disabled=false;
+      button.textContent="Refund to USD Wallet";
+    }
+
+    alert(
+      e.message||"Unable to process your refund. Please try again."
+    );
+
+  }finally{
+    window.visualRefundBusy=false;
+  }
+}
 async function checkNumber(id,automatic=false){
   const current=window.visualCurrentOrder||{};
 
