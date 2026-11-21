@@ -23,6 +23,34 @@ header{padding:27px 22px;display:flex;align-items:center;justify-content:space-b
   max-width:100%;
 }
 .badge{color:#b8c8e8;font-size:12px;padding:9px 12px;border:1px solid #ffffff16;background:#ffffff08;border-radius:20px}
+  .telegram-top{
+  display:none;
+  align-items:center;
+  gap:7px;
+  padding:9px 13px;
+  border:1px solid #287cff;
+  border-radius:22px;
+  background:linear-gradient(110deg,#123d70,#10294c);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.telegram-top:hover{
+  background:#1b4e85;
+  text-decoration:none;
+}
+.telegram-top svg{
+  width:17px;
+  height:17px;
+  fill:#55e6ff;
+  flex-shrink:0;
+}
+@media(max-width:800px){
+  .telegram-top{padding:8px 10px;font-size:11px}
+  .badge{display:none}
+}
 main{width:100%;max-width:1100px;margin:auto;padding:15px 20px 45px;display:grid;grid-template-columns:1fr 420px;align-items:center;gap:65px}
 .intro{animation:appear .8s ease both}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #55e6ff30;background:#55e6ff0c;color:var(--cyan);border-radius:30px;padding:9px 13px;font-size:12px;margin-bottom:25px}
 .dot{width:7px;height:7px;border-radius:50%;background:#55e6ff;box-shadow:0 0 12px #55e6ff}
@@ -59,7 +87,13 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
   <a class="logo" href="/" aria-label="Speedy.ng home">
     <img src="/logo.svg" alt="Speedy.ng">
   </a>
-  <div class="badge">YOUR DIGITAL SERVICES HUB</div>
+  <a class="telegram-top" id="telegramTop" href="#" target="_blank" rel="noopener noreferrer" aria-label="Join Speedy.ng on Telegram">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21.8 4.2 18.7 19c-.2 1-1 1.2-1.8.7l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6.1 12.3 1.2 10.8c-1.1-.3-1.1-1.1.2-1.6L20.4 2c.9-.3 1.7.2 1.4 2.2Z"/>
+  </svg>
+  Telegram
+</a>
+<div class="badge">YOUR DIGITAL SERVICES HUB</div>
 </header>
 <main>
 <section class="intro">
