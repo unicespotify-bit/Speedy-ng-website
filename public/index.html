@@ -163,6 +163,37 @@ footer{text-align:center;padding:20px;color:#6f80a1;font-size:11px}
   "use strict";
   const API_BASE = "https://speedy-ng-api-staging.unicespotify.workers.dev";
   const $ = id => document.getElementById(id);
+  async function loadTelegramButton() {
+    const button = $("telegramTop");
+    if (!button) return;
+
+    try {
+      const response = await fetch(
+        API_BASE + "/api/public/telegram-settings",
+        {
+          method: "GET",
+          credentials: "omit"
+        }
+      );
+
+      if (!response.ok) return;
+
+      const settings = await response.json();
+      const telegramUrl = String(settings.telegram_url || "").trim();
+
+      if (settings.enabled === true && telegramUrl) {
+        button.href = telegramUrl;
+        button.style.display = "inline-flex";
+      } else {
+        button.style.display = "none";
+      }
+    } catch (error) {
+      button.style.display = "none";
+      console.error("Telegram settings could not be loaded:", error);
+    }
+  }
+
+  loadTelegramButton();
   let mode = "login", pendingEmail = "", resendAvailableAt = 0, timerHandle = null;
 
   function showNotice(message, type="info") {
